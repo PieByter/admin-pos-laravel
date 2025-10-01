@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             SalesOrdersSeeder::class,
             SalesOrderItemsSeeder::class,
             UnitConversionsSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }

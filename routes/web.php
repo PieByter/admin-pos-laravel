@@ -19,20 +19,21 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\UnitConversionController;
 
-// Auth routes (login, register, logout)
-Route::get('/', [AuthController::class, 'login']);
 Route::view('forbidden', 'errors.forbidden');
 
+// Auth routes (login, register, logout)
+Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::prefix('auth')->group(function () {
-    Route::get('login', [AuthController::class, 'login']);
+    Route::get('login', [AuthController::class, 'login'])->name('login');
     Route::post('login', [AuthController::class, 'login']);
-    Route::get('register', [AuthController::class, 'register']);
+    Route::get('register', [AuthController::class, 'register'])->name('register');
     Route::post('register', [AuthController::class, 'register']);
     Route::get('logout', [AuthController::class, 'logout']);
 });
+Route::middleware(['auth'])->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
 
-// Dashboard & Profile
-Route::get('dashboard', [DashboardController::class, 'index']);
 Route::get('profile', [ProfileController::class, 'index']);
 Route::get('profile/edit', [ProfileController::class, 'edit']);
 Route::post('profile/update', [ProfileController::class, 'update']);
