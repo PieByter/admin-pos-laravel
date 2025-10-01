@@ -18,7 +18,7 @@ class AuthController extends Controller
             }
             return back()->withErrors(['email' => 'Email atau password salah']);
         }
-        return view('auth/login');
+        return view('auth.login');
     }
 
     public function register(Request $request)
@@ -40,12 +40,12 @@ class AuthController extends Controller
             // $user->givePermissionTo('nama-permission');
             return redirect('auth/login')->with('success', 'Registrasi berhasil, silakan login.');
         }
-        return view('auth/register');
+        return view('auth.register');
     }
 
     public function logout()
     {
         Auth::logout();
-        return redirect('auth/login');
+        return view('auth.login');
     }
 }

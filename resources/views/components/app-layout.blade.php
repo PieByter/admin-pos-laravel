@@ -12,11 +12,11 @@
 </head>
 
 <body class="hold-transition sidebar layout-fixed">
-    {{-- @php
+    @php
         $user = auth()->user();
         $permissions = $user ? $user->getAllPermissions()->pluck('name')->toArray() : [];
-    @endphp --}}
-    @php
+    @endphp
+    {{-- @php
         $user = auth()->user();
         $permissions = [
             'items_view',
@@ -34,7 +34,7 @@
             'activity_logs_view',
             'transactions_view',
         ]; // Example permissions
-    @endphp
+    @endphp --}}
     <div class="wrapper">
         @include('layouts.partials.navbar')
         @include('layouts.partials.sidebar')
