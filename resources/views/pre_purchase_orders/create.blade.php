@@ -9,7 +9,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('po/save') ?>" method="post">
-                            <?= csrf_field() ?>
+                                   @csrf      
                             <input type="hidden" name="search" value="<?= esc($_GET['search'] ?? '') ?>">
                             <input type="hidden" name="page" value="<?= esc($_GET['page'] ?? 1) ?>">
                             <div class="row mb-3 align-items-center">

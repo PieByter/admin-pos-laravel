@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('profile/update') ?>" method="post" enctype="multipart/form-data">
-                            <?= csrf_field() ?>
+                            @csrf
 
                             <div class="mb-3">
                                 <div for="username" class="form-label"><b>Username</b></div>

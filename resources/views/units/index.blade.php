@@ -4,7 +4,7 @@
 
     <?php if ($can_write ?? false): ?>
     <div id="custom-buttons" class="ms-3 mb-2">
-        <a href="<?= site_url('satuan/create') ?>" class="btn btn-primary">
+        <a href="{{ url('satuan/create') }}" class="btn btn-primary">
             <i class="bi bi-plus-lg"></i> Tambah Satuan Baru
         </a>
     </div>
@@ -34,7 +34,7 @@
                                         Belum ada data satuan
                                     </p>
                                     <?php if ($can_write ?? false): ?>
-                                    <a href="<?= site_url('satuan/create') ?>" class="btn btn-primary">
+                                    <a href="{{ url('satuan/create') }}" class="btn btn-primary">
                                         <i class="bi bi-plus"></i> Tambah Satuan Pertama
                                     </a>
                                     <?php endif; ?>
@@ -45,17 +45,17 @@
                         <?php $no = 1;
                         foreach ($satuans as $satuan): ?>
                         <tr class="text-center">
-                            <td><?= $no++ ?></td>
-                            <td><?= esc($satuan['nama']) ?></td>
-                            <td><?= esc($satuan['keterangan']) ?></td>
+                            <td>{{ $no++ }}</td>
+                            <td>{{ $satuan['nama'] }}</td>
+                            <td>{{ $satuan['keterangan'] }}</td>
                             <?php if ($can_write ?? false): ?>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <a href="<?= site_url('satuan/edit/' . $satuan['id']) ?>"
-                                        class="btn btn-warning btn-sm" title="Edit">
+                                    <a href="{{ url('satuan/edit/' . $satuan['id']) }}" class="btn btn-warning btn-sm"
+                                        title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a href="<?= site_url('satuan/delete/' . $satuan['id']) ?>"
+                                    <a href="{{ url('satuan/delete/' . $satuan['id']) }}"
                                         class="btn btn-danger btn-sm btn-hapus-satuan" title="Hapus">
                                         <i class="bi bi-trash"></i>
                                     </a>

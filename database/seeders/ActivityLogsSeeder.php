@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class LogsSeeder extends Seeder
+class ActivityLogsSeeder extends Seeder
 {
     /**
      * Run the database seeds.

@@ -85,9 +85,9 @@ class User extends Authenticatable
         return $this->hasMany(ReturnOrder::class, 'updated_by');
     }
 
-    public function logs()
+    public function activityLogs()
     {
-        return $this->hasMany(Log::class, 'user_id');
+        return $this->hasMany(ActivityLog::class, 'user_id');
     }
 
     // ✅ Scopes

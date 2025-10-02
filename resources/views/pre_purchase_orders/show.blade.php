@@ -141,7 +141,7 @@
                             <?php if (!in_array($po['status'], ['selesai', 'retur', 'batal'])): ?>
                             <form action="<?= site_url('po/markSelesai/' . $po['id']) ?>" method="post"
                                 style="display:inline;">
-                                <?= csrf_field() ?>
+                                @csrf
                                 <button type="submit" class="btn btn-success"
                                     onclick="return confirm('Tandai PO ini selesai dan otomatis masuk ke pembelian?\n\nPerhatian: Proses ini hanya bisa dilakukan sekali!')">
                                     <i class="bi bi-check-circle"></i> Tandai Selesai & Masukkan ke Pembelian

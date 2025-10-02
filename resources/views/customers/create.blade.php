@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('customer/save') ?>" method="post">
-                            <?= csrf_field() ?>
+                            @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="nama" class="col-sm-3 col-form-label"><b>Nama</b></label>
                                 <div class="col-sm-9">

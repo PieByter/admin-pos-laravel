@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('po/update/' . $id) ?>" method="post">
-                            <?= csrf_field() ?>
+                            @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="no_po" class="col-md-3 col-form-label"><b>No. Purchase Order</b></label>
                                 <div class="col-md-9">
@@ -257,7 +257,7 @@
                             <?php if ($status !== 'selesai'): ?>
                             <form action="<?= site_url('po/markSelesai/' . $id) ?>" method="post"
                                 style="display:inline;">
-                                <?= csrf_field() ?>
+                                @csrf
                                 <button type="submit" class="btn btn-success"
                                     onclick="return confirm('Tandai PO ini selesai dan otomatis masuk ke pembelian?\n\nPerhatian: Proses ini hanya bisa dilakukan sekali!')">
                                     <i class="bi bi-check-circle"></i> Tandai Selesai & Masukkan ke Pembelian

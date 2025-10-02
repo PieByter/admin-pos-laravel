@@ -1,9 +1,5 @@
 <x-app-layout>
 
-    <?= $this->extend('layout/template') ?>
-
-    <?= $this->section('content') ?>
-
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
             <div class="col-md-10">
@@ -12,13 +8,13 @@
                         <h5 class="card-title mb-0"><i class="bi bi-person-gear"></i> Form Edit User</h5>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('superadmin/users/update/' . $user['id']) ?>" method="post">
-                            <?= csrf_field() ?>
+                        <form action="{{ url('superadmin/users/update/' . $user['id']) }}" method="post">
+                            @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="username" class="col-md-3 col-form-label"><b>Username</b></label>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="username" name="username"
-                                        value="<?= old('username', $user['username']) ?>" required>
+                                        value="{{ old('username', $user['username']) }}" required>
                                 </div>
                             </div>
 
@@ -26,7 +22,7 @@
                                 <label for="email" class="col-md-3 col-form-label"><b>Email</b></label>
                                 <div class="col-md-9">
                                     <input type="email" class="form-control" id="email" name="email"
-                                        value="<?= old('email', $user['email']) ?>" required>
+                                        value="{{ old('email', $user['email']) }}" required>
                                 </div>
                             </div>
 
@@ -42,36 +38,37 @@
                                 <label for="jabatan" class="col-md-3 col-form-label"><b>Jabatan</b></label>
                                 <div class="col-md-9">
                                     <select class="form-select" id="jabatan" name="jabatan" required>
-                                        <?php
-                                    $jabatanList = [
-                                        'staff'     => 'Staff',
-                                        'karyawan'  => 'Karyawan',
-                                        'kadept'    => 'Kadept - Kepala Depot',
-                                        'wakadept'  => 'Wakadept - Wakil Kepala Depot',
-                                        'kabid'     => 'Kabid - Kepala Bidang',
-                                        'wakabid'   => 'Wakabid - Wakil Kepala Bidang',
-                                        'kasubid'   => 'Kasubid - Kepala Sub Bidang',
-                                        'wakasubid' => 'Wakasubid - Wakil Kepala Sub Bidang',
-                                        'kabag'     => 'Kabag - Kepala Bagian',
-                                        'wakabag'   => 'Wakabag - Wakil Kepala Bagian',
-                                        'kasubag'   => 'Kasubag - Kepala Sub Bagian',
-                                        'wakasubag' => 'Wakasubag - Wakil Kepala Sub Bagian',
-                                        'kasie'     => 'Kasie - Kepala Seksi',
-                                        'wakasie'   => 'Wakasie - Wakil Kepala Seksi',
-                                        'kasubsie'  => 'Kasubsie - Kepala Sub Seksi',
-                                        'wakasubsie' => 'Wakasubsie - Wakil Kepala Sub Seksi',
-                                        'kagu'      => 'Kagu - Kepala Regu',
-                                        'wakagu'    => 'Wakagu - Wakil Kepala Regu',
-                                        'kasubgu'   => 'Kasubgu - Kepala Sub Regu',
-                                        'wakasubgu' => 'Wakasubgu - Wakil Kepala Sub Regu'
-                                    ];
-                                    $selectedJabatan = old('jabatan', $user['jabatan'] ?? 'staff');
-                                    foreach ($jabatanList as $kode => $label):
-                                    ?>
-                                        <option value="<?= $kode ?>" <?= $selectedJabatan == $kode ? 'selected' : '' ?>>
-                                            <?= $label ?>
-                                        </option>
-                                        <?php endforeach; ?>
+                                        @php
+                                            $jabatanList = [
+                                                'staff' => 'Staff',
+                                                'karyawan' => 'Karyawan',
+                                                'kadept' => 'Kadept - Kepala Depot',
+                                                'wakadept' => 'Wakadept - Wakil Kepala Depot',
+                                                'kabid' => 'Kabid - Kepala Bidang',
+                                                'wakabid' => 'Wakabid - Wakil Kepala Bidang',
+                                                'kasubid' => 'Kasubid - Kepala Sub Bidang',
+                                                'wakasubid' => 'Wakasubid - Wakil Kepala Sub Bidang',
+                                                'kabag' => 'Kabag - Kepala Bagian',
+                                                'wakabag' => 'Wakabag - Wakil Kepala Bagian',
+                                                'kasubag' => 'Kasubag - Kepala Sub Bagian',
+                                                'wakasubag' => 'Wakasubag - Wakil Kepala Sub Bagian',
+                                                'kasie' => 'Kasie - Kepala Seksi',
+                                                'wakasie' => 'Wakasie - Wakil Kepala Seksi',
+                                                'kasubsie' => 'Kasubsie - Kepala Sub Seksi',
+                                                'wakasubsie' => 'Wakasubsie - Wakil Kepala Sub Seksi',
+                                                'kagu' => 'Kagu - Kepala Regu',
+                                                'wakagu' => 'Wakagu - Wakil Kepala Regu',
+                                                'kasubgu' => 'Kasubgu - Kepala Sub Regu',
+                                                'wakasubgu' => 'Wakasubgu - Wakil Kepala Sub Regu',
+                                            ];
+                                            $selectedJabatan = old('jabatan', $user['jabatan'] ?? 'staff');
+                                        @endphp
+                                        @foreach ($jabatanList as $kode => $label)
+                                            <option value="{{ $kode }}"
+                                                {{ $selectedJabatan == $kode ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -80,16 +77,32 @@
                                 <label for="bagian" class="col-md-3 col-form-label"><b>Bagian/Divisi</b></label>
                                 <div class="col-md-9">
                                     <select class="form-select" id="bagian" name="bagian" required>
-                                        <?php
-                                    $bagianList = ['ITS', 'HR', 'Finance', 'Marketing', 'Operasional', 'Purchasing', 'Gudang', 'Penjualan', 'Produksi', 'R&D', 'Quality Control', 'Customer Service', 'Legal', 'Admin', 'Personalia'];
-                                    $selectedBagian = old('bagian', '');
-                                    foreach ($bagianList as $bagian):
-                                    ?>
-                                        <option value="<?= $bagian ?>"
-                                            <?= $selectedBagian == $bagian ? 'selected' : '' ?>>
-                                            <?= $bagian ?>
-                                        </option>
-                                        <?php endforeach; ?>
+                                        @php
+                                            $bagianList = [
+                                                'ITS',
+                                                'HR',
+                                                'Finance',
+                                                'Marketing',
+                                                'Operasional',
+                                                'Purchasing',
+                                                'Gudang',
+                                                'Penjualan',
+                                                'Produksi',
+                                                'R&D',
+                                                'Quality Control',
+                                                'Customer Service',
+                                                'Legal',
+                                                'Admin',
+                                                'Personalia',
+                                            ];
+                                            $selectedBagian = old('bagian', $user['bagian'] ?? '');
+                                        @endphp
+                                        @foreach ($bagianList as $bagian)
+                                            <option value="{{ $bagian }}"
+                                                {{ $selectedBagian == $bagian ? 'selected' : '' }}>
+                                                {{ $bagian }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -99,23 +112,23 @@
                                 <div class="col-md-9">
                                     <select class="form-select" id="role" name="role" required>
                                         <option value="useradmin"
-                                            <?= old('role', $user['role']) == 'useradmin' ? 'selected' : '' ?>>
+                                            {{ old('role', $user['role']) == 'useradmin' ? 'selected' : '' }}>
                                             User Admin
                                         </option>
                                         <option value="superadmin"
-                                            <?= old('role', $user['role']) == 'superadmin' ? 'selected' : '' ?>>
+                                            {{ old('role', $user['role']) == 'superadmin' ? 'selected' : '' }}>
                                             Super Admin
                                         </option>
                                         <option value="kasir"
-                                            <?= old('role', $user['role']) == 'kasir' ? 'selected' : '' ?>>
+                                            {{ old('role', $user['role']) == 'kasir' ? 'selected' : '' }}>
                                             Kasir
                                         </option>
                                         <option value="gudang"
-                                            <?= old('role', $user['role']) == 'gudang' ? 'selected' : '' ?>>
+                                            {{ old('role', $user['role']) == 'gudang' ? 'selected' : '' }}>
                                             Gudang
                                         </option>
                                         <option value="viewer"
-                                            <?= old('role', $user['role']) == 'viewer' ? 'selected' : '' ?>>
+                                            {{ old('role', $user['role']) == 'viewer' ? 'selected' : '' }}>
                                             Viewer (Read-Only)
                                         </option>
                                     </select>
@@ -136,27 +149,27 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php
-                                            // Get permission names dari user_permissions untuk check current state
-                                            $currentPermissions = [];
-                                            foreach ($permissions as $perm) {
-                                                if (in_array($perm['id'], $user_permissions)) {
-                                                    $currentPermissions[] = $perm['name'];
+                                            @php
+                                                // Get permission names dari user_permissions untuk check current state
+                                                $currentPermissions = [];
+                                                foreach ($permissions as $perm) {
+                                                    if (in_array($perm['id'], $user_permissions)) {
+                                                        $currentPermissions[] = $perm['name'];
+                                                    }
                                                 }
-                                            }
-                                            
-                                            // Helper function untuk check radio status
-                                            function getRadioStatus($currentPerms, $readPerm, $fullPerm)
-                                            {
-                                                if (in_array($fullPerm, $currentPerms)) {
-                                                    return 'full';
+
+                                                // Helper function untuk check radio status
+                                                function getRadioStatus($currentPerms, $readPerm, $fullPerm)
+                                                {
+                                                    if (in_array($fullPerm, $currentPerms)) {
+                                                        return 'full';
+                                                    }
+                                                    if (in_array($readPerm, $currentPerms)) {
+                                                        return 'read';
+                                                    }
+                                                    return 'none';
                                                 }
-                                                if (in_array($readPerm, $currentPerms)) {
-                                                    return 'read';
-                                                }
-                                                return 'none';
-                                            }
-                                            ?>
+                                            @endphp
 
                                             <!-- Barang -->
                                             <tr>
@@ -164,17 +177,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="barang_access" value="none"
                                                         id="barang_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'barang_read', 'barang') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'barang_read', 'barang') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="barang_access" value="read"
                                                         id="barang_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'barang_read', 'barang') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'barang_read', 'barang') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="barang_access" value="full"
                                                         id="barang_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'barang_read', 'barang') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'barang_read', 'barang') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -184,17 +197,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="supplier_access" value="none"
                                                         id="supplier_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'supplier_read', 'supplier') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'supplier_read', 'supplier') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="supplier_access" value="read"
                                                         id="supplier_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'supplier_read', 'supplier') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'supplier_read', 'supplier') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="supplier_access" value="full"
                                                         id="supplier_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'supplier_read', 'supplier') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'supplier_read', 'supplier') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -204,17 +217,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="customer_access" value="none"
                                                         id="customer_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'customer_read', 'customer') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'customer_read', 'customer') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="customer_access" value="read"
                                                         id="customer_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'customer_read', 'customer') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'customer_read', 'customer') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="customer_access" value="full"
                                                         id="customer_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'customer_read', 'customer') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'customer_read', 'customer') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -224,17 +237,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="satuan_access" value="none"
                                                         id="satuan_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'satuan_read', 'satuan') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'satuan_read', 'satuan') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="satuan_access" value="read"
                                                         id="satuan_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'satuan_read', 'satuan') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'satuan_read', 'satuan') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="satuan_access" value="full"
                                                         id="satuan_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'satuan_read', 'satuan') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'satuan_read', 'satuan') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -244,17 +257,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="jenis_barang_access" value="none"
                                                         id="jenis_barang_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'jenis_barang_read', 'jenis_barang') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'jenis_barang_read', 'jenis_barang') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="jenis_barang_access" value="read"
                                                         id="jenis_barang_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'jenis_barang_read', 'jenis_barang') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'jenis_barang_read', 'jenis_barang') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="jenis_barang_access" value="full"
                                                         id="jenis_barang_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'jenis_barang_read', 'jenis_barang') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'jenis_barang_read', 'jenis_barang') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -264,17 +277,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="group_barang_access" value="none"
                                                         id="group_barang_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'group_barang_read', 'group_barang') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'group_barang_read', 'group_barang') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="group_barang_access" value="read"
                                                         id="group_barang_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'group_barang_read', 'group_barang') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'group_barang_read', 'group_barang') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="group_barang_access" value="full"
                                                         id="group_barang_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'group_barang_read', 'group_barang') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'group_barang_read', 'group_barang') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -287,19 +300,19 @@
                                                     <input type="radio" name="satuan_konversi_access"
                                                         value="none" id="satuan_konversi_none"
                                                         class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'satuan_konversi_read', 'satuan_konversi') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'satuan_konversi_read', 'satuan_konversi') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="satuan_konversi_access"
                                                         value="read" id="satuan_konversi_read"
                                                         class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'satuan_konversi_read', 'satuan_konversi') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'satuan_konversi_read', 'satuan_konversi') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="satuan_konversi_access"
                                                         value="full" id="satuan_konversi_full"
                                                         class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'satuan_konversi_read', 'satuan_konversi') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'satuan_konversi_read', 'satuan_konversi') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -310,17 +323,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="po_access" value="none"
                                                         id="po_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'purchase_order_read', 'purchase_order') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'purchase_order_read', 'purchase_order') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="po_access" value="read"
                                                         id="po_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'purchase_order_read', 'purchase_order') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'purchase_order_read', 'purchase_order') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="po_access" value="full"
                                                         id="po_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'purchase_order_read', 'purchase_order') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'purchase_order_read', 'purchase_order') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -330,17 +343,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="pembelian_access" value="none"
                                                         id="pembelian_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'pembelian_read', 'pembelian') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'pembelian_read', 'pembelian') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="pembelian_access" value="read"
                                                         id="pembelian_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'pembelian_read', 'pembelian') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'pembelian_read', 'pembelian') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="pembelian_access" value="full"
                                                         id="pembelian_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'pembelian_read', 'pembelian') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'pembelian_read', 'pembelian') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -350,17 +363,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="penjualan_access" value="none"
                                                         id="penjualan_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'penjualan_read', 'penjualan') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'penjualan_read', 'penjualan') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="penjualan_access" value="read"
                                                         id="penjualan_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'penjualan_read', 'penjualan') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'penjualan_read', 'penjualan') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="penjualan_access" value="full"
                                                         id="penjualan_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'penjualan_read', 'penjualan') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'penjualan_read', 'penjualan') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -370,17 +383,17 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="user_access" value="none"
                                                         id="user_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'user_read', 'user') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'user_read', 'user') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="user_access" value="read"
                                                         id="user_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'user_read', 'user') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'user_read', 'user') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="user_access" value="full"
                                                         id="user_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'user_read', 'user') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'user_read', 'user') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
@@ -390,38 +403,38 @@
                                                 <td class="text-center">
                                                     <input type="radio" name="logs_access" value="none"
                                                         id="logs_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'aktivitas_logs_read', 'aktivitas_logs') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'aktivitas_logs_read', 'aktivitas_logs') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="logs_access" value="read"
                                                         id="logs_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'aktivitas_logs_read', 'aktivitas_logs') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'aktivitas_logs_read', 'aktivitas_logs') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="logs_access" value="full"
                                                         id="logs_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'aktivitas_logs_read', 'aktivitas_logs') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'aktivitas_logs_read', 'aktivitas_logs') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
 
-                                            <!-- Transaksi (hanya full akses, tidak ada read) -->
+                                            <!-- Transaksi -->
                                             <tr>
                                                 <td><i class="bi bi-bar-chart-line"></i> <strong>Transaksi</strong>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="transaksi_access" value="none"
                                                         id="transaksi_none" class="form-check-input radio-none"
-                                                        <?= getRadioStatus($currentPermissions, 'transaksi_read', 'transaksi') == 'none' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'transaksi_read', 'transaksi') == 'none' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="transaksi_access" value="read"
                                                         id="transaksi_read" class="form-check-input radio-read"
-                                                        <?= getRadioStatus($currentPermissions, 'transaksi_read', 'transaksi') == 'read' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'transaksi_read', 'transaksi') == 'read' ? 'checked' : '' }}>
                                                 </td>
                                                 <td class="text-center">
                                                     <input type="radio" name="transaksi_access" value="full"
                                                         id="transaksi_full" class="form-check-input radio-full"
-                                                        <?= getRadioStatus($currentPermissions, 'transaksi_read', 'transaksi') == 'full' ? 'checked' : '' ?>>
+                                                        {{ getRadioStatus($currentPermissions, 'transaksi_read', 'transaksi') == 'full' ? 'checked' : '' }}>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -430,18 +443,18 @@
 
                                 <!-- Hidden checkboxes for permissions -->
                                 <div id="hiddenPermissions" style="display: none;">
-                                    <?php foreach ($permissions as $perm): ?>
-                                    <input type="checkbox" name="permissions[]" value="<?= $perm['id'] ?>"
-                                        id="perm_<?= $perm['name'] ?>" data-perm-name="<?= $perm['name'] ?>"
-                                        <?= in_array($perm['id'], $user_permissions) ? 'checked' : '' ?>>
-                                    <?php endforeach ?>
+                                    @foreach ($permissions as $perm)
+                                        <input type="checkbox" name="permissions[]" value="{{ $perm['id'] }}"
+                                            id="perm_{{ $perm['name'] }}" data-perm-name="{{ $perm['name'] }}"
+                                            {{ in_array($perm['id'], $user_permissions) ? 'checked' : '' }}>
+                                    @endforeach
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i>
                                     Update</button>
-                                <a href="<?= site_url('superadmin/users') ?>" class="btn btn-secondary">
+                                <a href="{{ url('superadmin/users') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -718,27 +731,27 @@
         });
     </script>
 
-    <?php if (session()->has('validation')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true,
-                icon: 'error',
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
+    @if (session()->has('validation'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                Toast.fire({
+                    title: '{{ implode('<br>', array_map('esc', session('validation')->getErrors())) }}'
+                });
             });
-            Toast.fire({
-                title: '<?= implode('<br>', array_map('esc', session('validation')->getErrors())) ?>'
-            });
-        });
-    </script>
-    <?php endif ?>
+        </script>
+    @endif
 
     <style>
         .table th {
@@ -787,5 +800,4 @@
         }
     </style>
 
-    <?= $this->endSection() ?>
 </x-app-layout>

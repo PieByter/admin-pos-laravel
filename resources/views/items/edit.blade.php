@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('barang/update/' . $barang['id']) ?>" method="post">
-                            <?= csrf_field() ?>
+                            @csrf
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="nama_barang" class="form-label"><b>Nama Barang</b></label>
@@ -103,7 +103,7 @@
         <div class="modal fade" id="modalTambahSatuan" tabindex="-1">
             <div class="modal-dialog">
                 <form id="formTambahSatuan">
-                    <?= csrf_field() ?>
+                    @csrf
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Tambah Satuan Baru</h5>
@@ -126,7 +126,7 @@
         <div class="modal fade" id="modalTambahJenis" tabindex="-1">
             <div class="modal-dialog">
                 <form id="formTambahJenis">
-                    <?= csrf_field() ?>
+                    @csrf
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Tambah Jenis Barang Baru</h5>
@@ -149,7 +149,7 @@
         <div class="modal fade" id="modalTambahGroup" tabindex="-1">
             <div class="modal-dialog">
                 <form id="formTambahGroup">
-                    <?= csrf_field() ?>
+                    @csrf
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Tambah Group Barang Baru</h5>

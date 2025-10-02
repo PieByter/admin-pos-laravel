@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('satuan/save') ?>" method="post">
-                            <?= csrf_field() ?>
+                            @csrf
                             <div class="mb-3">
                                 <label for="nama" class="form-label"><b>Nama Satuan</b></label>
                                 <input type="text" name="nama" id="nama" class="form-control"

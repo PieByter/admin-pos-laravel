@@ -7,8 +7,8 @@
                         <h5 class="card-title mb-0"><i class="bi bi-person-plus"></i> Form Tambah User Baru</h5>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('superadmin/users/save') ?>" method="post">
-                            <?= csrf_field() ?>
+                        <form action="{{ url('superadmin/users/save') }}" method="post">
+                            @csrf
 
                             <div class="row mb-3 align-items-center">
                                 <label for="username" class="col-md-3 col-form-label"><b>Username</b></label>
@@ -76,16 +76,32 @@
                                 <div class="col-md-9">
                                     <select class="form-select" id="bagian" name="bagian" required>
                                         <option value="">- Pilih Bagian/Divisi -</option>
-                                        <?php
-                                    $bagianList = ['ITS', 'HR', 'Finance', 'Marketing', 'Operasional', 'Purchasing', 'Gudang', 'Penjualan', 'Produksi', 'R&D', 'Quality Control', 'Customer Service', 'Legal', 'Admin', 'Personalia'];
-                                    $selectedBagian = old('bagian', '');
-                                    foreach ($bagianList as $bagian):
-                                    ?>
-                                        <option value="<?= $bagian ?>"
-                                            <?= $selectedBagian == $bagian ? 'selected' : '' ?>>
-                                            <?= $bagian ?>
-                                        </option>
-                                        <?php endforeach; ?>
+                                        @php
+                                            $bagianList = [
+                                                'ITS',
+                                                'HR',
+                                                'Finance',
+                                                'Marketing',
+                                                'Operasional',
+                                                'Purchasing',
+                                                'Gudang',
+                                                'Penjualan',
+                                                'Produksi',
+                                                'R&D',
+                                                'Quality Control',
+                                                'Customer Service',
+                                                'Legal',
+                                                'Admin',
+                                                'Personalia',
+                                            ];
+                                            $selectedBagian = old('bagian', '');
+                                        @endphp
+                                        @foreach ($bagianList as $bagian)
+                                            <option value="{{ $bagian }}"
+                                                {{ $selectedBagian == $bagian ? 'selected' : '' }}>
+                                                {{ $bagian }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -370,7 +386,7 @@
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-success"><i class="bi bi-save"></i>
                                     Simpan</button>
-                                <a href="<?= site_url('superadmin/users') ?>" class="btn btn-secondary">
+                                <a href="{{ url('superadmin/users') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -597,27 +613,27 @@
         setPermissionsByRole();
     </script>
 
-    <?php if (session()->has('validation')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true,
-                icon: 'error',
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
+    @if (session()->has('validation'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                Toast.fire({
+                    title: '<?= implode('<br>', array_map('esc', session('validation')->getErrors())) ?>'
+                });
             });
-            Toast.fire({
-                title: '<?= implode('<br>', array_map('esc', session('validation')->getErrors())) ?>'
-            });
-        });
-    </script>
-    <?php endif ?>
+        </script>
+    @endif
 
     <style>
         .table th {

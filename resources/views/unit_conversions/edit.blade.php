@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('satuan-konversi/update/' . $konversi['id']) ?>" method="post">
-                            <?= csrf_field() ?>
+                            @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="id_barang" class="col-md-3 col-form-label"><b>Barang</b></label>
                                 <div class="col-md-9">

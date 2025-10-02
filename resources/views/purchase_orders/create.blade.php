@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('pembelian/save') ?>" method="post">
-                            <?= csrf_field() ?>
+                                       @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="no_faktur" class="col-md-3 col-form-label"><b>No. Faktur</b></label>
                                 <div class="col-md-9">

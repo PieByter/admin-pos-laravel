@@ -8,7 +8,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('group-barang/save') ?>" method="post">
-                            <?= csrf_field() ?>
+                            @csrf
                             <div class="mb-3">
                                 <label for="nama" class="form-label"><b>Group Barang</b></label>
                                 <input type="text" name="nama" id="nama"

@@ -11,8 +11,8 @@
                         <h5 class="card-title mb-0"><i class="bi bi-cart-check"></i> Form Tambah Penjualan</h5>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('penjualan/save') ?>" method="post">
-                            <?= csrf_field() ?>
+                        <form action="{{ url('penjualan/save') }}" method="post">
+                            @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="no_nota" class="col-md-3 col-form-label"><b>No. Nota</b></label>
                                 <div class="col-md-9">
@@ -33,14 +33,14 @@
                                     <div class="input-group">
                                         <select name="id_customer" id="id_customer" class="form-select" required>
                                             <option value="">- Pilih Customer -</option>
-                                            <?php foreach ($customers as $c): ?>
-                                            <?php if ($c['status'] == 'aktif'): ?>
-                                            <option value="<?= esc($c['id']) ?>"
-                                                <?= old('id_customer') == $c['id'] ? 'selected' : '' ?>>
-                                                <?= esc($c['nama']) ?>
+                                            @foreach ($customers as $c)
+                                            @if ($c['status'] == 'aktif')
+                                            <option value="{{ esc($c['id']) }}"
+                                                {{ old('id_customer') == $c['id'] ? 'selected' : '' }}>
+                                                {{ esc($c['nama']) }}
                                             </option>
-                                            <?php endif; ?>
-                                            <?php endforeach; ?>
+                                            @endif
+                                            @endforeach
                                         </select>
                                         <button type="button" class="btn btn-outline-info btn-sm"
                                             onclick="openCustomerModal(this)">
@@ -114,7 +114,7 @@
                                     $otorisasiArr = isset($otorisasi) && is_array($otorisasi) ? array_map('intval', $otorisasi) : [(int) session('user_id')];
                                     ?>
                                     <input type="hidden" name="otorisasi"
-                                        value='<?= esc(json_encode($otorisasiArr)) ?>'>
+                                        value='{{ json_encode($otorisasiArr) }}'>
                                     <div class="form-control bg-light" readonly>
                                         <?php
                                         $usernames = [];

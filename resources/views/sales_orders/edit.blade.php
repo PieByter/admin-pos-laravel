@@ -12,7 +12,7 @@
                     </div>
                     <div class="card-body">
                         <form action="<?= site_url('penjualan/update/' . $id) ?>" method="post">
-                            <?= csrf_field() ?>
+                            @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="no_nota" class="col-md-3 col-form-label"><b>No. Nota</b></label>
                                 <div class="col-md-9">
