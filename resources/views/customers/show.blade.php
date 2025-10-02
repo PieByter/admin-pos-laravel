@@ -1,44 +1,74 @@
 <x-app-layout>
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-person"></i> Detail Customer</h5>
+                    <div class="card-header bg-success text-white text-center">
+                        <h5 class="card-title mb-0"><i class="bi bi-tags"></i> Tambah Jenis Barang</h5>
                     </div>
                     <div class="card-body">
-                        <dl class="row mb-4 text-justify">
-                            <dt class="col-sm-4">Nama</dt>
-                            <dd class="col-sm-8"><?= esc($customer['nama']) ?></dd>
-                            <dt class="col-sm-4">Alamat</dt>
-                            <dd class="col-sm-8"><?= esc($customer['alamat']) ?></dd>
-                            <dt class="col-sm-4">No. Telp</dt>
-                            <dd class="col-sm-8"><?= esc($customer['no_telp']) ?></dd>
-                            <dt class="col-sm-4">Email</dt>
-                            <dd class="col-sm-8"><?= esc($customer['email']) ?></dd>
-                            <dt class="col-sm-4">Status</dt>
-                            <dd class="col-sm-8">
-                                <?php if ($customer['status'] == 'aktif'): ?>
-                                <span class="badge bg-success">Aktif</span>
-                                <?php else: ?>
-                                <span class="badge bg-secondary">Tidak Aktif</span>
-                                <?php endif; ?>
-                            <dt class="col-sm-4">Keterangan</dt>
-                            <dd class="col-sm-8"><?= esc($customer['keterangan']) ?></dd>
-                        </dl>
-                        <div class="mt-4 d-flex justify-content-end gap-2">
-                            <?php if ($can_write ?? false): ?>
-                            <a href="<?= site_url('customer/edit/' . $customer['id']) ?>" class="btn btn-warning ">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
-                            <?php endif; ?>
-                            <a href="<?= site_url('customer') ?>" class="btn btn-secondary ms-2" id="btn-back-customer">
-                                <i class="bi bi-arrow-left"></i> Kembali
-                            </a>
-                        </div>
+                        <form action="{{ route('item-types.store') }}" method="post">
+                            @csrf
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label"><b>Nama Jenis Barang</b></label>
+                                <input type="text" name="name" id="name"
+                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
+                                    required autofocus>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label"><b>Keterangan</b></label>
+                                <input type="text" name="description" id="description"
+                                    class="form-control @error('description') is-invalid @enderror"
+                                    value="{{ old('description') }}">
+                                @error('description')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-success me-2">
+                                    <i class="bi bi-save"></i> Simpan
+                                </button>
+                                <a href="{{ route('item-types.index') }}" class="btn btn-secondary">
+                                    <i class="bi bi-x-lg"></i> Batal
+                                </a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+            });
+
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}'
+                });
+            @endif
+
+            @if ($errors->any())
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Terjadi kesalahan pada input',
+                    html: '{!! implode('<br>', $errors->all()) !!}'
+                });
+            @endif
+        });
+    </script>
 </x-app-layout>

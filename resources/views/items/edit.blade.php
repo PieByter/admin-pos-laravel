@@ -7,89 +7,133 @@
                         <h5 class="card-title mb-0"><i class="bi bi-box-seam"></i> Form Edit Barang</h5>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('barang/update/' . $barang['id']) ?>" method="post">
+                        <form action="{{ route('items.update', $item->id) }}" method="post">
                             @csrf
+                            @method('PUT')
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="nama_barang" class="form-label"><b>Nama Barang</b></label>
-                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang"
-                                        value="<?= old('nama_barang', $barang['nama_barang']) ?>" required>
+                                    <label for="name" class="form-label"><b>Nama Barang</b></label>
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                        id="name" name="name" value="{{ old('name', $item->name) }}" required>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="kode_barang" class="form-label"><b>Kode Barang</b></label>
-                                    <input type="text" class="form-control" id="kode_barang" name="kode_barang"
-                                        value="<?= old('kode_barang', $barang['kode_barang']) ?>" required>
+                                    <label for="code" class="form-label"><b>Kode Barang</b></label>
+                                    <input type="text" class="form-control @error('code') is-invalid @enderror"
+                                        id="code" name="code" value="{{ old('code', $item->code) }}" required>
+                                    @error('code')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="id_jenis" class="form-label"><b>Jenis Barang</b></label>
-                                    <select class="form-select" id="id_jenis" name="id_jenis" required>
+                                    <label for="item_type_id" class="form-label"><b>Jenis Barang</b></label>
+                                    <select class="form-select @error('item_type_id') is-invalid @enderror"
+                                        id="item_type_id" name="item_type_id" required>
                                         <option value="">- Pilih Jenis -</option>
-                                        <?php foreach ($jenis_list as $jenis): ?>
-                                        <option value="<?= $jenis['id'] ?>"
-                                            <?= old('id_jenis', $barang['id_jenis']) == $jenis['id'] ? 'selected' : '' ?>>
-                                            <?= esc($jenis['nama']) ?>
-                                        </option>
-                                        <?php endforeach ?>
+                                        @foreach ($itemTypes as $type)
+                                            <option value="{{ $type->id }}"
+                                                {{ old('item_type_id', $item->item_type_id) == $type->id ? 'selected' : '' }}>
+                                                {{ $type->name }}
+                                            </option>
+                                        @endforeach
                                         <option value="tambah-baru">+ Tambah Jenis Baru</option>
                                     </select>
+                                    @error('item_type_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="id_group" class="form-label"><b>Group Barang</b></label>
-                                    <select class="form-select" id="id_group" name="id_group" required>
+                                    <label for="item_group_id" class="form-label"><b>Group Barang</b></label>
+                                    <select class="form-select @error('item_group_id') is-invalid @enderror"
+                                        id="item_group_id" name="item_group_id" required>
                                         <option value="">- Pilih Group -</option>
-                                        <?php foreach ($group_list as $group): ?>
-                                        <option value="<?= $group['id'] ?>"
-                                            <?= old('id_group', $barang['id_group']) == $group['id'] ? 'selected' : '' ?>>
-                                            <?= esc($group['nama']) ?>
-                                        </option>
-                                        <?php endforeach ?>
+                                        @foreach ($itemGroups as $group)
+                                            <option value="{{ $group->id }}"
+                                                {{ old('item_group_id', $item->item_group_id) == $group->id ? 'selected' : '' }}>
+                                                {{ $group->name }}
+                                            </option>
+                                        @endforeach
                                         <option value="tambah-baru">+ Tambah Group Baru</option>
                                     </select>
+                                    @error('item_group_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="id_satuan" class="form-label"><b>Satuan Utama</b></label>
-                                    <select class="form-select" id="id_satuan" name="id_satuan" required>
-                                        <?php foreach ($satuan_list as $satuan): ?>
-                                        <option value="<?= $satuan['id'] ?>"
-                                            <?= old('id_satuan', $barang['id_satuan']) == $satuan['id'] ? 'selected' : '' ?>>
-                                            <?= esc($satuan['nama']) ?>
-                                        </option>
-                                        <?php endforeach ?>
+                                    <label for="unit_id" class="form-label"><b>Satuan Utama</b></label>
+                                    <select class="form-select @error('unit_id') is-invalid @enderror" id="unit_id"
+                                        name="unit_id" required>
+                                        @foreach ($units as $unit)
+                                            <option value="{{ $unit->id }}"
+                                                {{ old('unit_id', $item->unit_id) == $unit->id ? 'selected' : '' }}>
+                                                {{ $unit->name }}
+                                            </option>
+                                        @endforeach
                                         <option value="tambah-baru">+ Tambah Satuan Baru</option>
                                     </select>
+                                    @error('unit_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="harga_beli" class="form-label"><b>Harga Beli</b></label>
-                                    <input type="number" class="form-control" id="harga_beli" name="harga_beli"
-                                        value="<?= old('harga_beli', $barang['harga_beli'] == intval($barang['harga_beli']) ? intval($barang['harga_beli']) : $barang['harga_beli']) ?>"
+                                    <label for="purchase_price" class="form-label"><b>Harga Beli</b></label>
+                                    <input type="number"
+                                        class="form-control @error('purchase_price') is-invalid @enderror"
+                                        id="purchase_price" name="purchase_price"
+                                        value="{{ old('purchase_price', $item->purchase_price == intval($item->purchase_price) ? intval($item->purchase_price) : $item->purchase_price) }}"
                                         min="0" step="0.01">
+                                    @error('purchase_price')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="harga_jual" class="form-label"><b>Harga Jual</b></label>
-                                    <input type="number" class="form-control" id="harga_jual" name="harga_jual"
-                                        value="<?= old('harga_jual', $barang['harga_jual'] == intval($barang['harga_jual']) ? intval($barang['harga_jual']) : $barang['harga_jual']) ?>"
+                                    <label for="selling_price" class="form-label"><b>Harga Jual</b></label>
+                                    <input type="number"
+                                        class="form-control @error('selling_price') is-invalid @enderror"
+                                        id="selling_price" name="selling_price"
+                                        value="{{ old('selling_price', $item->selling_price == intval($item->selling_price) ? intval($item->selling_price) : $item->selling_price) }}"
                                         min="0" step="0.01">
+                                    @error('selling_price')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="stok" class="form-label"><b>Stok</b></label>
-                                    <input type="number" class="form-control" id="stok" name="stok"
-                                        value="<?= old('stok', $barang['stok']) ?>" min="0">
+                                    <label for="stock" class="form-label"><b>Stok</b></label>
+                                    <input type="number" class="form-control @error('stock') is-invalid @enderror"
+                                        id="stock" name="stock" value="{{ old('stock', $item->stock) }}"
+                                        min="0">
+                                    @error('stock')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <label for="keterangan" class="form-label"><b>Keterangan</b></label>
-                                    <textarea class="form-control" id="keterangan" name="keterangan" rows="2"><?= old('keterangan', $barang['keterangan']) ?></textarea>
+                                    <label for="description" class="form-label"><b>Keterangan</b></label>
+                                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                        rows="2">{{ old('description', $item->description) }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary me-2"><i class="bi bi-save"></i>
-                                    Update</button>
-                                <a href="<?= site_url('barang') ?>" class="btn btn-secondary ms-2" id="btn-back-barang">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="bi bi-save"></i> Update
+                                </button>
+                                <a href="{{ route('items.index') }}" class="btn btn-secondary ms-2"
+                                    id="btn-back-barang">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -110,9 +154,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" name="nama" class="form-control mb-2" placeholder="Nama Satuan"
+                            <input type="text" name="name" class="form-control mb-2" placeholder="Nama Satuan"
                                 required>
-                            <input type="text" name="keterangan" class="form-control" placeholder="Keterangan">
+                            <input type="text" name="description" class="form-control" placeholder="Keterangan">
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">Simpan</button>
@@ -133,9 +177,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" name="nama" class="form-control mb-2"
+                            <input type="text" name="name" class="form-control mb-2"
                                 placeholder="Nama Jenis Barang" required>
-                            <input type="text" name="keterangan" class="form-control" placeholder="Keterangan">
+                            <input type="text" name="description" class="form-control" placeholder="Keterangan">
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">Simpan</button>
@@ -156,9 +200,9 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" name="nama" class="form-control mb-2"
+                            <input type="text" name="name" class="form-control mb-2"
                                 placeholder="Nama Group Barang" required>
-                            <input type="text" name="keterangan" class="form-control" placeholder="Keterangan">
+                            <input type="text" name="description" class="form-control" placeholder="Keterangan">
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">Simpan</button>
@@ -171,41 +215,66 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('id_satuan').addEventListener('change', function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+            });
+
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}'
+                });
+            @endif
+
+            @if ($errors->any())
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Terjadi kesalahan pada input',
+                    html: '{!! implode('<br>', $errors->all()) !!}'
+                });
+            @endif
+
+            // Handle dropdown selections
+            document.getElementById('unit_id').addEventListener('change', function() {
                 if (this.value === 'tambah-baru') {
                     showModalTambahSatuan();
                     this.value = '';
                 }
             });
 
-            document.getElementById('id_jenis').addEventListener('change', function() {
+            document.getElementById('item_type_id').addEventListener('change', function() {
                 if (this.value === 'tambah-baru') {
                     showModalTambahJenis();
                     this.value = '';
                 }
             });
 
-            document.getElementById('id_group').addEventListener('change', function() {
+            document.getElementById('item_group_id').addEventListener('change', function() {
                 if (this.value === 'tambah-baru') {
                     showModalTambahGroup();
                     this.value = '';
                 }
             });
 
+            // Handle form submissions
             document.getElementById('formTambahSatuan').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const form = e.target;
-                fetch('<?= site_url('satuan/ajax-save') ?>', {
+                fetch('{{ route('units.ajax-save') }}', {
                         method: 'POST',
                         body: new FormData(form)
                     })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.id && data.nama) {
-                            const dropdown = document.getElementById('id_satuan');
+                        if (data.id && data.name) {
+                            const dropdown = document.getElementById('unit_id');
                             const option = document.createElement('option');
                             option.value = data.id;
-                            option.textContent = data.nama;
+                            option.textContent = data.name;
                             const tambahBaruOption = dropdown.querySelector(
                                 'option[value="tambah-baru"]');
                             dropdown.insertBefore(option, tambahBaruOption);
@@ -215,25 +284,34 @@
                             modal.hide();
                             form.reset();
                         } else if (data.error) {
-                            alert(data.error);
+                            Toast.fire({
+                                icon: 'error',
+                                title: data.error
+                            });
                         }
+                    })
+                    .catch(error => {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Terjadi kesalahan saat menyimpan satuan'
+                        });
                     });
             });
 
             document.getElementById('formTambahJenis').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const form = e.target;
-                fetch('<?= site_url('jenis-barang/ajax-save') ?>', {
+                fetch('{{ route('item-types.ajax-save') }}', {
                         method: 'POST',
                         body: new FormData(form)
                     })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.id && data.nama) {
-                            const dropdown = document.getElementById('id_jenis');
+                        if (data.id && data.name) {
+                            const dropdown = document.getElementById('item_type_id');
                             const option = document.createElement('option');
                             option.value = data.id;
-                            option.textContent = data.nama;
+                            option.textContent = data.name;
                             const tambahBaruOption = dropdown.querySelector(
                                 'option[value="tambah-baru"]');
                             dropdown.insertBefore(option, tambahBaruOption);
@@ -243,25 +321,34 @@
                             modal.hide();
                             form.reset();
                         } else if (data.error) {
-                            alert(data.error);
+                            Toast.fire({
+                                icon: 'error',
+                                title: data.error
+                            });
                         }
+                    })
+                    .catch(error => {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Terjadi kesalahan saat menyimpan jenis barang'
+                        });
                     });
             });
 
             document.getElementById('formTambahGroup').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const form = e.target;
-                fetch('<?= site_url('group-barang/ajax-save') ?>', {
+                fetch('{{ route('item-groups.ajax-save') }}', {
                         method: 'POST',
                         body: new FormData(form)
                     })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.id && data.nama) {
-                            const dropdown = document.getElementById('id_group');
+                        if (data.id && data.name) {
+                            const dropdown = document.getElementById('item_group_id');
                             const option = document.createElement('option');
                             option.value = data.id;
-                            option.textContent = data.nama;
+                            option.textContent = data.name;
                             const tambahBaruOption = dropdown.querySelector(
                                 'option[value="tambah-baru"]');
                             dropdown.insertBefore(option, tambahBaruOption);
@@ -271,8 +358,17 @@
                             modal.hide();
                             form.reset();
                         } else if (data.error) {
-                            alert(data.error);
+                            Toast.fire({
+                                icon: 'error',
+                                title: data.error
+                            });
                         }
+                    })
+                    .catch(error => {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Terjadi kesalahan saat menyimpan group barang'
+                        });
                     });
             });
         });
@@ -292,26 +388,4 @@
             modal.show();
         }
     </script>
-
-    <?php if (session()->has('validation')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true,
-                icon: 'error',
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-            Toast.fire({
-                title: '<?= implode('<br>', array_map('esc', session('validation')->getErrors())) ?>'
-            });
-        });
-    </script>
-    <?php endif ?>
 </x-app-layout>

@@ -1,4 +1,7 @@
+{{-- filepath: c:\laragon\www\admin-pos\resources\views\profile\edit.blade.php --}}
 <x-app-layout>
+    <x-content-header title="Edit Profil" breadcrumb-parent="Profile" breadcrumb-url="{{ route('profile.index') }}" />
+
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -7,31 +10,43 @@
                         <h5 class="card-title mb-0"><i class="bi bi-person-lines-fill"></i> Form Edit Profil</h5>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('profile/update') ?>" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data">
                             @csrf
+                            @method('PUT')
 
                             <div class="mb-3">
-                                <div for="username" class="form-label"><b>Username</b></div>
-                                <input type="text" class="form-control" id="username" name="username"
-                                    value="<?= old('username', $user['username']) ?>" required>
+                                <label for="username" class="form-label"><b>Username</b></label>
+                                <input type="text" class="form-control @error('username') is-invalid @enderror"
+                                    id="username" name="username" value="{{ old('username', $user->username) }}"
+                                    required>
+                                @error('username')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label"><b>Email</b></label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                    value="<?= old('email', $user['email'] ?? '') ?>">
+                                <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                    id="email" name="email" value="{{ old('email', $user->email ?? '') }}">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
                                 <label for="password"><b>Password Baru</b></label>
                                 <div class="password-container position-relative">
-                                    <input type="password" class="form-control" id="password" name="password"
-                                        oninput="checkPasswordStrength()" placeholder="Masukkan password baru">
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror"
+                                        id="password" name="password" oninput="checkPasswordStrength()"
+                                        placeholder="Masukkan password baru">
                                     <i class="bi bi-eye-slash password-toggle" id="togglePassword"
                                         onclick="togglePasswordVisibility('password', 'togglePassword')"
                                         title="Show/Hide Password"
                                         style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer;"></i>
                                 </div>
+                                @error('password')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                                 <ul id="password-checklist" class="text-start small mt-2 mb-0 list-unstyled"
                                     style="display:none;">
                                     <li id="check-length"><span class="me-1" id="icon-length">❌</span>Minimal 8
@@ -47,13 +62,18 @@
                             <div class="mb-3">
                                 <label for="confirm_password"><b>Konfirmasi Password Baru</b></label>
                                 <div class="password-container position-relative">
-                                    <input type="password" class="form-control" id="confirm_password"
-                                        name="confirm_password" placeholder="Konfirmasi password baru">
+                                    <input type="password"
+                                        class="form-control @error('password_confirmation') is-invalid @enderror"
+                                        id="confirm_password" name="password_confirmation"
+                                        placeholder="Konfirmasi password baru">
                                     <i class="bi bi-eye-slash password-toggle" id="toggleConfirmPassword"
                                         onclick="togglePasswordVisibility('confirm_password', 'toggleConfirmPassword')"
                                         title="Show/Hide Confirm Password"
                                         style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer;"></i>
                                 </div>
+                                @error('password_confirmation')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                                 <ul id="confirm-password-checklist" class="text-start small mt-2 mb-0 list-unstyled"
                                     style="display:none;">
                                     <li id="check-confirm"><span class="me-1" id="icon-confirm">❌</span>Password dan
@@ -64,26 +84,30 @@
                             <div class="mb-3 text-center">
                                 <label class="form-label"><b>Foto Profil</b></label>
                                 <div class="mb-3">
-                                    <?php if ($user['foto'] && file_exists(FCPATH . 'uploads/profile/' . $user['foto'])): ?>
-                                    <img src="<?= base_url('uploads/profile/' . $user['foto']) ?>"
-                                        alt="Current Profile Photo" class="rounded-circle mb-2"
-                                        style="width:100px; height:100px; object-fit:cover;" id="preview-image">
-                                    <?php else: ?>
-                                    <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-2"
-                                        style="width:100px; height:100px;" id="preview-placeholder">
-                                        <i class="bi bi-person-circle text-white" style="font-size:3rem;"></i>
-                                    </div>
-                                    <?php endif; ?>
+                                    @if ($user->foto && Storage::disk('public')->exists('profile/' . $user->foto))
+                                        <img src="{{ Storage::url('profile/' . $user->foto) }}"
+                                            alt="Current Profile Photo" class="rounded-circle mb-2"
+                                            style="width:100px; height:100px; object-fit:cover;" id="preview-image">
+                                    @else
+                                        <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-2"
+                                            style="width:100px; height:100px;" id="preview-placeholder">
+                                            <i class="bi bi-person-circle text-white" style="font-size:3rem;"></i>
+                                        </div>
+                                    @endif
                                 </div>
-                                <input type="file" class="form-control" id="foto" name="foto"
-                                    accept="image/*" onchange="previewImage(this)">
+                                <input type="file" class="form-control @error('foto') is-invalid @enderror"
+                                    id="foto" name="foto" accept="image/*" onchange="previewImage(this)">
+                                @error('foto')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                                 <small class="text-muted">Format: JPG, JPEG, PNG. Maksimal 2MB</small>
                             </div>
 
-                            <div class="mt-4 float-end">
-                                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan
-                                    Perubahan</button>
-                                <a href="<?= site_url('profile') ?>" class="btn btn-secondary">
+                            <div class="mt-4 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="bi bi-save"></i> Simpan Perubahan
+                                </button>
+                                <a href="{{ route('profile.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -110,16 +134,6 @@
 
         const passwordInput = document.getElementById('password');
         const passwordChecklist = document.getElementById('password-checklist');
-
-        // function isPasswordValid() {
-        //     const password = passwordInput.value;
-        //     return (
-        //         password.length >= 8 &&
-        //         /[a-z]/.test(password) &&
-        //         /[A-Z]/.test(password) &&
-        //         /[^A-Za-z0-9]/.test(password)
-        //     );
-        // }
 
         function checkPasswordStrength() {
             const password = passwordInput.value;
@@ -151,13 +165,6 @@
 
         const confirmInput = document.getElementById('confirm_password');
         const confirmChecklist = document.getElementById('confirm-password-checklist');
-
-        // function isConfirmValid() {
-        //     return (
-        //         confirmInput.value.length > 0 &&
-        //         passwordInput.value === confirmInput.value
-        //     );
-        // }
 
         function checkConfirmPassword() {
             const password = passwordInput.value;
@@ -201,10 +208,8 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-    </script>
 
-    <?php if (session()->getFlashdata('error')): ?>
-    <script>
+        // Toast notifications
         document.addEventListener('DOMContentLoaded', function() {
             const Toast = Swal.mixin({
                 toast: true,
@@ -212,40 +217,35 @@
                 showConfirmButton: false,
                 timer: 4000,
                 timerProgressBar: true,
-                icon: 'error',
                 didOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
             });
-            Toast.fire({
-                title: 'Form tidak valid!',
-                html: `<?= session()->getFlashdata('error') ?>`
-            });
-        });
-    </script>
-    <?php endif; ?>
 
-    <?php if (session()->getFlashdata('success')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true,
-                icon: 'success',
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            });
-            Toast.fire({
-                title: 'Berhasil!',
-                html: `<?= session()->getFlashdata('success') ?>`
-            });
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Form tidak valid!',
+                    html: '{{ session('error') }}'
+                });
+            @endif
+
+            @if (session('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    html: '{{ session('success') }}'
+                });
+            @endif
+
+            @if ($errors->any())
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Terjadi kesalahan pada input',
+                    html: '{!! implode('<br>', $errors->all()) !!}'
+                });
+            @endif
         });
     </script>
-    <?php endif; ?>
 </x-app-layout>

@@ -1,30 +1,62 @@
+{{-- filepath: c:\laragon\www\admin-pos\resources\views\activity_logs\create.blade.php --}}
 <x-app-layout>
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-success text-white">
-                        <h5 class="card-title mb-0"><i class="bi bi-journal-plus fs-5"></i> Form Tambah Log</h5>
+                        <h5 class="card-title mb-0"><i class="bi bi-journal-plus fs-5"></i> Form Tambah Log Aktivitas</h5>
                     </div>
                     <div class="card-body">
-                        <form method="post" action="<?= site_url('superadmin/logs/save') ?>">
+                        <form action="{{ route('activity-logs.store') }}" method="post">
                             @csrf
+
                             <div class="row mb-3 align-items-center">
-                                <label for="user_id" class="col-md-3 col-form-label"><b>User ID</b></label>
+                                <label for="user_id" class="col-md-3 col-form-label"><b>User</b></label>
                                 <div class="col-md-9">
-                                    <input type="number" class="form-control" id="user_id" name="user_id" required>
+                                    <select class="form-select @error('user_id') is-invalid @enderror" id="user_id"
+                                        name="user_id" required>
+                                        <option value="">- Pilih User -</option>
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}"
+                                                {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                                {{ $user->username }} ({{ $user->name }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('user_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label for="aktivitas" class="col-md-3 col-form-label"><b>Aktivitas</b></label>
+                                <label for="activity" class="col-md-3 col-form-label"><b>Aktivitas</b></label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="aktivitas" name="aktivitas" required>
+                                    <textarea class="form-control @error('activity') is-invalid @enderror" id="activity" name="activity" rows="3"
+                                        required>{{ old('activity') }}</textarea>
+                                    @error('activity')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
+                            <div class="row mb-3 align-items-center">
+                                <label for="description" class="col-md-3 col-form-label"><b>Keterangan</b></label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                        rows="2">{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="submit" class="btn btn-success"><i class="bi bi-save"></i>
-                                    Simpan</button>
-                                <a href="<?= site_url('superadmin/logs') ?>" class="btn btn-secondary ms-2">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-save"></i> Simpan
+                                </button>
+                                <a href="{{ route('activity-logs.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -34,4 +66,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+            });
+
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}'
+                });
+            @endif
+
+            @if ($errors->any())
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Terjadi kesalahan pada input',
+                    html: '{!! implode('<br>', $errors->all()) !!}'
+                });
+            @endif
+        });
+    </script>
 </x-app-layout>
