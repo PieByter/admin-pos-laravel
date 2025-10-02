@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\AuthController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemGroupController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\PrePurchaseController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ItemCategoryController;
@@ -152,12 +154,12 @@ Route::get('group-barang/delete/{id}', [ItemGroupController::class, 'delete']);
 
 // Logs
 Route::prefix('superadmin')->group(function () {
-    Route::get('logs', [LogController::class, 'index']);
-    Route::get('logs/create', [LogController::class, 'create']);
-    Route::post('logs/save', [LogController::class, 'save']);
-    Route::get('logs/edit/{id}', [LogController::class, 'edit']);
-    Route::post('logs/update/{id}', [LogController::class, 'update']);
-    Route::get('logs/delete/{id}', [LogController::class, 'delete']);
+    Route::get('logs', [ActivityLogController::class, 'index']);
+    Route::get('logs/create', [ActivityLogController::class, 'create']);
+    Route::post('logs/save', [ActivityLogController::class, 'save']);
+    Route::get('logs/edit/{id}', [ActivityLogController::class, 'edit']);
+    Route::post('logs/update/{id}', [ActivityLogController::class, 'update']);
+    Route::get('logs/delete/{id}', [ActivityLogController::class, 'delete']);
 });
 
 // Settings (Superadmin)

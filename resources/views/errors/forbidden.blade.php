@@ -15,5 +15,4 @@
             </div>
         </div>
     </main>
-
 </x-guest-layout>

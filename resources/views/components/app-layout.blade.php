@@ -6,17 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Dashboard' }}</title>
 
-
     @include('layouts.partials.styles')
     @stack('styles')
 </head>
 
 <body class="hold-transition sidebar layout-fixed">
-
     @php
         $user = auth()->user();
         $permissions = $user ? $user->getAllPermissions()->pluck('name')->toArray() : [];
     @endphp
+
     {{-- @php
         $user = auth()->user();
         $permissions = [
@@ -36,6 +35,7 @@
             'transactions_view',
         ]; // Example permissions
     @endphp --}}
+
     <div class="wrapper">
         @include('layouts.partials.navbar')
         @include('layouts.partials.sidebar')
@@ -47,7 +47,6 @@
 
         @include('layouts.partials.footer')
     </div>
-
 
     @stack('scripts')
     @include('layouts.partials.scripts')
