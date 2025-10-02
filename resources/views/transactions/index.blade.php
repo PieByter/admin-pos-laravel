@@ -97,13 +97,13 @@
                                 <tbody>
                                     <?php foreach ($list_hutang as $h): ?>
                                     <tr>
-                                        <td><?= esc($h['no_po']) ?></td>
-                                        <td><?= esc($h['supplier_nama']) ?></td>
-                                        <td><?= date('d/m/Y', strtotime($h['jatuh_tempo'])) ?></td>
-                                        <td>Rp. <?= number_format($h['total_harga'], 0, ',', '.') ?></td>
+                                        <td>{{ $h['no_po'] }}</td>
+                                        <td>{{ $h['supplier_nama'] }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($h['jatuh_tempo'])) }}</td>
+                                        <td>Rp. {{ number_format($h['total_harga'], 0, ',', '.') }}</td>
                                         <!-- <td>
-                                        <span class="badge bg-<?= $h['status'] == 'utang' ? 'danger' : 'warning' ?>">
-                                            <?= ucfirst($h['status']) ?>
+                                        <span class="badge bg-{{ $h['status'] == 'utang' ? 'danger' : 'warning' }}">
+                                            {{ ucfirst($h['status']) }}
                                         </span>
                                     </td> -->
                                     </tr>
@@ -136,13 +136,13 @@
                                 <tbody>
                                     <?php foreach ($list_piutang as $p): ?>
                                     <tr class="text-center">
-                                        <td><?= esc($p['no_nota']) ?></td>
-                                        <td><?= esc($p['customer_nama']) ?></td>
-                                        <td><?= date('d/m/Y', strtotime($p['tanggal_terbit'])) ?></td>
-                                        <td>Rp. <?= number_format($p['total_harga'], 0, ',', '.') ?></td>
+                                        <td>{{ $p['no_nota'] }}</td>
+                                        <td>{{ $p['customer_nama'] }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($p['tanggal_terbit'])) }}</td>
+                                        <td>Rp. {{ number_format($p['total_harga'], 0, ',', '.') }}</td>
                                         <!-- <td>
-                                        <span class="badge bg-<?= $h['status'] == 'utang' ? 'danger' : 'warning' ?>">
-                                            <?= ucfirst($h['status']) ?>
+                                        <span class="badge bg-{{ $h['status'] == 'utang' ? 'danger' : 'warning' }}">
+                                            {{ ucfirst($h['status']) }}
                                         </span>
                                     </td> -->
                                     </tr>

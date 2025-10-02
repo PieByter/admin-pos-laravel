@@ -9,30 +9,38 @@
                     <div class="card-body">
                         <dl class="row mb-4 text-justify">
                             <dt class="col-sm-4">Nama</dt>
-                            <dd class="col-sm-8"><?= esc($supplier['nama']) ?></dd>
+                            <dd class="col-sm-8">{{ $supplier->name }}</dd>
+
                             <dt class="col-sm-4">Alamat</dt>
-                            <dd class="col-sm-8"><?= esc($supplier['alamat']) ?></dd>
+                            <dd class="col-sm-8">{{ $supplier->address ?? '-' }}</dd>
+
                             <dt class="col-sm-4">No. Telp</dt>
-                            <dd class="col-sm-8"><?= esc($supplier['no_telp']) ?></dd>
+                            <dd class="col-sm-8">{{ $supplier->phone ?? '-' }}</dd>
+
                             <dt class="col-sm-4">Email</dt>
-                            <dd class="col-sm-8"><?= esc($supplier['email']) ?></dd>
+                            <dd class="col-sm-8">{{ $supplier->email ?? '-' }}</dd>
+
                             <dt class="col-sm-4">Status</dt>
                             <dd class="col-sm-8">
-                                <?php if ($supplier['status'] == 'aktif'): ?>
-                                <span class="badge bg-success">Aktif</span>
-                                <?php else: ?>
-                                <span class="badge bg-secondary">Tidak Aktif</span>
-                                <?php endif; ?>
+                                @if ($supplier->status === 'active')
+                                    <span class="badge bg-success">Aktif</span>
+                                @else
+                                    <span class="badge bg-secondary">Tidak Aktif</span>
+                                @endif
+                            </dd>
+
                             <dt class="col-sm-4">Keterangan</dt>
-                            <dd class="col-sm-8"><?= esc($supplier['keterangan']) ?></dd>
+                            <dd class="col-sm-8">{{ $supplier->description ?? '-' }}</dd>
                         </dl>
+
                         <div class="mt-4 d-flex justify-content-end gap-2">
-                            <?php if ($can_write ?? false): ?>
-                            <a href="<?= site_url('supplier/edit/' . $supplier['id']) ?>" class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
-                            <?php endif; ?>
-                            <a href="<?= site_url('supplier') ?>" class="btn btn-secondary ms-2" id="btn-back-supplier">
+                            @if ($can_write ?? false)
+                                <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-warning">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                            @endif
+                            <a href="{{ route('suppliers.index') }}" class="btn btn-secondary ms-2"
+                                id="btn-back-supplier">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>
                         </div>
@@ -41,4 +49,32 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+            // Success message
+            @if (session('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ session('success') }}'
+                });
+            @endif
+
+            // Error message
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}'
+                });
+            @endif
+        });
+    </script>
 </x-app-layout>

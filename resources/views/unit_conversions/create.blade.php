@@ -8,60 +8,90 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('satuan-konversi/save') ?>" method="post">
+                        <form action="{{ route('unit-conversions.store') }}" method="POST">
                             @csrf
+
                             <div class="row mb-3 align-items-center">
-                                <label for="id_barang" class="col-md-3 col-form-label"><b>Barang</b></label>
+                                <label for="item_id" class="col-md-3 col-form-label"><b>Barang</b></label>
                                 <div class="col-md-9">
                                     <div class="input-group">
-                                        <select name="id_barang" id="id_barang" class="form-select" required>
+                                        <select name="item_id" id="item_id"
+                                            class="form-select @error('item_id') is-invalid @enderror" required>
                                             <option value="">- Pilih Barang -</option>
-                                            <?php foreach ($barangList as $barang): ?>
-                                            <option value="<?= $barang['id'] ?>"
-                                                <?= old('id_barang') == $barang['id'] ? 'selected' : '' ?>>
-                                                <?= esc($barang['nama_barang']) ?>
-                                            </option>
-                                            <?php endforeach; ?>
+                                            @foreach ($items as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ old('item_id') == $item->id ? 'selected' : '' }}>
+                                                    {{ $item->name }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                         <button type="button" class="btn btn-outline-primary btn-sm"
-                                            onclick="openBarangKonversiModal()">
+                                            onclick="openItemModal()">
                                             <i class="bi bi-search"></i> Cari
                                         </button>
                                     </div>
+                                    @error('item_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label for="id_satuan" class="col-md-3 col-form-label"><b>Satuan</b></label>
+                                <label for="unit_id" class="col-md-3 col-form-label"><b>Satuan</b></label>
                                 <div class="col-md-9">
-                                    <select name="id_satuan" id="id_satuan" class="form-select" required>
+                                    <select name="unit_id" id="unit_id"
+                                        class="form-select @error('unit_id') is-invalid @enderror" required>
                                         <option value="">- Pilih Satuan -</option>
-                                        <?php foreach ($satuanList as $satuan): ?>
-                                        <option value="<?= $satuan['id'] ?>"
-                                            <?= old('id_satuan') == $satuan['id'] ? 'selected' : '' ?>>
-                                            <?= esc($satuan['nama']) ?>
-                                        </option>
-                                        <?php endforeach; ?>
+                                        @foreach ($units as $unit)
+                                            <option value="{{ $unit->id }}"
+                                                {{ old('unit_id') == $unit->id ? 'selected' : '' }}>
+                                                {{ $unit->name }}
+                                            </option>
+                                        @endforeach
                                     </select>
+                                    @error('unit_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label for="konversi" class="col-md-3 col-form-label"><b>Konversi</b></label>
+                                <label for="conversion_rate" class="col-md-3 col-form-label"><b>Konversi</b></label>
                                 <div class="col-md-9">
-                                    <input type="number" name="konversi" id="konversi" class="form-control"
-                                        value="<?= old('konversi') ?>" required min="1" step="any">
+                                    <input type="number" name="conversion_rate" id="conversion_rate"
+                                        class="form-control @error('conversion_rate') is-invalid @enderror"
+                                        value="{{ old('conversion_rate') }}" required min="0.01" step="0.01">
+                                    @error('conversion_rate')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label for="keterangan" class="col-md-3 col-form-label"><b>Keterangan</b></label>
+                                <label for="description" class="col-md-3 col-form-label"><b>Keterangan</b></label>
                                 <div class="col-md-9">
-                                    <input type="text" name="keterangan" id="keterangan" class="form-control"
-                                        value="<?= old('keterangan') ?>">
+                                    <input type="text" name="description" id="description"
+                                        class="form-control @error('description') is-invalid @enderror"
+                                        value="{{ old('description') }}">
+                                    @error('description')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-success me-2"><i class="bi bi-save"></i>
-                                    Simpan</button>
-                                <a href="<?= site_url('satuan-konversi') ?>" class="btn btn-secondary">
+                                <button type="submit" class="btn btn-success me-2">
+                                    <i class="bi bi-save"></i> Simpan
+                                </button>
+                                <a href="{{ route('unit-conversions.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -71,43 +101,48 @@
             </div>
         </div>
 
-        <div class="modal fade" id="modalBarangKonversi" tabindex="-1" aria-labelledby="modalBarangKonversiLabel"
-            aria-hidden="true">
+        <!-- Modal Cari Barang -->
+        <div class="modal fade" id="modalItem" tabindex="-1" aria-labelledby="modalItemLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalBarangKonversiLabel">Cari Barang</h5>
+                        <h5 class="modal-title" id="modalItemLabel">Cari Barang</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <input type="text" id="modal-barang-konversi-search" class="form-control mb-2"
+                        <input type="text" id="modal-item-search" class="form-control mb-2"
                             placeholder="Ketik nama barang...">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Nama Barang</th>
-                                    <th class="text-center">Pilih</th>
-                                </tr>
-                            </thead>
-                            <tbody id="modal-barang-konversi-list">
-                                <?php foreach ($barangList as $barang): ?>
-                                <tr data-id="<?= esc($barang['id']) ?>" data-nama="<?= esc($barang['nama_barang']) ?>">
-                                    <td><?= esc($barang['nama_barang']) ?></td>
-                                    <td class="text-center">
-                                        <button type="button"
-                                            class="btn btn-success btn-sm pilih-barang-konversi-btn">Pilih</button>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Kode Barang</th>
+                                        <th>Nama Barang</th>
+                                        <th class="text-center">Pilih</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="modal-item-list">
+                                    @foreach ($items as $item)
+                                        <tr data-id="{{ $item->id }}" data-name="{{ $item->name }}"
+                                            data-code="{{ $item->code ?? '' }}">
+                                            <td>{{ $item->code ?? '-' }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-success btn-sm pilih-item-btn">
+                                                    Pilih
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <?php if (session()->has('validation')): ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const Toast = Swal.mixin({
@@ -116,32 +151,51 @@
                 showConfirmButton: false,
                 timer: 4000,
                 timerProgressBar: true,
-                icon: 'error',
                 didOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
             });
-            Toast.fire({
-                title: '<?= implode('<br>', array_map('esc', session('validation')->getErrors())) ?>'
-            });
-        });
-    </script>
-    <?php endif ?>
 
-    <script>
-        function openBarangKonversiModal() {
-            document.getElementById('modal-barang-konversi-search').value = '';
-            filterModalBarangKonversi('');
-            var modal = new bootstrap.Modal(document.getElementById('modalBarangKonversi'));
+            // Success message
+            @if (session('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ session('success') }}'
+                });
+            @endif
+
+            // Error message
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}'
+                });
+            @endif
+
+            // Validation errors
+            @if ($errors->any())
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Terjadi kesalahan pada input',
+                    html: '{!! implode('<br>', $errors->all()) !!}'
+                });
+            @endif
+        });
+
+        function openItemModal() {
+            document.getElementById('modal-item-search').value = '';
+            filterModalItem('');
+            var modal = new bootstrap.Modal(document.getElementById('modalItem'));
             modal.show();
         }
 
-        function filterModalBarangKonversi(keyword) {
+        function filterModalItem(keyword) {
             keyword = keyword.toLowerCase();
-            document.querySelectorAll('#modal-barang-konversi-list tr').forEach(function(row) {
-                const nama = row.getAttribute('data-nama').toLowerCase();
-                if (nama.includes(keyword) || keyword === '') {
+            document.querySelectorAll('#modal-item-list tr').forEach(function(row) {
+                const name = row.getAttribute('data-name').toLowerCase();
+                const code = row.getAttribute('data-code').toLowerCase();
+                if (name.includes(keyword) || code.includes(keyword) || keyword === '') {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
@@ -149,17 +203,40 @@
             });
         }
 
-        document.getElementById('modal-barang-konversi-search').addEventListener('input', function() {
-            filterModalBarangKonversi(this.value);
+        document.getElementById('modal-item-search').addEventListener('input', function() {
+            filterModalItem(this.value);
         });
 
-        document.getElementById('modal-barang-konversi-list').addEventListener('click', function(e) {
-            if (e.target.classList.contains('pilih-barang-konversi-btn')) {
+        document.getElementById('modal-item-list').addEventListener('click', function(e) {
+            if (e.target.classList.contains('pilih-item-btn')) {
                 const row = e.target.closest('tr');
-                document.getElementById('id_barang').value = row.getAttribute('data-id');
-                var modal = bootstrap.Modal.getInstance(document.getElementById('modalBarangKonversi'));
+                const itemId = row.getAttribute('data-id');
+                const itemName = row.getAttribute('data-name');
+
+                // Set selected option
+                const select = document.getElementById('item_id');
+                select.value = itemId;
+
+                // Trigger change event
+                select.dispatchEvent(new Event('change'));
+
+                // Close modal
+                var modal = bootstrap.Modal.getInstance(document.getElementById('modalItem'));
                 modal.hide();
+
+                // Show success message
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: `Barang "${itemName}" dipilih`
+                });
             }
         });
     </script>
+
 </x-app-layout>

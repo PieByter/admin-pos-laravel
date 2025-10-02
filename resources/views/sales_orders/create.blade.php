@@ -1,7 +1,7 @@
 <x-app-layout>
-    <?php if (session('error')): ?>
-    <div class="alert alert-danger"><?= session('error') ?></div>
-    <?php endif; ?>
+    @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
@@ -11,35 +11,46 @@
                         <h5 class="card-title mb-0"><i class="bi bi-cart-check"></i> Form Tambah Penjualan</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ url('penjualan/save') }}" method="post">
+                        <form action="{{ route('sales-orders.store') }}" method="post">
                             @csrf
                             <div class="row mb-3 align-items-center">
-                                <label for="no_nota" class="col-md-3 col-form-label"><b>No. Nota</b></label>
+                                <label for="invoice_number" class="col-md-3 col-form-label"><b>No. Nota</b></label>
                                 <div class="col-md-9">
-                                    <input type="text" name="no_nota" id="no_nota" class="form-control" required>
+                                    <input type="text" name="invoice_number" id="invoice_number"
+                                        class="form-control @error('invoice_number') is-invalid @enderror" required
+                                        value="{{ old('invoice_number') }}">
+                                    @error('invoice_number')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label for="tanggal_terbit" class="col-md-3 col-form-label"><b>Tanggal
-                                        Terbit</b></label>
+                                <label for="issue_date" class="col-md-3 col-form-label"><b>Tanggal Terbit</b></label>
                                 <div class="col-md-9">
-                                    <input type="date" name="tanggal_terbit" id="tanggal_terbit" class="form-control"
-                                        required value="<?= date('Y-m-d') ?>">
+                                    <input type="date" name="issue_date" id="issue_date"
+                                        class="form-control @error('issue_date') is-invalid @enderror" required
+                                        value="{{ old('issue_date', date('Y-m-d')) }}">
+                                    @error('issue_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label for="id_customer" class="col-md-3 col-form-label"><b>Customer</b></label>
+                                <label for="customer_id" class="col-md-3 col-form-label"><b>Customer</b></label>
                                 <div class="col-md-9">
                                     <div class="input-group">
-                                        <select name="id_customer" id="id_customer" class="form-select" required>
+                                        <select name="customer_id" id="customer_id"
+                                            class="form-select @error('customer_id') is-invalid @enderror" required>
                                             <option value="">- Pilih Customer -</option>
-                                            @foreach ($customers as $c)
-                                            @if ($c['status'] == 'aktif')
-                                            <option value="{{ esc($c['id']) }}"
-                                                {{ old('id_customer') == $c['id'] ? 'selected' : '' }}>
-                                                {{ esc($c['nama']) }}
-                                            </option>
-                                            @endif
+                                            @foreach ($customers as $customer)
+                                                @if ($customer->status === 'active')
+                                                    <option value="{{ $customer->id }}"
+                                                        {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
+                                                        {{ $customer->name }}
+                                                    </option>
+                                                @endif
                                             @endforeach
                                         </select>
                                         <button type="button" class="btn btn-outline-info btn-sm"
@@ -47,93 +58,98 @@
                                             <i class="bi bi-search"></i> Cari
                                         </button>
                                     </div>
+                                    @error('customer_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label for="metode_pembayaran" class="col-md-3 col-form-label"><b>Metode
+                                <label for="payment_method" class="col-md-3 col-form-label"><b>Metode
                                         Pembayaran</b></label>
                                 <div class="col-md-9">
-                                    <select name="metode_pembayaran" id="metode_pembayaran" class="form-select"
-                                        required>
+                                    <select name="payment_method" id="payment_method"
+                                        class="form-select @error('payment_method') is-invalid @enderror" required>
                                         <option value="">- Pilih Metode Pembayaran -</option>
-                                        <option value="cash"
-                                            <?= old('metode_pembayaran') == 'cash' ? 'selected' : '' ?>>
+                                        <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>
                                             Cash</option>
-                                        <option value="kredit"
-                                            <?= old('metode_pembayaran') == 'kredit' ? 'selected' : '' ?>>Kredit
-                                        </option>
+                                        <option value="credit"
+                                            {{ old('payment_method') == 'credit' ? 'selected' : '' }}>Kredit</option>
                                         <option value="transfer"
-                                            <?= old('metode_pembayaran') == 'transfer' ? 'selected' : '' ?>>Transfer
+                                            {{ old('payment_method') == 'transfer' ? 'selected' : '' }}>Transfer
                                         </option>
                                         <option value="debit"
-                                            <?= old('metode_pembayaran') == 'debit' ? 'selected' : '' ?>>
-                                            Debit</option>
+                                            {{ old('payment_method') == 'debit' ? 'selected' : '' }}>Debit</option>
                                         <option value="e-wallet"
-                                            <?= old('metode_pembayaran') == 'e-wallet' ? 'selected' : '' ?>>E-Wallet
+                                            {{ old('payment_method') == 'e-wallet' ? 'selected' : '' }}>E-Wallet
                                         </option>
                                     </select>
+                                    @error('payment_method')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
                                 <label for="status" class="col-md-3 col-form-label"><b>Status</b></label>
                                 <div class="col-md-9">
-                                    <select name="status" id="status" class="form-select" required>
+                                    <select name="status" id="status"
+                                        class="form-select @error('status') is-invalid @enderror" required>
                                         <option value="">- Pilih Status -</option>
-                                        <option value="draft" <?= old('status') == 'draft' ? 'selected' : '' ?>>Draft
+                                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft
                                         </option>
-                                        <option value="proses" <?= old('status') == 'proses' ? 'selected' : '' ?>>Proses
+                                        <option value="process" {{ old('status') == 'process' ? 'selected' : '' }}>
+                                            Proses</option>
+                                        <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>
+                                            Selesai (Lunas)</option>
+                                        <option value="debt" {{ old('status') == 'debt' ? 'selected' : '' }}>Utang
                                         </option>
-                                        <option value="selesai" <?= old('status') == 'selesai' ? 'selected' : '' ?>>
-                                            Selesai
-                                            (Lunas)</option>
-                                        <option value="utang" <?= old('status') == 'utang' ? 'selected' : '' ?>>Utang
+                                        <option value="return" {{ old('status') == 'return' ? 'selected' : '' }}>Retur
                                         </option>
-                                        <option value="retur" <?= old('status') == 'retur' ? 'selected' : '' ?>>Retur
-                                        </option>
-                                        <option value="batal" <?= old('status') == 'batal' ? 'selected' : '' ?>>Batal
-                                        </option>
+                                        <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>
+                                            Batal</option>
                                     </select>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-                            <!-- <div class="row mb-3 align-items-center">
-                            <label class="col-md-3 col-form-label"><b>Otorisasi</b></label>
-                            <div class="col-md-9">
-                                <input type="hidden" name="otorisasi"
-                                    value='<?= esc(json_encode([session('username')])) ?>'>
-                                <div class="form-control bg-light" readonly>
-                                    <?= esc(session('username')) ?>
-                                </div>
-                                <small class="text-muted">Otorisasi otomatis berisi user yang membuat penjualan
-                                    ini.</small>
-                            </div>
-                        </div> -->
+
                             <div class="row mb-3 align-items-center">
-                                <label for="otorisasi" class="col-md-3 col-form-label"><b>Otorisasi</b></label>
+                                <label for="authorized_by" class="col-md-3 col-form-label"><b>Otorisasi</b></label>
                                 <div class="col-md-9">
-                                    <?php
-                                    $otorisasiArr = isset($otorisasi) && is_array($otorisasi) ? array_map('intval', $otorisasi) : [(int) session('user_id')];
-                                    ?>
-                                    <input type="hidden" name="otorisasi"
-                                        value='{{ json_encode($otorisasiArr) }}'>
+                                    @php
+                                        $authorizedUsers =
+                                            isset($authorized_by) && is_array($authorized_by)
+                                                ? array_map('intval', $authorized_by)
+                                                : [(int) session('user_id')];
+                                    @endphp
+                                    <input type="hidden" name="authorized_by"
+                                        value="{{ json_encode($authorizedUsers) }}">
                                     <div class="form-control bg-light" readonly>
-                                        <?php
-                                        $usernames = [];
-                                        foreach ($users as $u) {
-                                            if (in_array($u['id'], $otorisasiArr)) {
-                                                $usernames[] = $u['username'];
+                                        @php
+                                            $usernames = [];
+                                            foreach ($users as $user) {
+                                                if (in_array($user->id, $authorizedUsers)) {
+                                                    $usernames[] = $user->username;
+                                                }
                                             }
-                                        }
-                                        echo esc(implode(', ', $usernames));
-                                        ?>
+                                            echo implode(', ', $usernames);
+                                        @endphp
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label for="keterangan" class="col-md-3 col-form-label"><b>Keterangan</b></label>
+                                <label for="description" class="col-md-3 col-form-label"><b>Keterangan</b></label>
                                 <div class="col-md-9">
-                                    <textarea name="keterangan" id="keterangan" class="form-control"></textarea>
+                                    <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+
                             <hr>
                             <h5 class="mb-3">Detail Barang</h5>
                             <div class="table-responsive">
@@ -149,103 +165,106 @@
                                         </tr>
                                     </thead>
                                     <tbody id="detail-barang-body">
-                                        <?php
-                                    $details = old('detail') ?? [[]];
-                                    foreach ($details as $i => $detail):
-                                    ?>
-                                        <tr>
-                                            <td>
-                                                <div class="input-group">
-                                                    <select name="detail[<?= $i ?>][id_barang]"
-                                                        class="form-select barang-select" required
-                                                        onchange="showStok(this)">
-                                                        <option value="">- Pilih Barang -</option>
-                                                        <?php foreach ($barangs as $b): ?>
-                                                        <option value="<?= esc($b['id']) ?>"
-                                                            data-stok="<?= esc($b['stok']) ?>"
-                                                            data-harga="<?= esc($b['harga_jual']) ?>"
-                                                            data-id_satuan="<?= esc($b['id_satuan']) ?>"
-                                                            <?= isset($detail['id_barang']) && $detail['id_barang'] == $b['id'] ? 'selected' : '' ?>>
-                                                            <?= esc($b['nama_barang']) ?>
-                                                        </option>
-                                                        <?php endforeach; ?>
+                                        @php
+                                            $details = old('detail') ?? [[]];
+                                        @endphp
+                                        @foreach ($details as $i => $detail)
+                                            <tr>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <select name="detail[{{ $i }}][item_id]"
+                                                            class="form-select barang-select" required
+                                                            onchange="showStok(this)">
+                                                            <option value="">- Pilih Barang -</option>
+                                                            @foreach ($items as $item)
+                                                                <option value="{{ $item->id }}"
+                                                                    data-stok="{{ $item->stock }}"
+                                                                    data-harga="{{ $item->selling_price }}"
+                                                                    data-id_satuan="{{ $item->unit_id }}"
+                                                                    {{ isset($detail['item_id']) && $detail['item_id'] == $item->id ? 'selected' : '' }}>
+                                                                    {{ $item->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        <button type="button" class="btn btn-outline-primary btn-sm"
+                                                            onclick="openBarangModal(this)">
+                                                            <i class="bi bi-search"></i> Cari
+                                                        </button>
+                                                    </div>
+                                                    <span class="text-success small stok-info"
+                                                        style="display:none;"></span>
+                                                </td>
+                                                <td>
+                                                    <select name="detail[{{ $i }}][unit_id]"
+                                                        class="form-select satuan-select" required>
+                                                        <option value="">- Pilih Satuan -</option>
+                                                        @if (!empty($detail['item_id']) && isset($unitConversionMap[$detail['item_id']]))
+                                                            @foreach ($unitConversionMap[$detail['item_id']] as $konv)
+                                                                @php
+                                                                    $label = $konv['unit_name'];
+                                                                    if ($konv['conversion_rate'] > 1) {
+                                                                        $label .= " ({$konv['conversion_rate']} pcs)";
+                                                                    }
+                                                                @endphp
+                                                                <option value="{{ $konv['unit_id'] }}"
+                                                                    data-konversi="{{ $konv['conversion_rate'] }}"
+                                                                    {{ isset($detail['unit_id']) && $detail['unit_id'] == $konv['unit_id'] ? 'selected' : '' }}>
+                                                                    {{ $label }}
+                                                                </option>
+                                                            @endforeach
+                                                        @endif
                                                     </select>
-                                                    <button type="button" class="btn btn-outline-primary btn-sm"
-                                                        onclick="openBarangModal(this)">
-                                                        <i class="bi bi-search"></i> Cari
+                                                </td>
+                                                <td>
+                                                    <input type="number"
+                                                        name="detail[{{ $i }}][quantity]"
+                                                        class="form-control qty-input"
+                                                        value="{{ $detail['quantity'] ?? '' }}" required
+                                                        min="1">
+                                                </td>
+                                                <td>
+                                                    <input type="text"
+                                                        name="detail[{{ $i }}][unit_price]"
+                                                        class="form-control harga-input"
+                                                        value="{{ $detail['unit_price'] ?? '' }}" required>
+                                                </td>
+                                                <td>
+                                                    <input type="text"
+                                                        name="detail[{{ $i }}][subtotal]"
+                                                        class="form-control subtotal-input"
+                                                        value="{{ $detail['subtotal'] ?? '' }}" readonly>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        onclick="this.closest('tr').remove(); updateTotalHarga();">
+                                                        <i class="bi bi-trash"></i>
                                                     </button>
-                                                </div>
-                                                <span class="text-success small stok-info"
-                                                    style="display:none;"></span>
-                                            </td>
-                                            <td>
-                                                <select name="detail[<?= $i ?>][id_satuan]"
-                                                    class="form-select satuan-select" required>
-                                                    <option value="">- Pilih Satuan -</option>
-                                                    <?php
-                                                    if (!empty($detail['id_barang']) && isset($satuanKonversiMap[$detail['id_barang']])):
-                                                        foreach ($satuanKonversiMap[$detail['id_barang']] as $konv):
-                                                    ?>
-                                                    <option value="<?= $konv['id_satuan'] ?>"
-                                                        data-konversi="<?= $konv['konversi'] ?>"
-                                                        <?= isset($detail['id_satuan']) && $detail['id_satuan'] == $konv['id_satuan'] ? 'selected' : '' ?>>
-                                                        <?=
-                                                    esc($konv['nama_satuan'])
-                                                    $konv['konversi'] > 1 ? " ({$konv['konversi']} pcs)" : ''
-                                                    ?>
-                                                    </option>
-                                                    <?php
-                                                        endforeach;
-                                                    endif;
-                                                    ?>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="detail[<?= $i ?>][qty]"
-                                                    class="form-control qty-input"
-                                                    value="<?= isset($detail['qty']) ? esc($detail['qty']) : '' ?>"
-                                                    required min="1">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="detail[<?= $i ?>][harga_jual]"
-                                                    class="form-control harga-input"
-                                                    value="<?= isset($detail['harga_jual']) ? esc($detail['harga_jual']) : '' ?>"
-                                                    required>
-                                            </td>
-                                            <td>
-                                                <input type="text" name="detail[<?= $i ?>][subtotal]"
-                                                    class="form-control subtotal-input"
-                                                    value="<?= isset($detail['subtotal']) ? esc($detail['subtotal']) : '' ?>"
-                                                    readonly>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="this.closest('tr').remove(); updateTotalHarga();">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach; ?>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td colspan="4" class="text-end"><b>Total Harga</b></td>
                                             <td colspan="2" class="fw-bold text-success">Rp.
                                                 <span id="total-harga-label">0</span>
-                                                <input type="hidden" name="total_harga" id="total-harga"
+                                                <input type="hidden" name="total_amount" id="total-harga"
                                                     value="0">
                                             </td>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
+
                             <button type="button" class="btn btn-primary btn-sm mb-3" onclick="addDetailRow()">
                                 <i class="bi bi-plus"></i> Tambah Barang
                             </button>
+
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="btn btn-success me-2"><i class="bi bi-save"></i>
-                                    Simpan Penjualan</button>
-                                <a href="<?= site_url('penjualan') ?>" class="btn btn-secondary">
+                                <button type="submit" class="btn btn-success me-2">
+                                    <i class="bi bi-save"></i> Simpan Penjualan
+                                </button>
+                                <a href="{{ route('sales-orders.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -255,6 +274,7 @@
             </div>
         </div>
 
+        <!-- Modal Cari Barang -->
         <div class="modal fade" id="modalBarang" tabindex="-1" aria-labelledby="modalBarangLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -277,26 +297,28 @@
                                 </tr>
                             </thead>
                             <tbody id="modal-barang-list">
-                                <?php foreach ($barangs as $b): ?>
-                                <tr data-id="<?= esc($b['id']) ?>" data-nama="<?= esc($b['nama_barang']) ?>"
-                                    data-stok="<?= esc($b['stok']) ?>" data-harga="<?= esc($b['harga_jual']) ?>"
-                                    data-id_satuan="<?= esc($b['id_satuan']) ?>">
-                                    <td><?= esc($b['nama_barang']) ?></td>
-                                    <td class="text-center"><?= esc($b['stok']) ?></td>
-                                    <td class="text-center"><?= esc(number_format($b['harga_jual'], 0, ',', '.')) ?>
-                                    </td>
-                                    <td class="text-center">
-                                        <button type="button"
-                                            class="btn btn-success btn-sm pilih-barang-btn">Pilih</button>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
+                                @foreach ($items as $item)
+                                    <tr data-id="{{ $item->id }}" data-nama="{{ $item->name }}"
+                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->selling_price }}"
+                                        data-id_satuan="{{ $item->unit_id }}">
+                                        <td>{{ $item->name }}</td>
+                                        <td class="text-center">{{ $item->stock }}</td>
+                                        <td class="text-center">{{ number_format($item->selling_price, 0, ',', '.') }}
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button"
+                                                class="btn btn-success btn-sm pilih-barang-btn">Pilih</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Modal Cari Customer -->
         <div class="modal fade" id="modalCustomer" tabindex="-1" aria-labelledby="modalCustomerLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -322,28 +344,28 @@
                                 </tr>
                             </thead>
                             <tbody id="modal-customer-list" class="text-center small align-middle">
-                                <?php foreach ($customers as $s): ?>
-                                <tr data-id="<?= esc($s['id']) ?>" data-nama="<?= esc($s['nama']) ?>">
-                                    <td><?= esc($s['nama']) ?></td>
-                                    <td><?= esc($s['alamat'] ?? '-') ?></td>
-                                    <td><?= esc($s['no_telp'] ?? '-') ?></td>
-                                    <td><?= esc($s['email'] ?? '-') ?></td>
-                                    <td>
-                                        <?php if ($s['status'] == 'aktif'): ?>
-                                        <span class="badge bg-success">Aktif</span>
-                                        <?php else: ?>
-                                        <span class="badge bg-secondary">Tidak Aktif</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td><?= esc($s['keterangan'] ?? '-') ?></td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-success btn-sm pilih-supplier-btn"
-                                            <?= $s['status'] == 'aktif' ? '' : 'disabled' ?>>
-                                            Pilih
-                                        </button>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
+                                @foreach ($customers as $customer)
+                                    <tr data-id="{{ $customer->id }}" data-nama="{{ $customer->name }}">
+                                        <td>{{ $customer->name }}</td>
+                                        <td>{{ $customer->address ?? '-' }}</td>
+                                        <td>{{ $customer->phone ?? '-' }}</td>
+                                        <td>{{ $customer->email ?? '-' }}</td>
+                                        <td>
+                                            @if ($customer->status === 'active')
+                                                <span class="badge bg-success">Aktif</span>
+                                            @else
+                                                <span class="badge bg-secondary">Tidak Aktif</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $customer->description ?? '-' }}</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-success btn-sm pilih-customer-btn"
+                                                {{ $customer->status === 'active' ? '' : 'disabled' }}>
+                                                Pilih
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -352,17 +374,17 @@
         </div>
     </div>
 
-    <?php if (session()->getFlashdata('error')): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal Simpan!',
-                text: '<?= esc(session()->getFlashdata('error')) ?>'
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Simpan!',
+                    text: '{{ session('error') }}'
+                });
             });
-        });
-    </script>
-    <?php endif; ?>
+        </script>
+    @endif
 
     <script>
         let detailIndex = <?= count(old('detail') ?? [[]]) ?>;
@@ -533,44 +555,44 @@
             const tbody = document.getElementById('detail-barang-body');
             const row = document.createElement('tr');
             row.innerHTML = `
-        <td>
-            <div class="input-group">
-                <select name="detail[${detailIndex}][id_barang]" class="form-select barang-select" required onchange="showStok(this)">
-                    <option value="">- Pilih Barang -</option>
-                    <?php foreach ($barangs as $b): ?>
-                        <option value="<?= esc($b['id']) ?>" 
-                        data-stok="<?= esc($b['stok']) ?>" 
-                        data-harga="<?= esc($b['harga_jual']) ?>" 
-                        data-id_satuan="<?= esc($b['id_satuan']) ?>">
-                            <?= esc($b['nama_barang']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
-                    <i class="bi bi-search"></i> Cari
-                </button>
-            </div>
-            <span class="text-success small stok-info" style="display:none;"></span>
-        </td>
-        <td>
-            <select name="detail[${detailIndex}][id_satuan]" class="form-select satuan-select" required>
-                <option value="">- Pilih Satuan -</option>
-            </select>
-        </td>
-        <td>
-            <input type="number" name="detail[${detailIndex}][qty]" class="form-control qty-input" required min="1">
-        </td>
-        <td>
-            <input type="text" name="detail[${detailIndex}][harga_jual]" class="form-control harga-input" required>
-        </td>
-        <td>
-            <input type="text" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
-        </td>
-        <td>
-            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
-                <i class="bi bi-trash"></i>
-            </button>
-        </td>
+           <td>
+                    <div class="input-group">
+                        <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required onchange="showStok(this)">
+                            <option value="">- Pilih Barang -</option>
+                            @foreach ($items as $item)
+                                <option value="{{ $item->id }}" 
+                                data-stok="{{ $item->stock }}" 
+                                data-harga="{{ $item->selling_price }}" 
+                                data-id_satuan="{{ $item->unit_id }}">
+                                    {{ $item->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
+                            <i class="bi bi-search"></i> Cari
+                        </button>
+                    </div>
+                    <span class="text-success small stok-info" style="display:none;"></span>
+                </td>
+                <td>
+                    <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
+                        <option value="">- Pilih Satuan -</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
+                </td>
+                <td>
+                    <input type="text" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required>
+                </td>
+                <td>
+                    <input type="text" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
     `;
             tbody.appendChild(row);
             detailIndex++;
@@ -723,7 +745,7 @@
             const noNotaInput = document.getElementById('no_nota');
             if (tanggalInput && noNotaInput) {
                 function fetchNoNota() {
-                    fetch('<?= site_url('penjualan/generateNoNotaAjax') ?>?tanggal_terbit=' + encodeURIComponent(
+                    fetch('{{ url('penjualan/generateNoNotaAjax') }}?tanggal_terbit=' + encodeURIComponent(
                             tanggalInput
                             .value))
                         .then(response => response.json())

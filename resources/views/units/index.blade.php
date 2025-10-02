@@ -1,14 +1,16 @@
+{{-- filepath: c:\laragon\www\admin-pos\resources\views\units\index.blade.php --}}
 <x-app-layout>
 
-    <x-content-header title="Manajemen Satuan" breadcrumb-parent="Master Data" breadcrumb-url="{{ url('satuan') }}" />
+    <x-content-header title="Manajemen Satuan" breadcrumb-parent="Master Data"
+        breadcrumb-url="{{ route('units.index') }}" />
 
-    <?php if ($can_write ?? false): ?>
-    <div id="custom-buttons" class="ms-3 mb-2">
-        <a href="{{ url('satuan/create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Tambah Satuan Baru
-        </a>
-    </div>
-    <?php endif; ?>
+    @if ($can_write ?? false)
+        <div id="custom-buttons" class="ms-3 mb-2">
+            <a href="{{ route('units.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> Tambah Satuan Baru
+            </a>
+        </div>
+    @endif
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -19,52 +21,60 @@
                             <th style="width:5%;">No</th>
                             <th style="width:30%;">Nama Satuan</th>
                             <th style="width:45%;">Keterangan</th>
-                            <?php if ($can_write ?? false): ?>
-                            <th style="width:20%;">Aksi</th>
-                            <?php endif; ?>
+                            @if ($can_write ?? false)
+                                <th style="width:20%;">Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($satuans)): ?>
-                        <tr class="text-center">
-                            <td colspan="4" class="text-center py-4">
-                                <div class="text-muted">
-                                    <i class="bi bi-inbox display-1"></i>
-                                    <p class="mt-2">
-                                        Belum ada data satuan
-                                    </p>
-                                    <?php if ($can_write ?? false): ?>
-                                    <a href="{{ url('satuan/create') }}" class="btn btn-primary">
-                                        <i class="bi bi-plus"></i> Tambah Satuan Pertama
-                                    </a>
-                                    <?php endif; ?>
-                                </div>
-                            </td>
-                        </tr>
-                        <?php else: ?>
-                        <?php $no = 1;
-                        foreach ($satuans as $satuan): ?>
-                        <tr class="text-center">
-                            <td>{{ $no++ }}</td>
-                            <td>{{ $satuan['nama'] }}</td>
-                            <td>{{ $satuan['keterangan'] }}</td>
-                            <?php if ($can_write ?? false): ?>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ url('satuan/edit/' . $satuan['id']) }}" class="btn btn-warning btn-sm"
-                                        title="Edit">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="{{ url('satuan/delete/' . $satuan['id']) }}"
-                                        class="btn btn-danger btn-sm btn-hapus-satuan" title="Hapus">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-                            <?php endif; ?>
-                        </tr>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
+                        @if ($units->isEmpty())
+                            <tr class="text-center">
+                                <td colspan="4" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="bi bi-inbox display-1"></i>
+                                        <p class="mt-2">
+                                            Belum ada data satuan
+                                        </p>
+                                        @if ($can_write ?? false)
+                                            <a href="{{ route('units.create') }}" class="btn btn-primary">
+                                                <i class="bi bi-plus"></i> Tambah Satuan Pertama
+                                            </a>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @else
+                            @foreach ($units as $index => $unit)
+                                <tr class="text-center">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $unit->name }}</td>
+                                    <td>{{ $unit->description ?? '-' }}</td>
+                                    @if ($can_write ?? false)
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ route('units.show', $unit->id) }}"
+                                                    class="btn btn-info btn-sm" title="Detail">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{{ route('units.edit', $unit->id) }}"
+                                                    class="btn btn-warning btn-sm" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form action="{{ route('units.destroy', $unit->id) }}" method="POST"
+                                                    class="d-inline delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="btn btn-danger btn-sm btn-hapus-satuan" title="Hapus">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -73,10 +83,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Handle delete confirmation
             document.querySelectorAll('.btn-hapus-satuan').forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const url = btn.getAttribute('href');
+                    const form = btn.closest('.delete-form');
+
                     Swal.fire({
                         title: 'Yakin ingin menghapus satuan ini?',
                         text: 'Data satuan yang dihapus tidak bisa dikembalikan!',
@@ -88,11 +100,13 @@
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = url;
+                            form.submit();
                         }
                     });
                 });
             });
+
+            // Toast notifications
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -100,20 +114,22 @@
                 timer: 3000,
                 timerProgressBar: true
             });
-            <?php if (session()->getFlashdata('success')): ?>
-            Toast.fire({
-                icon: 'success',
-                title: '<?= session()->getFlashdata('success') ?>'
-            });
-            <?php endif; ?>
 
-            <?php if (session()->getFlashdata('error')): ?>
-            Toast.fire({
-                icon: 'error',
-                title: '<?= session()->getFlashdata('error') ?>'
-            });
-            <?php endif; ?>
+            @if (session('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: '{{ session('success') }}'
+                });
+            @endif
 
+            @if (session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: '{{ session('error') }}'
+                });
+            @endif
+
+            // DataTable initialization
             var table = $('#satuanTable').DataTable({
                 dom: '<"d-flex justify-content-between align-items-center mb-2"<"d-flex align-items-center"<"dataTables_length"l><"#custom-buttons-container">><"dataTables_filter"f>>rtip',
                 paging: true,
@@ -128,10 +144,17 @@
                         last: '&raquo;',
                         previous: '&lsaquo;',
                         next: '&rsaquo;'
-                    }
+                    },
+                    search: "Cari:",
+                    lengthMenu: "Tampilkan _MENU_ data per halaman",
+                    zeroRecords: "Data tidak ditemukan",
+                    emptyTable: "Tidak ada data satuan",
+                    loadingRecords: "Memuat...",
+                    processing: "Memproses..."
                 }
             });
 
+            // Move custom buttons to DataTable
             $('#custom-buttons').appendTo('#custom-buttons-container');
         });
     </script>
