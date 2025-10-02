@@ -9,7 +9,7 @@ class SupplierController extends Controller
     // Tampilkan daftar supplier
     public function index()
     {
-        // return view('suppliers.index');
+        return view('suppliers.index');
     }
 
     // Tampilkan form tambah supplier

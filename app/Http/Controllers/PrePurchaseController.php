@@ -8,12 +8,12 @@ class PrePurchaseController extends Controller
 {
     public function index()
     {
-        // return view('pre_purchases.index');
+        return view('pre_purchase_orders.index');
     }
 
     public function create()
     {
-        // return view('pre_purchases.create');
+        // return view('pre_purchase_orders.create');
     }
 
     public function store(Request $request)

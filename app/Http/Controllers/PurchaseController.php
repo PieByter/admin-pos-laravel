@@ -8,12 +8,12 @@ class PurchaseController extends Controller
 {
     public function index()
     {
-        // return view('purchases.index');
+        return view('purchase_orders.index');
     }
 
     public function create()
     {
-        // return view('purchases.create');
+        // return view('purchase_orders.create');
     }
 
     public function store(Request $request)

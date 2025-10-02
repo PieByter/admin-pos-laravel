@@ -1,0 +1,208 @@
+.table th,
+.table td {
+    vertical-align: middle !important;
+}
+
+.table-bordered {
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.main-sidebar .os-scrollbar,
+.main-sidebar .os-scrollbar-corner,
+.main-sidebar .os-scrollbar-horizontal,
+.main-sidebar .os-scrollbar-vertical {
+    opacity: 0 !important;
+}
+
+body.dark-mode .dropdown-menu {
+    background-color: #222 !important;
+    color: #f8f9fa !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .dropdown-menu .dropdown-item:hover,
+body.dark-mode .dropdown-menu .dropdown-item.active {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+body.dark-mode .dropdown-menu .dropdown-item,
+body.dark-mode .dropdown-toggle,
+body.dark-mode .nav-link .fas,
+body.dark-mode .nav-link .fa-solid,
+body.dark-mode .navbar .nav-link {
+    color: #f8f9fa !important;
+}
+
+body.dark-mode .table,
+body.dark-mode .table-bordered,
+body.dark-mode .table-striped,
+body.dark-mode .table-hover {
+    background-color: #222 !important;
+    color: #f8f9fa !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .table th {
+    background-color: #0056b3 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .table td {
+    background-color: #222 !important;
+    color: #f8f9fa !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode table.table-detail th,
+body.dark-mode table.table-detail td {
+    background-color: #343A40 !important;
+    color: #f8f9fa !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .table-striped>tbody>tr:nth-of-type(odd)>* {
+    background-color: #282828 !important;
+}
+
+body.dark-mode .table-hover tbody tr:hover>* {
+    background-color: #333 !important;
+}
+
+body .table th {
+    background-color: #8dcbf7 !important;
+    border-top: 1px solid #dee2e6 !important;
+}
+
+body table.table-detail th {
+    background-color: #ffffff !important;
+}
+
+body.dark-mode input[id^="search-"]::placeholder,
+body.dark-mode input[type="search"]::placeholder,
+body.dark-mode input[type="password"]::placeholder,
+body:not(.dark-mode) .form-control-sidebar::placeholder {
+    color: #ccc !important;
+    opacity: 1;
+}
+
+/* Hilangkan background kotak pada th yang sedang di-sort */
+body.dark-mode .table thead th.active,
+body.dark-mode .table thead th[id^="sort-"].active {
+    background-color: #0056b3 !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+/* Arrow icon putih dan transparan di dark mode */
+body.dark-mode .table thead th .bi-arrow-up,
+body.dark-mode .table thead th .bi-arrow-down {
+    color: #fff !important;
+    background: none !important;
+    opacity: 1;
+    font-size: 1em;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+/* Hilangkan efek kotak pada span arrow */
+body.dark-mode .table thead th span[id$="-sort-icon"] {
+    background: none !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Hover tetap transparan, hanya teks dan arrow yang berubah */
+body.dark-mode .table thead th[id^="sort-"]:hover {
+    background-color: #0056b3 !important;
+    color: #fff !important;
+}
+
+/* Untuk light mode, arrow tetap abu-abu */
+body:not(.dark-mode) .table thead th .bi-arrow-up,
+body:not(.dark-mode) .table thead th .bi-arrow-down {
+    color: #fff !important;
+    background: none !important;
+    opacity: 1;
+    font-size: 1em;
+    vertical-align: middle;
+    margin-left: 4px;
+}
+
+body.dark-mode .modal-header .modal-title,
+body.dark-mode .modal-body dl,
+body.dark-mode .modal-body dt,
+body.dark-mode .modal-body dd {
+    color: #fff !important;
+}
+
+
+/* Jika menggunakan Bootstrap 5 dark mode, override juga */
+body.dark-mode .btn-primary,
+body.dark-mode .btn-primary:active,
+body.dark-mode .btn-primary:focus {
+    background-color: #1677FF !important;
+    border-color: #1677FF !important;
+    color: #fff !important;
+}
+
+body.dark-mode .btn-primary:hover {
+    background-color: #0B5ED7 !important;
+    border-color: #0B5ED7 !important;
+    color: #fff !important;
+}
+
+/* Danger button */
+body.dark-mode .btn-danger,
+body.dark-mode .btn-danger:active,
+body.dark-mode .btn-danger:focus {
+    background-color: #DC3545 !important;
+    border-color: #DC3545 !important;
+    color: #fff !important;
+}
+
+body.dark-mode .btn-danger:hover {
+    background-color: #BB2D3B !important;
+    border-color: #BB2D3B !important;
+    color: #fff !important;
+}
+
+/* Warning button */
+body.dark-mode .btn-warning,
+body.dark-mode .btn-warning:active,
+body.dark-mode .btn-warning:focus {
+    background-color: #FFC107 !important;
+    border-color: #FFC107 !important;
+    color: #212529 !important;
+}
+
+body.dark-mode .btn-warning:hover {
+    background-color: #FFCA2C !important;
+    border-color: #FFCA2C !important;
+    color: #212529 !important;
+}
+
+/* Success button */
+body.dark-mode .btn-success,
+body.dark-mode .btn-success:active,
+body.dark-mode .btn-success:focus {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #fff !important;
+}
+
+body.dark-mode .btn-success:hover {
+    background-color: #157347 !important;
+    border-color: #157347 !important;
+    color: #fff !important;
+}
+
+table.dataTable th {
+    text-align: center !important;
+}
+
+body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(3);
+}

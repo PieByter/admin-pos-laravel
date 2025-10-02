@@ -8,12 +8,12 @@ class ItemCategoryController extends Controller
 {
     public function index()
     {
-        return view('item_category.index');
+        return view('item_categories.index');
     }
 
     public function create()
     {
-        // return view('item_category.create');
+        // return view('item_categories.create');
     }
 
     public function store(Request $request)

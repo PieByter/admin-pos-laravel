@@ -9,7 +9,7 @@ class CustomerController extends Controller
     // Tampilkan daftar customer
     public function index()
     {
-        // return view('customers.index');
+        return view('customers.index');
     }
 
     // Tampilkan form tambah customer

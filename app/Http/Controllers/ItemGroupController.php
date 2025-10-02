@@ -8,7 +8,7 @@ class ItemGroupController extends Controller
 {
     public function index()
     {
-        // return view('item_groups.index');
+        return view('item_groups.index');
     }
 
     public function create()

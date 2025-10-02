@@ -9,7 +9,7 @@ class LogController extends Controller
     // Tampilkan daftar log
     public function index()
     {
-        // return view('logs.index');
+        return view('logs.index');
     }
 
     // Tampilkan form tambah log (jika ada)

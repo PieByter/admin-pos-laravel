@@ -9,7 +9,7 @@ class UserController extends Controller
     // Tampilkan daftar user
     public function index()
     {
-        return view('user.index');
+        return view('users.index');
     }
 
     // Tampilkan form tambah user

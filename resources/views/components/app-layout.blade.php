@@ -12,6 +12,7 @@
 </head>
 
 <body class="hold-transition sidebar layout-fixed">
+
     @php
         $user = auth()->user();
         $permissions = $user ? $user->getAllPermissions()->pluck('name')->toArray() : [];

@@ -21,7 +21,7 @@
                 in_array('sales_orders_view', $permissions) ||
                 in_array('transactions_view', $permissions))
             <li class="nav-item d-none d-md-block dropdown">
-                <a class="nav-link dropdown-toggle{{ request()->is(['po*', 'pembelian*', 'penjualan*', 'transaksi*']) ? ' active' : '' }}"
+                <a class="nav-link dropdown-toggle{{ request()->is(['po*', 'pembelian*', 'penjualan*', 'transaksi*']) ? ' active' : '' }} text-gray-900 dark:text-white"
                     href="#" id="transaksiDropdown" role="button" data-bs-toggle="dropdown">
                     <i class="bi bi-cash-coin"></i> Transaksi
                 </a>
