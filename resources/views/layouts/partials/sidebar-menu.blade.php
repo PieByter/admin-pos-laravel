@@ -2,20 +2,19 @@
 <!-- Dashboard -->
 {{-- @php(app()->make(\Spatie\Permission\PermissionRegistrar::class)->initializeCache()) --}}
 <li class="nav-item">
-    <a href="{{ url('dashboard') }}" class="nav-link{{ request()->is('dashboard') ? ' active' : '' }}">
+    <a href="{{ route('dashboard') }}" class="nav-link{{ request()->is('dashboard') ? ' active' : '' }}">
         <i class="nav-icon bi bi-speedometer2"></i>
         <p>Dashboard</p>
     </a>
 </li>
 
 <!-- Transaksi Group -->
-@if (in_array('pre_purchase_orders_view', $permissions) ||
-        in_array('purchase_orders_view', $permissions) ||
-        in_array('sales_orders_view', $permissions) ||
-        in_array('transactions_view', $permissions))
-    <li class="nav-item{{ request()->is(['po*', 'pembelian*', 'penjualan*', 'transaksi*']) ? ' menu-open' : '' }}">
+@canany(['pre_purchase_orders_view', 'purchase_orders_view', 'sales_orders_view', 'purchase_returns_view',
+    'sales_returns_view', 'transactions_view'])
+    <li
+        class="nav-item{{ request()->is(['purchase-orders*', 'purchases*', 'sales*', 'purchase-returns*', 'sales-returns*', 'transactions*']) ? ' menu-open' : '' }}">
         <a href="#"
-            class="nav-link{{ request()->is(['po*', 'pembelian*', 'penjualan*', 'transaksi*']) ? ' active' : '' }}">
+            class="nav-link{{ request()->is(['purchase-orders*', 'purchases*', 'sales*', 'purchase-returns*', 'sales-returns*', 'transactions*']) ? ' active' : '' }}">
             <i class="nav-icon bi bi-cash-coin"></i>
             <p>
                 Transaksi
@@ -26,49 +25,66 @@
             @can('transactions_view')
                 <li class="nav-item">
                     <a href="{{ route('transactions.index') }}"
-                        class="nav-link{{ request()->is('transaksi*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-cash-stack"></i>
+                        class="nav-link{{ request()->is('transactions*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-graph-up"></i>
                         <p>Akumulasi Transaksi</p>
                     </a>
                 </li>
             @endcan
-            @if (in_array('pre_purchase_orders_view', $permissions))
+            @can('pre_purchase_orders_view')
                 <li class="nav-item">
-                    <a href="{{ url('po') }}" class="nav-link{{ request()->is('po*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-file-earmark-text"></i>
+                    <a href="{{ route('purchase-orders.index') }}"
+                        class="nav-link{{ request()->is('purchase-orders*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-file-earmark-plus"></i>
                         <p>Purchase Order</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('purchase_orders_view', $permissions))
+            @endcan
+            @can('purchase_orders_view')
                 <li class="nav-item">
-                    <a href="{{ url('pembelian') }}" class="nav-link{{ request()->is('pembelian*') ? ' active' : '' }}">
+                    <a href="{{ route('purchases.index') }}" class="nav-link{{ request()->is('purchases*') ? ' active' : '' }}">
                         <i class="nav-icon bi bi-cart-plus"></i>
                         <p>Pembelian</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('sales_orders_view', $permissions))
+            @endcan
+            @can('sales_orders_view')
                 <li class="nav-item">
-                    <a href="{{ url('penjualan') }}"
-                        class="nav-link{{ request()->is('penjualan*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-cash-coin"></i>
+                    <a href="{{ route('sales.index') }}" class="nav-link{{ request()->is('sales*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-bag-check"></i>
                         <p>Penjualan</p>
                     </a>
                 </li>
-            @endif
+            @endcan
+            @can('purchase_returns_view')
+                <li class="nav-item">
+                    <a href="{{ route('purchase-returns.index') }}"
+                        class="nav-link{{ request()->is('purchase-returns*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-arrow-return-left text-warning"></i>
+                        <p>Retur Pembelian</p>
+                    </a>
+                </li>
+            @endcan
+            @can('sales_returns_view')
+                <li class="nav-item">
+                    <a href="{{ route('sales-returns.index') }}"
+                        class="nav-link{{ request()->is('sales-returns*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-arrow-return-right text-info"></i>
+                        <p>Retur Penjualan</p>
+                    </a>
+                </li>
+            @endcan
         </ul>
     </li>
-@endif
+@endcanany
 
 <!-- Master Data Group -->
-@if (in_array('items_view', $permissions) ||
-        in_array('suppliers_view', $permissions) ||
-        in_array('customers_view', $permissions))
+@canany(['items_view', 'suppliers_view', 'customers_view', 'unit_conversions_view', 'units_view',
+    'item_categories_view', 'item_groups_view'])
     <li
-        class="nav-item{{ request()->is(['barang*', 'supplier*', 'customer*', 'satuan*', 'jenis-barang*', 'group-barang*']) ? ' menu-open' : '' }}">
+        class="nav-item{{ request()->is(['items*', 'suppliers*', 'customers*', 'units*', 'item-categories*', 'item-groups*', 'unit-conversions*']) ? ' menu-open' : '' }}">
         <a href="#"
-            class="nav-link{{ request()->is(['barang*', 'supplier*', 'customer*', 'satuan*', 'jenis-barang*', 'group-barang*']) ? ' active' : '' }}">
+            class="nav-link{{ request()->is(['items*', 'suppliers*', 'customers*', 'units*', 'item-categories*', 'item-groups*', 'unit-conversions*']) ? ' active' : '' }}">
             <i class="nav-icon bi bi-box-seam"></i>
             <p>
                 Master Data
@@ -76,72 +92,74 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
-            @if (in_array('items_view', $permissions))
+            @can('items_view')
                 <li class="nav-item">
-                    <a href="{{ url('barang') }}" class="nav-link{{ request()->is('barang*') ? ' active' : '' }}">
+                    <a href="{{ route('items.index') }}" class="nav-link{{ request()->is('items*') ? ' active' : '' }}">
                         <i class="nav-icon bi bi-box"></i>
                         <p>Barang</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('suppliers_view', $permissions))
+            @endcan
+            @can('suppliers_view')
                 <li class="nav-item">
-                    <a href="{{ url('supplier') }}" class="nav-link{{ request()->is('supplier*') ? ' active' : '' }}">
+                    <a href="{{ route('suppliers.index') }}"
+                        class="nav-link{{ request()->is('suppliers*') ? ' active' : '' }}">
                         <i class="nav-icon bi bi-truck"></i>
                         <p>Supplier</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('customers_view', $permissions))
+            @endcan
+            @can('customers_view')
                 <li class="nav-item">
-                    <a href="{{ url('customer') }}" class="nav-link{{ request()->is('customer*') ? ' active' : '' }}">
+                    <a href="{{ route('customers.index') }}"
+                        class="nav-link{{ request()->is('customers*') ? ' active' : '' }}">
                         <i class="nav-icon bi bi-people"></i>
                         <p>Customer</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('unit_conversions_view', $permissions))
+            @endcan
+            @can('unit_conversions_view')
                 <li class="nav-item">
-                    <a href="{{ url('satuan-konversi') }}"
-                        class="nav-link{{ request()->is('satuan-konversi*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-currency-exchange"></i>
+                    <a href="{{ route('unit-conversions.index') }}"
+                        class="nav-link{{ request()->is('unit-conversions*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-arrow-left-right"></i>
                         <p>Satuan Konversi</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('units_view', $permissions))
+            @endcan
+            @can('units_view')
                 <li class="nav-item">
-                    <a href="{{ url('satuan') }}"
-                        class="nav-link{{ request()->is('satuan*') && !request()->is('satuan-konversi*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-grid"></i>
+                    <a href="{{ route('units.index') }}"
+                        class="nav-link{{ request()->is('units*') && !request()->is('unit-conversions*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-rulers"></i>
                         <p>Satuan Barang</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('item_categories_view', $permissions))
+            @endcan
+            @can('item_categories_view')
                 <li class="nav-item">
-                    <a href="{{ url('jenis-barang') }}"
-                        class="nav-link{{ request()->is('jenis-barang*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-diagram-2"></i>
-                        <p>Jenis Barang</p>
+                    <a href="{{ route('item-categories.index') }}"
+                        class="nav-link{{ request()->is('item-categories*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-tags"></i>
+                        <p>Kategori Barang</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('item_groups_view', $permissions))
+            @endcan
+            @can('item_groups_view')
                 <li class="nav-item">
-                    <a href="{{ url('group-barang') }}"
-                        class="nav-link{{ request()->is('group-barang*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-boxes"></i>
+                    <a href="{{ route('item-groups.index') }}"
+                        class="nav-link{{ request()->is('item-groups*') ? ' active' : '' }}">
+                        <i class="nav-icon bi bi-collection"></i>
                         <p>Group Barang</p>
                     </a>
                 </li>
-            @endif
+            @endcan
         </ul>
     </li>
-@endif
+@endcanany
 
 <!-- Admin Group -->
-@if (in_array('users_view', $permissions) || in_array('activity_logs_view', $permissions))
+@canany(['users_view', 'activity_logs_view'])
     <li class="nav-item{{ request()->is('superadmin/*') ? ' menu-open' : '' }}">
         <a href="#" class="nav-link{{ request()->is('superadmin/*') ? ' active' : '' }}">
             <i class="nav-icon bi bi-person-gear"></i>
@@ -151,31 +169,31 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
-            @if (in_array('users_view', $permissions))
+            @can('users_view')
                 <li class="nav-item">
-                    <a href="{{ url('superadmin/users') }}"
+                    <a href="{{ route('superadmin.users.index') }}"
                         class="nav-link{{ request()->is('superadmin/users*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-person-fill-gear"></i>
+                        <i class="nav-icon bi bi-people"></i>
                         <p>Manajemen User</p>
                     </a>
                 </li>
-            @endif
-            @if (in_array('activity_logs_view', $permissions))
+            @endcan
+            @can('activity_logs_view')
                 <li class="nav-item">
-                    <a href="{{ url('superadmin/logs') }}"
-                        class="nav-link{{ request()->is('superadmin/logs*') ? ' active' : '' }}">
+                    <a href="{{ route('superadmin.activity-logs.index') }}"
+                        class="nav-link{{ request()->is('superadmin/activity-logs*') ? ' active' : '' }}">
                         <i class="nav-icon bi bi-journal-text"></i>
                         <p>Log Aktivitas</p>
                     </a>
                 </li>
-            @endif
+            @endcan
         </ul>
     </li>
-@endif
+@endcanany
 
 <!-- Profil -->
 <li class="nav-item">
-    <a href="{{ url('profile') }}" class="nav-link{{ request()->is('profile*') ? ' active' : '' }}">
+    <a href="{{ route('profile.index') }}" class="nav-link{{ request()->is('profile*') ? ' active' : '' }}">
         <i class="nav-icon bi bi-person-circle"></i>
         <p>Profil Pengguna</p>
     </a>
