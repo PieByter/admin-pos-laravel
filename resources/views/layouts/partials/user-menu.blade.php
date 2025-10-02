@@ -26,14 +26,17 @@
         <li class="user-footer">
             <div class="row">
                 <div class="col-6">
-                    <a class="btn btn-block btn-outline-primary" href="{{ url('profile') }}">
+                    <a class="btn btn-block btn-outline-primary" href="{{ route('profile.index') }}">
                         <i class="bi bi-person-circle"></i> Profile
                     </a>
                 </div>
                 <div class="col-6">
-                    <a class="btn btn-block btn-outline-danger float-end" href="{{ url('auth/logout') }}">
-                        <i class="bi bi-box-arrow-right"></i> Sign Out
-                    </a>
+                    <form action="{{ route('auth.logout') }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-block btn-outline-danger float-end">
+                            <i class="bi bi-box-arrow-right"></i> Sign Out
+                        </button>
+                    </form>
                 </div>
             </div>
         </li>
