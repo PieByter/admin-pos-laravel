@@ -14,7 +14,7 @@
                                 <label for="username" class="col-md-3 col-form-label"><b>Username</b></label>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="username" name="username"
-                                        value="<?= old('username') ?>" required>
+                                        value="{{ old('username') }}" required>
                                 </div>
                             </div>
 
@@ -22,7 +22,7 @@
                                 <label for="email" class="col-md-3 col-form-label"><b>Email</b></label>
                                 <div class="col-md-9">
                                     <input type="email" class="form-control" id="email" name="email"
-                                        value="<?= old('email') ?>" required>
+                                        value="{{ old('email') }}" required>
                                 </div>
                             </div>
 
@@ -37,36 +37,37 @@
                                 <label for="jabatan" class="col-md-3 col-form-label"><b>Jabatan</b></label>
                                 <div class="col-md-9">
                                     <select class="form-select" id="jabatan" name="jabatan" required>
-                                        <?php
-                                    $jabatanList = [
-                                        'staff'     => 'Staff',
-                                        'karyawan'  => 'Karyawan',
-                                        'kadept'    => 'Kadept - Kepala Depot',
-                                        'wakadept'  => 'Wakadept - Wakil Kepala Depot',
-                                        'kabid'     => 'Kabid - Kepala Bidang',
-                                        'wakabid'   => 'Wakabid - Wakil Kepala Bidang',
-                                        'kasubid'   => 'Kasubid - Kepala Sub Bidang',
-                                        'wakasubid' => 'Wakasubid - Wakil Kepala Sub Bidang',
-                                        'kabag'     => 'Kabag - Kepala Bagian',
-                                        'wakabag'   => 'Wakabag - Wakil Kepala Bagian',
-                                        'kasubag'   => 'Kasubag - Kepala Sub Bagian',
-                                        'wakasubag' => 'Wakasubag - Wakil Kepala Sub Bagian',
-                                        'kasie'     => 'Kasie - Kepala Seksi',
-                                        'wakasie'   => 'Wakasie - Wakil Kepala Seksi',
-                                        'kasubsie'  => 'Kasubsie - Kepala Sub Seksi',
-                                        'wakasubsie' => 'Wakasubsie - Wakil Kepala Sub Seksi',
-                                        'kagu'      => 'Kagu - Kepala Regu',
-                                        'wakagu'    => 'Wakagu - Wakil Kepala Regu',
-                                        'kasubgu'   => 'Kasubgu - Kepala Sub Regu',
-                                        'wakasubgu' => 'Wakasubgu - Wakil Kepala Sub Regu'
-                                    ];
-                                    $selectedJabatan = old('jabatan', $user['jabatan'] ?? 'staff');
-                                    foreach ($jabatanList as $kode => $label):
-                                    ?>
-                                        <option value="<?= $kode ?>" <?= $selectedJabatan == $kode ? 'selected' : '' ?>>
-                                            <?= $label ?>
-                                        </option>
-                                        <?php endforeach; ?>
+                                        @php
+                                            $jabatanList = [
+                                                'staff' => 'Staff',
+                                                'karyawan' => 'Karyawan',
+                                                'kadept' => 'Kadept - Kepala Depot',
+                                                'wakadept' => 'Wakadept - Wakil Kepala Depot',
+                                                'kabid' => 'Kabid - Kepala Bidang',
+                                                'wakabid' => 'Wakabid - Wakil Kepala Bidang',
+                                                'kasubid' => 'Kasubid - Kepala Sub Bidang',
+                                                'wakasubid' => 'Wakasubid - Wakil Kepala Sub Bidang',
+                                                'kabag' => 'Kabag - Kepala Bagian',
+                                                'wakabag' => 'Wakabag - Wakil Kepala Bagian',
+                                                'kasubag' => 'Kasubag - Kepala Sub Bagian',
+                                                'wakasubag' => 'Wakasubag - Wakil Kepala Sub Bagian',
+                                                'kasie' => 'Kasie - Kepala Seksi',
+                                                'wakasie' => 'Wakasie - Wakil Kepala Seksi',
+                                                'kasubsie' => 'Kasubsie - Kepala Sub Seksi',
+                                                'wakasubsie' => 'Wakasubsie - Wakil Kepala Sub Seksi',
+                                                'kagu' => 'Kagu - Kepala Regu',
+                                                'wakagu' => 'Wakagu - Wakil Kepala Regu',
+                                                'kasubgu' => 'Kasubgu - Kepala Sub Regu',
+                                                'wakasubgu' => 'Wakasubgu - Wakil Kepala Sub Regu',
+                                            ];
+                                            $selectedJabatan = old('jabatan', $user['jabatan'] ?? 'staff');
+                                        @endphp
+                                        @foreach ($jabatanList as $kode => $label)
+                                            <option value="{{ $kode }}"
+                                                {{ $selectedJabatan == $kode ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -110,19 +111,19 @@
                                 <label for="role" class="col-md-3 col-form-label"><b>Role</b></label>
                                 <div class="col-md-9">
                                     <select class="form-select" id="role" name="role" required>
-                                        <option value="useradmin" <?= old('role') == 'useradmin' ? 'selected' : '' ?>>
+                                        <option value="useradmin" {{ old('role') == 'useradmin' ? 'selected' : '' }}>
                                             User Admin
                                         </option>
-                                        <option value="superadmin" <?= old('role') == 'superadmin' ? 'selected' : '' ?>>
+                                        <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}>
                                             Super Admin
                                         </option>
-                                        <option value="kasir" <?= old('role') == 'kasir' ? 'selected' : '' ?>>
+                                        <option value="kasir" {{ old('role') == 'kasir' ? 'selected' : '' }}>
                                             Kasir
                                         </option>
-                                        <option value="gudang" <?= old('role') == 'gudang' ? 'selected' : '' ?>>
+                                        <option value="gudang" {{ old('role') == 'gudang' ? 'selected' : '' }}>
                                             Gudang
                                         </option>
-                                        <option value="viewer" <?= old('role') == 'viewer' ? 'selected' : '' ?>>
+                                        <option value="viewer" {{ old('role') == 'viewer' ? 'selected' : '' }}>
                                             Viewer (Read-Only)
                                         </option>
                                     </select>
@@ -376,10 +377,11 @@
 
                                 <!-- Hidden checkboxes for permissions -->
                                 <div id="hiddenPermissions" style="display: none;">
-                                    <?php foreach ($permissions as $perm): ?>
-                                    <input type="checkbox" name="permissions[]" value="<?= $perm['id'] ?>"
-                                        id="perm_<?= $perm['name'] ?>" data-perm-name="<?= $perm['name'] ?>">
-                                    <?php endforeach ?>
+                                    @foreach ($permissions as $perm)
+                                        : ?>
+                                        <input type="checkbox" name="permissions[]" value="{{ $perm['id'] }}"
+                                            id="perm_{{ $perm['name'] }}" data-perm-name="{{ $perm['name'] }}">
+                                    @endforeach
                                 </div>
                             </div>
 
@@ -629,7 +631,7 @@
                     }
                 });
                 Toast.fire({
-                    title: '<?= implode('<br>', array_map('esc', session('validation')->getErrors())) ?>'
+                    title: '{{ implode('<br>', array_map('esc', session('validation')->getErrors())) }}'
                 });
             });
         </script>

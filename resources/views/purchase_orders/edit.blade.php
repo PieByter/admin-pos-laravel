@@ -348,8 +348,8 @@
         @endif
 
         <script>
-            let detailIndex = <?= count($details) ?>;
-            const satuanKonversiMap = <?= json_encode($satuanKonversiMap) ?>;
+            let detailIndex = {{ count($details) }};
+            const satuanKonversiMap = {{ json_encode($satuanKonversiMap) }};
 
             function formatRupiahInputValue(angka) {
                 angka = Number(angka);

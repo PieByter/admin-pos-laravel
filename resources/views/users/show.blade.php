@@ -18,20 +18,20 @@
                             <dd class="col-sm-8">{{ url($supplier['email']) }}</dd>
                             <dt class="col-sm-4">Status</dt>
                             <dd class="col-sm-8">
-                                <?php if ($supplier['status'] == 'aktif'): ?>
-                                <span class="badge bg-success">Aktif</span>
-                                <?php else: ?>
-                                <span class="badge bg-secondary">Tidak Aktif</span>
-                                <?php endif; ?>
+                                @if ($supplier['status'] == 'aktif')
+                                    <span class="badge bg-success">Aktif</span>
+                                @else
+                                    <span class="badge bg-secondary">Tidak Aktif</span>
+                                @endif
                             <dt class="col-sm-4">Keterangan</dt>
                             <dd class="col-sm-8">{{ url($supplier['keterangan']) }}</dd>
                         </dl>
                         <div class="mt-4 d-flex justify-content-end gap-2">
-                            <?php if ($can_write ?? false): ?>
-                            <a href="{{ url('supplier/edit/' . $supplier['id']) }}" class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
-                            <?php endif; ?>
+                            @if ($can_write ?? false)
+                                <a href="{{ url('supplier/edit/' . $supplier['id']) }}" class="btn btn-warning">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                            @endif
                             <a href="{{ url('supplier') }}" class="btn btn-secondary ms-2" id="btn-back-supplier">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>

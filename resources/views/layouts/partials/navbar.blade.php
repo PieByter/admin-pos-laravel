@@ -18,6 +18,7 @@
         <!-- Dropdown Transaksi -->
         @if (in_array('pre_purchase_orders_view', $permissions) ||
                 in_array('purchase_orders_view', $permissions) ||
+                //  in_array('purchase_returns_view', $permissions) ||
                 in_array('sales_orders_view', $permissions) ||
                 in_array('transactions_view', $permissions))
             <li class="nav-item d-none d-md-block dropdown">
@@ -27,17 +28,39 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="transaksiDropdown">
                     @if (in_array('transactions_view', $permissions))
-                        <li><a class="dropdown-item" href="{{ url('transaksi') }}">Akumulasi Transaksi</a></li>
+                        <li><a class="dropdown-item" href="{{ route('transactions.index') }}">Akumulasi Transaksi</a>
+                        </li>
                     @endif
                     @if (in_array('pre_purchase_orders_view', $permissions))
-                        <li><a class="dropdown-item" href="{{ url('po') }}">Purchase Order</a></li>
+                        <li><a class="dropdown-item" href="{{ route('purchase-orders.index') }}">Purchase Order</a>
+                        </li>
                     @endif
                     @if (in_array('purchase_orders_view', $permissions))
-                        <li><a class="dropdown-item" href="{{ url('pembelian') }}">Pembelian</a></li>
+                        <li><a class="dropdown-item" href="{{ route('purchases.index') }}">Pembelian</a></li>
                     @endif
                     @if (in_array('sales_orders_view', $permissions))
-                        <li><a class="dropdown-item" href="{{ url('penjualan') }}">Penjualan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('sales.index') }}">Penjualan</a></li>
                     @endif
+                    {{-- @if (in_array('purchase_returns_view', $permissions) || in_array('sales_returns_view', $permissions)) --}}
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <h6 class="dropdown-header">Retur</h6>
+                    </li>
+                    {{-- @endif --}}
+
+                    {{-- @if (in_array('purchase_returns_view', $permissions)) --}}
+                    <li><a class="dropdown-item" href="{{ route('purchase-returns.index') }}">
+                            <i class="bi bi-arrow-return-left me-2 text-warning"></i>Retur Pembelian
+                        </a></li>
+                    {{-- @endif --}}
+
+                    {{-- @if (in_array('sales_returns_view', $permissions)) --}}
+                    <li><a class="dropdown-item" href="{{ route('sales-returns.index') }}">
+                            <i class="bi bi-arrow-return-right me-2 text-info"></i>Retur Penjualan
+                        </a></li>
+                    {{-- @endif --}}
                 </ul>
             </li>
         @endif

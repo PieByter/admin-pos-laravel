@@ -150,12 +150,12 @@ class PurchaseOrderItem extends Model
     }
 
     // ✅ Helper Methods
-    public function calculateSubtotal()
-    {
-        $this->subtotal = $this->quantity * $this->buy_price;
-        $this->save(); // ✅ BENAR - Perlu save()
-        return $this->subtotal; // ✅ BENAR - Perlu return
-    }
+    // public function calculateSubtotal()
+    // {
+    //     $this->subtotal = $this->quantity * $this->buy_price;
+    //     $this->save(); // ✅ BENAR - Perlu save()
+    //     return $this->subtotal; // ✅ BENAR - Perlu return
+    // }
 
     public function addReturn($returnedQty, $returnedBaseQty = null, $reason = null)
     {

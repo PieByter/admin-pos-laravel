@@ -154,11 +154,11 @@ class User extends Authenticatable
     }
 
     // ✅ Helper Methods
-    public function hasPermissionTo($permission)
-    {
-        // Menggunakan Spatie Permission
-        return $this->can($permission);
-    }
+    // public function hasPermissionTo($permission)
+    // {
+    //     // Menggunakan Spatie Permission
+    //     return $this->can($permission);
+    // }
 
     public function assignDefaultRole()
     {

@@ -1,5 +1,6 @@
 <!-- filepath: resources/views/layouts/partials/sidebar-menu.blade.php -->
 <!-- Dashboard -->
+{{-- @php(app()->make(\Spatie\Permission\PermissionRegistrar::class)->initializeCache()) --}}
 <li class="nav-item">
     <a href="{{ url('dashboard') }}" class="nav-link{{ request()->is('dashboard') ? ' active' : '' }}">
         <i class="nav-icon bi bi-speedometer2"></i>
@@ -22,14 +23,15 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
-            @if (in_array('transactions_view', $permissions))
+            @can('transactions_view')
                 <li class="nav-item">
-                    <a href="{{ url('transaksi') }}" class="nav-link{{ request()->is('transaksi*') ? ' active' : '' }}">
+                    <a href="{{ route('transactions.index') }}"
+                        class="nav-link{{ request()->is('transaksi*') ? ' active' : '' }}">
                         <i class="nav-icon bi bi-cash-stack"></i>
                         <p>Akumulasi Transaksi</p>
                     </a>
                 </li>
-            @endif
+            @endcan
             @if (in_array('pre_purchase_orders_view', $permissions))
                 <li class="nav-item">
                     <a href="{{ url('po') }}" class="nav-link{{ request()->is('po*') ? ' active' : '' }}">

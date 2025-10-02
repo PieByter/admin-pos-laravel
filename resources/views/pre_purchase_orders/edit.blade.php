@@ -405,8 +405,8 @@
     </div>
 
     <script>
-        let detailIndex = <?= count($details) ?>;
-        const satuanKonversiMap = <?= json_encode($satuanKonversiMap) ?>;
+        let detailIndex = {{ count($details) }};
+        const satuanKonversiMap = {{ json_encode($satuanKonversiMap) }};
 
         document.addEventListener('DOMContentLoaded', function() {
             const Toast = Swal.mixin({

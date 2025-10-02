@@ -232,12 +232,12 @@ class SalesOrder extends Model
         $this->save();
     }
 
-    public function completeOrder()
-    {
-        $this->status = 'completed';
-        if (!$this->payment_date) {
-            $this->payment_date = now()->toDateString();
-        }
-        $this->save();
-    }
+    // public function completeOrder()
+    // {
+    //     $this->status = 'completed';
+    //     if (!$this->payment_date) {
+    //         $this->payment_date = now()->toDateString();
+    //     }
+    //     $this->save();
+    // }
 }

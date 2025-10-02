@@ -150,12 +150,12 @@ class SalesOrderItem extends Model
     }
 
     // ✅ Helper Methods
-    public function calculateSubtotal()
-    {
-        $this->subtotal = $this->quantity * $this->sell_price;
-        $this->save();
-        return $this->subtotal;
-    }
+    // public function calculateSubtotal()
+    // {
+    //     $this->subtotal = $this->quantity * $this->sell_price;
+    //     $this->save();
+    //     return $this->subtotal;
+    // }
 
     public function addReturn($returnedQty, $returnedBaseQty = null, $reason = null)
     {
