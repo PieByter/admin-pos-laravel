@@ -3,13 +3,13 @@
     <x-content-header title="Manajemen Penjualan (Sales Order)" breadcrumb-parent="Transaksi"
         breadcrumb-url="{{ route('sales-orders.index') }}" />
 
-    @if ($can_write ?? false)
-        <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ route('sales-orders.create') }}" class="btn btn-primary" id="btn-create-penjualan">
-                <i class="bi bi-plus-lg"></i> Tambah Penjualan
-            </a>
-        </div>
-    @endif
+
+    <div id="custom-buttons" class="ms-3 mb-2">
+        <a href="{{ route('sales-orders.create') }}" class="btn btn-primary" id="btn-create-penjualan">
+            <i class="bi bi-plus-lg"></i> Tambah Penjualan
+        </a>
+    </div>
+
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -26,9 +26,9 @@
                             <th style="width:10%;">Status</th>
                             <th style="width:10%;">Payment</th>
                             <th style="width:19%;">Detail Barang</th>
-                            @if ($can_write ?? false)
-                                <th style="width:10%;">Aksi</th>
-                            @endif
+
+                            <th style="width:10%;">Aksi</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -44,11 +44,11 @@
                                                 Belum ada data penjualan
                                             @endif
                                         </p>
-                                        @if ($can_write ?? false)
-                                            <a href="{{ route('sales-orders.create') }}" class="btn btn-primary">
-                                                <i class="bi bi-cart-plus"></i> Tambah Penjualan Pertama
-                                            </a>
-                                        @endif
+
+                                        <a href="{{ route('sales-orders.create') }}" class="btn btn-primary">
+                                            <i class="bi bi-cart-plus"></i> Tambah Penjualan Pertama
+                                        </a>
+
                                     </div>
                                 </td>
                             </tr>
@@ -118,32 +118,31 @@
                                             <span class="text-muted">Tidak ada detail</span>
                                         @endif
                                     </td>
-                                    @if ($can_write ?? false)
-                                        <td class="text-center">
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('sales-orders.show', $salesOrder->id) }}"
-                                                    class="btn btn-info btn-sm" title="Detail"
-                                                    onclick="event.stopPropagation();">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('sales-orders.edit', $salesOrder->id) }}"
-                                                    class="btn btn-warning btn-sm" title="Edit"
-                                                    onclick="event.stopPropagation();">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="{{ route('sales-orders.destroy', $salesOrder->id) }}"
-                                                    method="POST" class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="btn btn-danger btn-sm btn-hapus-penjualan"
-                                                        onclick="event.stopPropagation();" title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    @endif
+
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('sales-orders.show', $salesOrder->id) }}"
+                                                class="btn btn-info btn-sm" title="Detail"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ route('sales-orders.edit', $salesOrder->id) }}"
+                                                class="btn btn-warning btn-sm" title="Edit"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form action="{{ route('sales-orders.destroy', $salesOrder->id) }}"
+                                                method="POST" class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-penjualan"
+                                                    onclick="event.stopPropagation();" title="Hapus">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+
                                 </tr>
                             @endforeach
                         @endif

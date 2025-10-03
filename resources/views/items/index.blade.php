@@ -40,11 +40,11 @@
                                                 Belum ada data barang
                                             @endif
                                         </p>
-                                        @if ($can_write ?? false)
-                                            <a href="{{ route('items.create') }}" class="btn btn-primary">
-                                                <i class="bi bi-plus"></i> Tambah Barang Pertama
-                                            </a>
-                                        @endif
+
+                                        <a href="{{ route('items.create') }}" class="btn btn-primary">
+                                            <i class="bi bi-plus"></i> Tambah Barang Pertama
+                                        </a>
+
                                     </div>
                                 </td>
                             </tr>

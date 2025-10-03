@@ -17,6 +17,7 @@ class Supplier extends Model
         'contact_person',
         'address',
         'status',
+        'description',
     ];
 
     // Relasi: Supplier punya banyak PurchaseOrder

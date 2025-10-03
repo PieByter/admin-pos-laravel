@@ -235,53 +235,51 @@ class ItemController extends Controller
     public function ajaxSaveUnit(Request $request)
     {
         $request->validate([
-            'unit_name' => 'required'
+            'name' => 'required'  // ✅ Ganti 'unit_name' dengan 'name' (dari form)
         ]);
 
         $unit = Unit::create([
-            'unit_name' => $request->name,
+            'unit_name' => $request->name,  // ✅ Save ke field 'unit_name' di database
             'description' => $request->description
         ]);
 
         return response()->json([
             'id' => $unit->id,
-            'unit_name' => $unit->name
+            'name' => $unit->unit_name  // ✅ Return 'unit_name' sebagai 'name'
         ]);
     }
 
     public function ajaxSaveCategory(Request $request)
     {
         $request->validate([
-            'category_name' => 'required'
+            'name' => 'required'  // ✅ Ganti 'category_name' dengan 'name' (dari form)
         ]);
 
         $category = ItemCategory::create([
-            'category_name' => $request->name,
+            'category_name' => $request->name,  // ✅ Save ke field 'category_name' di database
             'description' => $request->description
         ]);
 
         return response()->json([
             'id' => $category->id,
-            'category_name' => $category->name,
-            'description' => $category->description
+            'name' => $category->category_name  // ✅ Return 'category_name' sebagai 'name'
         ]);
     }
 
     public function ajaxSaveGroup(Request $request)
     {
         $request->validate([
-            'group_name' => 'required'
+            'name' => 'required'  // ✅ Ganti 'group_name' dengan 'name' (dari form)
         ]);
 
         $group = ItemGroup::create([
-            'group_name' => $request->name,
+            'group_name' => $request->name,  // ✅ Save ke field 'group_name' di database
             'description' => $request->description
         ]);
 
         return response()->json([
             'id' => $group->id,
-            'group_name' => $group->name,
-            'description' => $group->description
+            'name' => $group->group_name  // ✅ Return 'group_name' sebagai 'name'
         ]);
     }
 }

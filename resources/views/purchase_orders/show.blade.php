@@ -120,12 +120,11 @@
                         </div>
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
-                            @if ($can_write ?? false)
-                                <a href="{{ route('purchase-orders.edit', $purchaseOrder->id) }}"
-                                    class="btn btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                            @endif
+
+                            <a href="{{ route('purchase-orders.edit', $purchaseOrder->id) }}" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+
                             <a href="{{ route('purchase-orders.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('contact_person')->nullable();
             $table->text('address')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active')->comment('active, inactive');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

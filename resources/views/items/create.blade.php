@@ -39,7 +39,7 @@
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}"
                                                 {{ old('item_category_id') == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}
+                                                {{ $category->category_name }}
                                             </option>
                                         @endforeach
                                         <option value="tambah-baru">+ Tambah Jenis Barang Baru</option>
@@ -56,7 +56,7 @@
                                         @foreach ($groups as $group)
                                             <option value="{{ $group->id }}"
                                                 {{ old('item_group_id') == $group->id ? 'selected' : '' }}>
-                                                {{ $group->name }}
+                                                {{ $group->group_name }}
                                             </option>
                                         @endforeach
                                         <option value="tambah-baru">+ Tambah Group Barang Baru</option>
@@ -72,7 +72,7 @@
                                         @foreach ($units as $unit)
                                             <option value="{{ $unit->id }}"
                                                 {{ old('unit_id') == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->name }}
+                                                {{ $unit->unit_name }}
                                             </option>
                                         @endforeach
                                         <option value="tambah-baru">+ Tambah Satuan Baru</option>

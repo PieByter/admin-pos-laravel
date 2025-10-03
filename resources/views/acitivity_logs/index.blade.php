@@ -2,14 +2,12 @@
     <x-content-header title="Manajemen Log Aktivitas" breadcrumb-parent="SuperAdmin"
         breadcrumb-url="{{ route('activity-logs.index') }}" />
 
-    @if ($can_write ?? false)
-        <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ route('activity-logs.create') }}" class="btn btn-primary" id="btn-create-logs"
-                title="Tambah Log Aktivitas Baru">
-                <i class="bi bi-journal-plus"></i> Tambah Log Aktivitas Baru
-            </a>
-        </div>
-    @endif
+    <div id="custom-buttons" class="ms-3 mb-2">
+        <a href="{{ route('activity-logs.create') }}" class="btn btn-primary" id="btn-create-logs"
+            title="Tambah Log Aktivitas Baru">
+            <i class="bi bi-journal-plus"></i> Tambah Log Aktivitas Baru
+        </a>
+    </div>
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -21,9 +19,7 @@
                             <th style="width:15%;">Username</th>
                             <th style="width:45%;">Aktivitas</th>
                             <th style="width:25%;">Waktu Aktivitas</th>
-                            @if ($can_write ?? false)
-                                <th style="width:10%;">Aksi</th>
-                            @endif
+                            <th style="width:10%;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,11 +31,11 @@
                                         <p class="mt-2">
                                             Belum ada data log aktivitas.
                                         </p>
-                                        @if ($can_write ?? false)
-                                            <a href="{{ route('activity-logs.create') }}" class="btn btn-primary">
-                                                <i class="bi bi-plus"></i> Tambah Log Pertama
-                                            </a>
-                                        @endif
+
+                                        <a href="{{ route('activity-logs.create') }}" class="btn btn-primary">
+                                            <i class="bi bi-plus"></i> Tambah Log Pertama
+                                        </a>
+
                                     </div>
                                 </td>
                             </tr>
@@ -77,25 +73,25 @@
                                         @endphp
                                         {{ $tanggal }} ({{ $jam }})
                                     </td>
-                                    @if ($can_write ?? false)
-                                        <td class="text-center">
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('activity-logs.edit', $log->id) }}"
-                                                    class="btn btn-warning btn-sm" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="{{ route('activity-logs.destroy', $log->id) }}"
-                                                    method="POST" class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btn-hapus-log"
-                                                        title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    @endif
+
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('activity-logs.edit', $log->id) }}"
+                                                class="btn btn-warning btn-sm" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form action="{{ route('activity-logs.destroy', $log->id) }}"
+                                                method="POST" class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-log"
+                                                    title="Hapus">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+
                                 </tr>
                             @endforeach
                         @endif

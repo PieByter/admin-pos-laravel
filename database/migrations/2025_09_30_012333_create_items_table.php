@@ -37,9 +37,9 @@ return new class extends Migration
             $table->id();
             $table->string('item_code')->unique();
             $table->string('item_name');
-            $table->foreignId('item_group_id')->constrained('item_groups')->onDelete('set null');
-            $table->foreignId('item_category_id')->constrained('item_categories')->onDelete('set null');
-            $table->foreignId('unit_id')->constrained('units')->onDelete('restrict');
+            $table->foreignId('item_group_id')->nullable()->constrained('item_groups')->onDelete('set null');
+            $table->foreignId('item_category_id')->nullable()->constrained('item_categories')->onDelete('set null');
+            $table->foreignId('unit_id')->nullable()->constrained('units')->onDelete('restrict');
             $table->decimal('buy_price', 15, 2)->default(0);
             $table->decimal('sell_price', 15, 2)->default(0);
             $table->integer('stock')->default(0);

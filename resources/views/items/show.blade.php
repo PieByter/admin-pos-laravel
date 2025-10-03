@@ -44,7 +44,7 @@
                             <dd class="col-sm-7">{{ number_format($item->stock, 0, ',', '.') }}</dd> {{-- ✅ Sudah benar --}}
 
                             <dt class="col-sm-5">Keterangan</dt>
-                            <dd class="col-sm-7">{{ $item->description ?? '-' }}</dd> {{-- ✅ Atau items_description jika ada --}}
+                            <dd class="col-sm-7">{{ $item->item_description ?? '-' }}</dd> {{-- ✅ Atau items_description jika ada --}}
                         </dl>
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
@@ -52,11 +52,11 @@
                                 data-bs-target="#modalKonversi">
                                 <i class="bi bi-arrows-expand"></i> Konversi Satuan
                             </button>
-                            @if ($can_write ?? false)
+           
                                 <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
-                            @endif
+           
                             <a href="{{ route('items.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>

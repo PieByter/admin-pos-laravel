@@ -3,14 +3,14 @@
     <x-content-header title="Manajemen User" breadcrumb-parent="SuperAdmin"
         breadcrumb-url="{{ route('superadmin.users.index') }}" />
 
-    @if ($can_write ?? false)
-        <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary" id="btn-create-user"
-                title="Tambah User Baru">
-                <i class="bi bi-person-plus"></i> Tambah User Baru
-            </a>
-        </div>
-    @endif
+
+    <div id="custom-buttons" class="ms-3 mb-2">
+        <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary" id="btn-create-user"
+            title="Tambah User Baru">
+            <i class="bi bi-person-plus"></i> Tambah User Baru
+        </a>
+    </div>
+
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -26,9 +26,9 @@
                             <th style="width: 10%;">Jabatan</th>
                             <th style="width: 10%;">Bagian</th>
                             <th style="width: 40%;">Akses</th>
-                            @if ($can_write ?? false)
-                                <th style="width: 10%;">Aksi</th>
-                            @endif
+
+                            <th style="width: 10%;">Aksi</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -40,11 +40,10 @@
                                         <p class="mt-2">
                                             {{ $search ? 'Tidak ada user yang sesuai dengan pencarian "' . e($search) . '"' : 'Belum ada data user' }}
                                         </p>
-                                        @if ($can_write ?? false)
-                                            <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary">
-                                                <i class="bi bi-person-plus"></i> Tambah User Pertama
-                                            </a>
-                                        @endif
+
+                                        <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary">
+                                            <i class="bi bi-person-plus"></i> Tambah User Pertama
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
@@ -168,23 +167,23 @@
                                             <span class="text-muted small">Tidak ada akses</span>
                                         @endif
                                     </td>
-                                    @if ($can_write ?? false)
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('superadmin.users.edit', $user['id']) }}"
-                                                    class="btn btn-warning btn-sm" title="Edit User">
-                                                    <i class="bi bi-pencil"></i>
+
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('superadmin.users.edit', $user['id']) }}"
+                                                class="btn btn-warning btn-sm" title="Edit User">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            @if ($user['id'] != session('user_id'))
+                                                <a href="{{ route('superadmin.users.delete', $user['id']) }}"
+                                                    class="btn btn-danger btn-sm btn-hapus-user"
+                                                    onclick="event.stopPropagation();" title="Hapus User">
+                                                    <i class="bi bi-trash"></i>
                                                 </a>
-                                                @if ($user['id'] != session('user_id'))
-                                                    <a href="{{ route('superadmin.users.delete', $user['id']) }}"
-                                                        class="btn btn-danger btn-sm btn-hapus-user"
-                                                        onclick="event.stopPropagation();" title="Hapus User">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    @endif
+                                            @endif
+                                        </div>
+                                    </td>
+
                                 </tr>
                             @endforeach
                         @endif

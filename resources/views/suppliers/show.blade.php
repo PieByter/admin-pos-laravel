@@ -11,14 +11,20 @@
                             <dt class="col-sm-4">Nama</dt>
                             <dd class="col-sm-8">{{ $supplier->name }}</dd>
 
+                            <dt class="col-sm-4">Perusahaan</dt>
+                            <dd class="col-sm-8">{{ $supplier->company_name ?? '-' }}</dd>
+
+                            <dt class="col-sm-4">Contact Person</dt>
+                            <dd class="col-sm-8">{{ $supplier->contact_person ?? '-' }}</dd>
+
                             <dt class="col-sm-4">Alamat</dt>
                             <dd class="col-sm-8">{{ $supplier->address ?? '-' }}</dd>
 
                             <dt class="col-sm-4">No. Telp</dt>
-                            <dd class="col-sm-8">{{ $supplier->phone ?? '-' }}</dd>
+                            <dd class="col-sm-8">{{ $supplier->phone_number ?? '-' }}</dd>
 
                             <dt class="col-sm-4">Email</dt>
-                            <dd class="col-sm-8">{{ $supplier->email ?? '-' }}</dd>
+                            <dd class="col-sm-8">{{ $supplier->contact_email ?? '-' }}</dd>
 
                             <dt class="col-sm-4">Status</dt>
                             <dd class="col-sm-8">
@@ -34,11 +40,11 @@
                         </dl>
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
-                            @if ($can_write ?? false)
-                                <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                            @endif
+
+                            <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+
                             <a href="{{ route('suppliers.index') }}" class="btn btn-secondary ms-2"
                                 id="btn-back-supplier">
                                 <i class="bi bi-arrow-left"></i> Kembali
@@ -60,7 +66,6 @@
                 timerProgressBar: true
             });
 
-            // Success message
             @if (session('success'))
                 Toast.fire({
                     icon: 'success',
@@ -68,7 +73,6 @@
                 });
             @endif
 
-            // Error message
             @if (session('error'))
                 Toast.fire({
                     icon: 'error',

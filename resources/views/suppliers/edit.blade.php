@@ -1,4 +1,3 @@
-{{-- filepath: c:\laragon\www\admin-pos\resources\views\suppliers\edit.blade.php --}}
 <x-app-layout>
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
@@ -27,6 +26,35 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
+                                <label for="company_name" class="col-sm-3 col-form-label"><b>Perusahaan</b></label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="company_name" id="company_name"
+                                        class="form-control @error('company_name') is-invalid @enderror"
+                                        value="{{ old('company_name', $supplier->company_name) }}">
+                                    @error('company_name')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 align-items-center">
+                                <label for="contact_person" class="col-sm-3 col-form-label"><b>Contact
+                                        Person</b></label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="contact_person" id="contact_person"
+                                        class="form-control @error('contact_person') is-invalid @enderror"
+                                        value="{{ old('contact_person', $supplier->contact_person) }}">
+                                    @error('contact_person')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 align-items-center">
                                 <label for="address" class="col-sm-3 col-form-label"><b>Alamat</b></label>
                                 <div class="col-sm-9">
                                     <textarea name="address" id="address" class="form-control @error('address') is-invalid @enderror" rows="3">{{ old('address', $supplier->address) }}</textarea>
@@ -39,12 +67,12 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="phone" class="col-sm-3 col-form-label"><b>Nomor Telepon</b></label>
+                                <label for="phone_number" class="col-sm-3 col-form-label"><b>Nomor Telepon</b></label>
                                 <div class="col-sm-9">
-                                    <input type="tel" name="phone" id="phone"
-                                        class="form-control @error('phone') is-invalid @enderror"
-                                        value="{{ old('phone', $supplier->phone) }}">
-                                    @error('phone')
+                                    <input type="tel" name="phone_number" id="phone_number"
+                                        class="form-control @error('phone_number') is-invalid @enderror"
+                                        value="{{ old('phone_number', $supplier->phone_number) }}">
+                                    @error('phone_number')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -53,12 +81,12 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="email" class="col-sm-3 col-form-label"><b>Email</b></label>
+                                <label for="contact_email" class="col-sm-3 col-form-label"><b>Email</b></label>
                                 <div class="col-sm-9">
-                                    <input type="email" name="email" id="email"
-                                        class="form-control @error('email') is-invalid @enderror"
-                                        value="{{ old('email', $supplier->email) }}">
-                                    @error('email')
+                                    <input type="email" name="contact_email" id="contact_email"
+                                        class="form-control @error('contact_email') is-invalid @enderror"
+                                        value="{{ old('contact_email', $supplier->contact_email) }}">
+                                    @error('contact_email')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -70,6 +98,7 @@
                                 <label for="status" class="col-sm-3 col-form-label"><b>Status</b></label>
                                 <div class="col-sm-9">
                                     <div class="form-check form-switch">
+                                        <input type="hidden" name="status" value="inactive">
                                         <input class="form-check-input @error('status') is-invalid @enderror"
                                             type="checkbox" id="status" name="status" value="active"
                                             {{ old('status', $supplier->status) === 'active' ? 'checked' : '' }}>

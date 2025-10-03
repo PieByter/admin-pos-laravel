@@ -13,18 +13,20 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="name" class="form-label"><b>Nama Barang</b></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" name="name" value="{{ old('name', $item->name) }}" required>
-                                    @error('name')
+                                    <label for="item_name" class="form-label"><b>Nama Barang</b></label>
+                                    <input type="text" class="form-control @error('item_name') is-invalid @enderror"
+                                        id="item_name" name="item_name" value="{{ old('item_name', $item->item_name) }}"
+                                        required>
+                                    @error('item_name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="code" class="form-label"><b>Kode Barang</b></label>
-                                    <input type="text" class="form-control @error('code') is-invalid @enderror"
-                                        id="code" name="code" value="{{ old('code', $item->code) }}" required>
-                                    @error('code')
+                                    <label for="item_code" class="form-label"><b>Kode Barang</b></label>
+                                    <input type="text" class="form-control @error('item_code') is-invalid @enderror"
+                                        id="item_code" name="item_code" value="{{ old('item_code', $item->item_code) }}"
+                                        required>
+                                    @error('item_code')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -39,7 +41,7 @@
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}"
                                                 {{ old('item_category_id', $item->item_category_id) == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}
+                                                {{ $category->category_name }}
                                             </option>
                                         @endforeach
                                         <option value="tambah-baru">+ Tambah Jenis Baru</option>
@@ -56,7 +58,7 @@
                                         @foreach ($groups as $group)
                                             <option value="{{ $group->id }}"
                                                 {{ old('item_group_id', $item->item_group_id) == $group->id ? 'selected' : '' }}>
-                                                {{ $group->name }}
+                                                {{ $group->group_name }}
                                             </option>
                                         @endforeach
                                         <option value="tambah-baru">+ Tambah Group Baru</option>
@@ -72,7 +74,7 @@
                                         @foreach ($units as $unit)
                                             <option value="{{ $unit->id }}"
                                                 {{ old('unit_id', $item->unit_id) == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->name }}
+                                                {{ $unit->unit_name }}
                                             </option>
                                         @endforeach
                                         <option value="tambah-baru">+ Tambah Satuan Baru</option>
@@ -85,24 +87,22 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="purchase_price" class="form-label"><b>Harga Beli</b></label>
-                                    <input type="number"
-                                        class="form-control @error('purchase_price') is-invalid @enderror"
-                                        id="purchase_price" name="purchase_price"
-                                        value="{{ old('purchase_price', $item->purchase_price == intval($item->purchase_price) ? intval($item->purchase_price) : $item->purchase_price) }}"
+                                    <label for="buy_price" class="form-label"><b>Harga Beli</b></label>
+                                    <input type="number" class="form-control @error('buy_price') is-invalid @enderror"
+                                        id="buy_price" name="buy_price"
+                                        value="{{ old('buy_price', $item->buy_price == intval($item->buy_price) ? intval($item->buy_price) : $item->buy_price) }}"
                                         min="0" step="0.01">
-                                    @error('purchase_price')
+                                    @error('buy_price')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="selling_price" class="form-label"><b>Harga Jual</b></label>
-                                    <input type="number"
-                                        class="form-control @error('selling_price') is-invalid @enderror"
-                                        id="selling_price" name="selling_price"
-                                        value="{{ old('selling_price', $item->selling_price == intval($item->selling_price) ? intval($item->selling_price) : $item->selling_price) }}"
+                                    <label for="sell_price" class="form-label"><b>Harga Jual</b></label>
+                                    <input type="number" class="form-control @error('sell_price') is-invalid @enderror"
+                                        id="sell_price" name="sell_price"
+                                        value="{{ old('sell_price', $item->sell_price == intval($item->sell_price) ? intval($item->sell_price) : $item->sell_price) }}"
                                         min="0" step="0.01">
-                                    @error('selling_price')
+                                    @error('sell_price')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -121,7 +121,7 @@
                                 <div class="col-md-12">
                                     <label for="description" class="form-label"><b>Keterangan</b></label>
                                     <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                        rows="2">{{ old('description', $item->description) }}</textarea>
+                                        rows="2">{{ old('description', $item->item_description) }}</textarea>
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

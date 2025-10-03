@@ -1,16 +1,13 @@
 <x-app-layout>
-
     <x-content-header title="Manajemen Supplier" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('suppliers.index') }}" />
 
-    @if ($can_write ?? false)
-        <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ route('suppliers.create') }}" class="btn btn-primary" id="btn-create-supplier"
-                title="Tambah Supplier Baru">
-                <i class="bi bi-person-plus"></i> Tambah Supplier Baru
-            </a>
-        </div>
-    @endif
+    <div id="custom-buttons" class="ms-3 mb-2">
+        <a href="{{ route('suppliers.create') }}" class="btn btn-primary" id="btn-create-supplier"
+            title="Tambah Supplier Baru">
+            <i class="bi bi-person-plus"></i> Tambah Supplier Baru
+        </a>
+    </div>
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -21,14 +18,14 @@
                         <tr class="text-center">
                             <th style="width: 4%;">No</th>
                             <th style="width: 15%;">Nama</th>
-                            <th style="width: 30%;">Alamat</th>
+                            <th style="width: 18%;">Perusahaan</th>
+                            <th style="width: 13%;">Contact Person</th>
+                            <th style="width: 20%;">Alamat</th>
                             <th style="width: 13%;">No. Telepon</th>
-                            <th style="width: 20%;">Email</th>
-                            <th style="width: 10%;">Status</th>
-                            <th style="width: 10%;">Keterangan</th>
-                            @if ($can_write ?? false)
-                                <th style="width: 8%;">Aksi</th>
-                            @endif
+                            <th style="width: 15%;">Email</th>
+                            <th style="width: 8%;">Status</th>
+                            <th style="width: 15%;">Keterangan</th>
+                            <th style="width: 8%;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,11 +41,9 @@
                                                 Belum ada data supplier
                                             @endif
                                         </p>
-                                        @if ($can_write ?? false)
-                                            <a href="{{ route('suppliers.create') }}" class="btn btn-success">
-                                                <i class="bi bi-person-plus"></i> Tambah Supplier Pertama
-                                            </a>
-                                        @endif
+                                        <a href="{{ route('suppliers.create') }}" class="btn btn-success">
+                                            <i class="bi bi-person-plus"></i> Tambah Supplier Pertama
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
@@ -58,9 +53,11 @@
                                     onclick="window.location='{{ route('suppliers.show', $supplier->id) }}'">
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $supplier->name }}</td>
+                                    <td>{{ $supplier->company_name ?? '-' }}</td>
+                                    <td>{{ $supplier->contact_person ?? '-' }}</td>
                                     <td>{{ $supplier->address ?? '-' }}</td>
-                                    <td>{{ $supplier->phone ?? '-' }}</td>
-                                    <td>{{ $supplier->email ?? '-' }}</td>
+                                    <td>{{ $supplier->phone_number ?? '-' }}</td>
+                                    <td>{{ $supplier->contact_email ?? '-' }}</td>
                                     <td>
                                         @if ($supplier->status === 'active')
                                             <span class="badge bg-success">Aktif</span>
@@ -69,32 +66,25 @@
                                         @endif
                                     </td>
                                     <td>{{ $supplier->description ?? '-' }}</td>
-                                    @if ($can_write ?? false)
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('suppliers.show', $supplier->id) }}"
-                                                    class="btn btn-sm btn-info" title="Detail Supplier"
-                                                    onclick="event.stopPropagation();">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('suppliers.edit', $supplier->id) }}"
-                                                    class="btn btn-sm btn-warning" title="Edit Supplier"
-                                                    onclick="event.stopPropagation();">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="{{ route('suppliers.destroy', $supplier->id) }}"
-                                                    method="POST" class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="btn btn-danger btn-sm btn-hapus-supplier"
-                                                        onclick="event.stopPropagation();" title="Hapus Supplier">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    @endif
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('suppliers.show', $supplier->id) }}"
+                                                class="btn btn-sm btn-info" title="Detail Supplier"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ route('suppliers.edit', $supplier->id) }}"
+                                                class="btn btn-sm btn-warning" title="Edit Supplier"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-danger btn-sm btn-hapus-supplier"
+                                                data-id="{{ $supplier->id }}" title="Hapus Supplier"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         @endif
@@ -103,6 +93,11 @@
             </div>
         </div>
     </div>
+
+    <form id="form-delete-supplier" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -133,8 +128,7 @@
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    const form = btn.closest('.delete-form');
-
+                    const supplierId = btn.getAttribute('data-id');
                     Swal.fire({
                         title: 'Yakin ingin menghapus supplier ini?',
                         text: 'Data supplier yang dihapus tidak bisa dikembalikan!',
@@ -146,6 +140,9 @@
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            // Set action form dan submit
+                            const form = document.getElementById('form-delete-supplier');
+                            form.setAttribute('action', '/suppliers/' + supplierId);
                             form.submit();
                         }
                     });

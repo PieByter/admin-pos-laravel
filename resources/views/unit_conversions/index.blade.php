@@ -3,13 +3,13 @@
     <x-content-header title="Manajemen Satuan Konversi" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('unit-conversions.index') }}" />
 
-    @if ($can_write ?? false)
-        <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ route('unit-conversions.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus"></i> Tambah Konversi Baru
-            </a>
-        </div>
-    @endif
+
+    <div id="custom-buttons" class="ms-3 mb-2">
+        <a href="{{ route('unit-conversions.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus"></i> Tambah Konversi Baru
+        </a>
+    </div>
+
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -23,9 +23,9 @@
                             <th style="width:15%;">Satuan</th>
                             <th style="width:15%;">Konversi</th>
                             <th style="width:35%;">Keterangan</th>
-                            @if ($can_write ?? false)
-                                <th style="width:10%;">Aksi</th>
-                            @endif
+
+                            <th style="width:10%;">Aksi</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -41,11 +41,11 @@
                                                 Belum ada data konversi
                                             @endif
                                         </p>
-                                        @if ($can_write ?? false)
-                                            <a href="{{ route('unit-conversions.create') }}" class="btn btn-primary">
-                                                <i class="bi bi-plus"></i> Tambah Konversi Pertama
-                                            </a>
-                                        @endif
+
+                                        <a href="{{ route('unit-conversions.create') }}" class="btn btn-primary">
+                                            <i class="bi bi-plus"></i> Tambah Konversi Pertama
+                                        </a>
+
                                     </div>
                                 </td>
                             </tr>
@@ -57,29 +57,29 @@
                                     <td>{{ $conversion->unit_name ?? '-' }}</td>
                                     <td>{{ number_format($conversion->conversion_rate, 2) }}</td>
                                     <td>{{ $conversion->description ?? '-' }}</td>
-                                    @if ($can_write ?? false)
-                                        <td class="text-center">
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('unit-conversions.show', $conversion->id) }}"
-                                                    class="btn btn-info btn-sm" title="Detail">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('unit-conversions.edit', $conversion->id) }}"
-                                                    class="btn btn-warning btn-sm" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="{{ route('unit-conversions.destroy', $conversion->id) }}"
-                                                    method="POST" class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="btn btn-danger btn-sm btn-hapus-konversi" title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    @endif
+
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('unit-conversions.show', $conversion->id) }}"
+                                                class="btn btn-info btn-sm" title="Detail">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ route('unit-conversions.edit', $conversion->id) }}"
+                                                class="btn btn-warning btn-sm" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form action="{{ route('unit-conversions.destroy', $conversion->id) }}"
+                                                method="POST" class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-konversi"
+                                                    title="Hapus">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+
                                 </tr>
                             @endforeach
                         @endif

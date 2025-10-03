@@ -9,55 +9,53 @@ use App\Models\ActivityLog;
 
 class CustomerController extends Controller
 {
-    private function canRead(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('customer', $permissions) || in_array('customer_read', $permissions);
-    }
+    // private function canRead(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('customer', $permissions) || in_array('customer_read', $permissions);
+    // }
 
-    private function canWrite(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('customer', $permissions);
-    }
+    // private function canWrite(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('customer', $permissions);
+    // }
 
-    private function requireReadAccess(): void
-    {
-        if (!$this->canRead()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireReadAccess(): void
+    // {
+    //     if (!$this->canRead()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function requireWriteAccess(): void
-    {
-        if (!$this->canWrite()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireWriteAccess(): void
+    // {
+    //     if (!$this->canWrite()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function getPermissionData(): array
-    {
-        return [
-            'can_read' => $this->canRead(),
-            'can_write' => $this->canWrite()
-        ];
-    }
+    // private function getPermissionData(): array
+    // {
+    //     return [
+    //         'can_read' => $this->canRead(),
+    //         'can_write' => $this->canWrite()
+    //     ];
+    // }
 
     // Tampilkan daftar customer
     public function index()
     {
-        $this->requireReadAccess();
+        $customers = Customer::orderBy('name', 'ASC')->get();
 
-        $customers = Customer::orderBy('name', 'ASC')->get()->toArray();
-
-        $data = array_merge($this->getPermissionData(), [
+        $data =  [
             'title' => 'Manajemen Customer',
             'customers' => $customers,
-        ]);
+        ];
 
         return view('customers.index', $data);
     }
@@ -65,8 +63,6 @@ class CustomerController extends Controller
     // Tampilkan form tambah customer
     public function create()
     {
-        $this->requireWriteAccess();
-
         $data = [
             'title' => 'Tambah Customer Baru'
         ];
@@ -77,29 +73,34 @@ class CustomerController extends Controller
     // Simpan customer baru
     public function store(Request $request)
     {
-        $this->requireWriteAccess();
-
         $request->validate([
             'name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'contact_person' => 'nullable|string|max:255',
             'address' => 'required|string',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|unique:customers,email',
+            'phone_number' => 'required|string|max:20',
+            'contact_email' => 'required|email|unique:customers,contact_email',
+            'status' => 'required|in:active,inactive',
             'description' => 'nullable|string'
         ], [
             'name.required' => 'Nama customer wajib diisi',
             'address.required' => 'Alamat wajib diisi',
-            'phone.required' => 'No. telepon wajib diisi',
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah digunakan customer lain'
+            'phone_number.required' => 'No. telepon wajib diisi',
+            'contact_email.required' => 'Email wajib diisi',
+            'contact_email.email' => 'Format email tidak valid',
+            'contact_email.unique' => 'Email sudah digunakan customer lain',
+            'status.required' => 'Status wajib dipilih',
+            'status.in' => 'Status harus active atau inactive'
         ]);
 
         Customer::create([
             'name' => $request->name,
+            'company_name' => $request->company_name,
+            'contact_person' => $request->contact_person,
             'address' => $request->address,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'status' => $request->status ?? $request->status_hidden ?? 'active',
+            'phone_number' => $request->phone_number,
+            'contact_email' => $request->contact_email,
+            'status' => $request->status ?? 'active',
             'description' => $request->description
         ]);
 
@@ -121,26 +122,6 @@ class CustomerController extends Controller
     // Tampilkan detail customer
     public function show($id)
     {
-        $this->requireReadAccess();
-
-        $customer = Customer::find($id);
-        if (!$customer) {
-            return redirect()->route('customers.index')
-                ->with('error', 'Customer tidak ditemukan');
-        }
-
-        $data = array_merge($this->getPermissionData(), [
-            'title' => 'Detail Customer',
-            'customer' => $customer->toArray()
-        ]);
-
-        return view('customers.show', $data);
-    }
-
-    // Tampilkan form edit customer
-    public function edit($id)
-    {
-        $this->requireWriteAccess();
 
         $customer = Customer::find($id);
         if (!$customer) {
@@ -149,8 +130,25 @@ class CustomerController extends Controller
         }
 
         $data = [
+            'title' => 'Detail Customer',
+            'customer' => $customer
+        ];
+
+        return view('customers.show', $data);
+    }
+
+    // Tampilkan form edit customer
+    public function edit($id)
+    {
+        $customer = Customer::find($id);
+        if (!$customer) {
+            return redirect()->route('customers.index')
+                ->with('error', 'Customer tidak ditemukan');
+        }
+
+        $data = [
             'title' => 'Edit Data Customer',
-            'customer' => $customer->toArray()
+            'customer' => $customer
         ];
 
         return view('customers.edit', $data);
@@ -159,7 +157,6 @@ class CustomerController extends Controller
     // Update customer
     public function update(Request $request, $id)
     {
-        $this->requireWriteAccess();
 
         $customer = Customer::find($id);
         if (!$customer) {
@@ -169,25 +166,32 @@ class CustomerController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'contact_person' => 'nullable|string|max:255',
             'address' => 'required|string',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|unique:customers,email,' . $id,
+            'phone_number' => 'required|string|max:20',
+            'contact_email' => 'required|email|unique:customers,contact_email,' . $id,
+            'status' => 'required|in:active,inactive',
             'description' => 'nullable|string'
         ], [
             'name.required' => 'Nama customer wajib diisi',
             'address.required' => 'Alamat wajib diisi',
-            'phone.required' => 'No. telepon wajib diisi',
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah digunakan customer lain'
+            'phone_number.required' => 'No. telepon wajib diisi',
+            'contact_email.required' => 'Email wajib diisi',
+            'contact_email.email' => 'Format email tidak valid',
+            'contact_email.unique' => 'Email sudah digunakan customer lain',
+            'status.required' => 'Status wajib dipilih',
+            'status.in' => 'Status harus active atau inactive'
         ]);
 
         $customer->update([
             'name' => $request->name,
+            'company_name' => $request->company_name,
+            'contact_person' => $request->contact_person,
             'address' => $request->address,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'status' => $request->status ?? $request->status_hidden ?? $customer->status,
+            'phone_number' => $request->phone_number,
+            'contact_email' => $request->contact_email,
+            'status' => $request->status ?? $customer->status,
             'description' => $request->description
         ]);
 
@@ -209,7 +213,6 @@ class CustomerController extends Controller
     // Hapus customer
     public function destroy($id)
     {
-        $this->requireWriteAccess();
 
         $customer = Customer::find($id);
         if (!$customer) {
@@ -238,7 +241,6 @@ class CustomerController extends Controller
     // Method tambahan untuk change status
     public function changeStatus($id, $status)
     {
-        $this->requireWriteAccess();
 
         $customer = Customer::find($id);
         if (!$customer) {
@@ -273,7 +275,6 @@ class CustomerController extends Controller
     // Method untuk search customers (AJAX)
     public function search(Request $request)
     {
-        $this->requireReadAccess();
 
         $query = $request->get('q');
         $customers = Customer::where('name', 'LIKE', "%{$query}%")
@@ -289,7 +290,6 @@ class CustomerController extends Controller
     // Method untuk export customers (opsional)
     public function export()
     {
-        $this->requireReadAccess();
 
         $customers = Customer::orderBy('name', 'ASC')->get();
 

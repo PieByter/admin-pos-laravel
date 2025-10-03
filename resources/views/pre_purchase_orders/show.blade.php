@@ -137,42 +137,41 @@
                                 class="btn btn-success">
                                 <i class="bi bi-printer"></i> Print PDF
                             </a>
-                            @if ($can_write ?? false)
-                                <a href="{{ route('pre-purchase-orders.edit', $prePurchaseOrder->id) }}"
-                                    class="btn btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit PO
-                                </a>
-                            @endif
+
+                            <a href="{{ route('pre-purchase-orders.edit', $prePurchaseOrder->id) }}"
+                                class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Edit PO
+                            </a>
+
                             <a href="{{ route('pre-purchase-orders.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>
                         </div>
                     </div>
 
-                    @if ($can_write ?? false)
-                        <div class="card-footer text-center">
-                            <div class="d-flex justify-content-center align-items-center gap-2">
-                                @if (!in_array($prePurchaseOrder->status, ['completed', 'return', 'cancelled']))
-                                    <form
-                                        action="{{ route('pre-purchase-orders.mark-completed', $prePurchaseOrder->id) }}"
-                                        method="post" style="display:inline;">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn btn-success"
-                                            onclick="return confirm('Tandai PO ini selesai dan otomatis masuk ke pembelian?\n\nPerhatian: Proses ini hanya bisa dilakukan sekali!')">
-                                            <i class="bi bi-check-circle"></i> Tandai Selesai & Masukkan ke Pembelian
-                                        </button>
-                                    </form>
-                                @elseif ($prePurchaseOrder->status === 'completed')
-                                    <span class="badge bg-success fs-5">Purchase Order Sudah Ditandai Selesai</span>
-                                @elseif ($prePurchaseOrder->status === 'return')
-                                    <span class="badge bg-warning fs-5">Purchase Order Retur</span>
-                                @elseif ($prePurchaseOrder->status === 'cancelled')
-                                    <span class="badge bg-danger fs-5">Purchase Order Dibatalkan</span>
-                                @endif
-                            </div>
+
+                    <div class="card-footer text-center">
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            @if (!in_array($prePurchaseOrder->status, ['completed', 'return', 'cancelled']))
+                                <form action="{{ route('pre-purchase-orders.mark-completed', $prePurchaseOrder->id) }}"
+                                    method="post" style="display:inline;">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-success"
+                                        onclick="return confirm('Tandai PO ini selesai dan otomatis masuk ke pembelian?\n\nPerhatian: Proses ini hanya bisa dilakukan sekali!')">
+                                        <i class="bi bi-check-circle"></i> Tandai Selesai & Masukkan ke Pembelian
+                                    </button>
+                                </form>
+                            @elseif ($prePurchaseOrder->status === 'completed')
+                                <span class="badge bg-success fs-5">Purchase Order Sudah Ditandai Selesai</span>
+                            @elseif ($prePurchaseOrder->status === 'return')
+                                <span class="badge bg-warning fs-5">Purchase Order Retur</span>
+                            @elseif ($prePurchaseOrder->status === 'cancelled')
+                                <span class="badge bg-danger fs-5">Purchase Order Dibatalkan</span>
+                            @endif
                         </div>
-                    @endif
+                    </div>
+
                 </div>
             </div>
         </div>
