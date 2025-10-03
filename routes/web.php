@@ -67,9 +67,15 @@ Route::middleware(['auth'])->group(function () {
     // Master Data - Items
     Route::resource('items', ItemController::class);
     Route::prefix('items')->name('items.')->group(function () {
-        Route::post('units/ajax-save', [ItemController::class, 'ajaxSaveUnit'])->name('units.ajax-save');
-        Route::post('types/ajax-save', [ItemController::class, 'ajaxSaveType'])->name('types.ajax-save');
-        Route::post('groups/ajax-save', [ItemController::class, 'ajaxSaveGroup'])->name('groups.ajax-save');
+        Route::get('search', [ItemController::class, 'search'])->name('search');
+        Route::get('export', [ItemController::class, 'export'])->name('export');
+        Route::post('import', [ItemController::class, 'import'])->name('import');
+        // Route::post('units/ajax-save', [ItemController::class, 'ajaxSaveUnit'])->name('units.ajax-save');
+        // Route::post('types/ajax-save', [ItemController::class, 'ajaxSaveType'])->name('types.ajax-save');
+        // Route::post('groups/ajax-save', [ItemController::class, 'ajaxSaveGroup'])->name('groups.ajax-save');
+        Route::post('units/ajax-save', [UnitController::class, 'ajaxSave'])->name('units.ajax-save');
+        Route::post('item-categories/ajax-save', [ItemCategoryController::class, 'ajaxSave'])->name('item-categories.ajax-save');
+        Route::post('item-groups/ajax-save', [ItemGroupController::class, 'ajaxSave'])->name('item-groups.ajax-save');
     });
 
     // Master Data - Units

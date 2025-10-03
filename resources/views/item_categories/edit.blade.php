@@ -7,15 +7,14 @@
                         <h5 class="card-title mb-0"><i class="bi bi-tags"></i> Edit Jenis Barang</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('item-categories.update', $itemCategories->id) }}" method="post">
+                        <form action="{{ route('item-categories.update', $category->id) }}" method="post">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">
                                 <label for="category_name" class="form-label"><b>Nama Jenis Barang</b></label>
                                 <input type="text" name="category_name" id="category_name"
                                     class="form-control @error('category_name') is-invalid @enderror"
-                                    value="{{ old('category_name', $itemCategories->category_name) }}" required
-                                    autofocus>
+                                    value="{{ old('category_name', $category->category_name) }}" required autofocus>
                                 @error('category_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -25,7 +24,7 @@
                                 <label for="description" class="form-label"><b>Keterangan</b></label>
                                 <input type="text" name="description" id="description"
                                     class="form-control @error('description') is-invalid @enderror"
-                                    value="{{ old('description', $itemCategories->description) }}">
+                                    value="{{ old('description', $category->description) }}">
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

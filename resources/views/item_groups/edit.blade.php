@@ -7,7 +7,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-tags"></i> Edit Group Barang</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('item-groups.update', $itemGroup->id) }}" method="post">
+                        <form action="{{ route('item-groups.update', $group->id) }}" method="post">
                             @csrf
                             @method('PUT')
 
@@ -15,7 +15,7 @@
                                 <label for="group_name" class="form-label"><b>Nama Group Barang</b></label>
                                 <input type="text" name="group_name" id="group_name"
                                     class="form-control @error('group_name') is-invalid @enderror"
-                                    value="{{ old('group_name', $itemGroup->group_name) }}" required autofocus>
+                                    value="{{ old('group_name', $group->group_name) }}" required autofocus>
                                 @error('group_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -25,7 +25,7 @@
                                 <label for="description" class="form-label"><b>Keterangan</b></label>
                                 <input type="text" name="description" id="description"
                                     class="form-control @error('description') is-invalid @enderror"
-                                    value="{{ old('description', $itemGroup->description) }}">
+                                    value="{{ old('description', $group->description) }}">
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

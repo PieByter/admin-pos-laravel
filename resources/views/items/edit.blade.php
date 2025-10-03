@@ -32,19 +32,19 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="item_type_id" class="form-label"><b>Jenis Barang</b></label>
-                                    <select class="form-select @error('item_type_id') is-invalid @enderror"
-                                        id="item_type_id" name="item_type_id" required>
+                                    <label for="item_category_id" class="form-label"><b>Jenis Barang</b></label>
+                                    <select class="form-select @error('item_category_id') is-invalid @enderror"
+                                        id="item_category_id" name="item_category_id" required>
                                         <option value="">- Pilih Jenis -</option>
-                                        @foreach ($itemTypes as $type)
-                                            <option value="{{ $type->id }}"
-                                                {{ old('item_type_id', $item->item_type_id) == $type->id ? 'selected' : '' }}>
-                                                {{ $type->name }}
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ old('item_category_id', $item->item_category_id) == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
                                             </option>
                                         @endforeach
                                         <option value="tambah-baru">+ Tambah Jenis Baru</option>
                                     </select>
-                                    @error('item_type_id')
+                                    @error('item_category_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -53,7 +53,7 @@
                                     <select class="form-select @error('item_group_id') is-invalid @enderror"
                                         id="item_group_id" name="item_group_id" required>
                                         <option value="">- Pilih Group -</option>
-                                        @foreach ($itemGroups as $group)
+                                        @foreach ($groups as $group)
                                             <option value="{{ $group->id }}"
                                                 {{ old('item_group_id', $item->item_group_id) == $group->id ? 'selected' : '' }}>
                                                 {{ $group->name }}
@@ -301,7 +301,7 @@
             document.getElementById('formTambahJenis').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const form = e.target;
-                fetch('{{ route('item-types.ajax-save') }}', {
+                fetch('{{ route('item-categories.ajax-save') }}', {
                         method: 'POST',
                         body: new FormData(form)
                     })

@@ -13,18 +13,18 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="name" class="form-label"><b>Nama Barang</b></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" name="name" value="{{ old('name') }}" required>
-                                    @error('name')
+                                    <label for="item_name" class="form-label"><b>Nama Barang</b></label>
+                                    <input type="text" class="form-control @error('item_name') is-invalid @enderror"
+                                        id="item_name" name="item_name" value="{{ old('item_name') }}" required>
+                                    @error('item_name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="code" class="form-label"><b>Kode Barang</b></label>
-                                    <input type="text" class="form-control @error('code') is-invalid @enderror"
-                                        id="code" name="code" value="{{ old('code') }}" required>
-                                    @error('code')
+                                    <label for="item_code" class="form-label"><b>Kode Barang</b></label>
+                                    <input type="text" class="form-control @error('item_code') is-invalid @enderror"
+                                        id="item_code" name="item_code" value="{{ old('item_code') }}" required>
+                                    @error('item_code')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -32,14 +32,14 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="item_type_id" class="form-label"><b>Jenis Barang</b></label>
-                                    <select class="form-select @error('item_type_id') is-invalid @enderror"
-                                        id="item_type_id" name="item_type_id" required>
+                                    <label for="item_category_id" class="form-label"><b>Jenis Barang</b></label>
+                                    <select class="form-select @error('item_category_id') is-invalid @enderror"
+                                        id="item_category_id" name="item_category_id" required>
                                         <option value="">- Pilih Jenis -</option>
-                                        @foreach ($itemTypes as $type)
-                                            <option value="{{ $type->id }}"
-                                                {{ old('item_type_id') == $type->id ? 'selected' : '' }}>
-                                                {{ $type->name }}
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}"
+                                                {{ old('item_category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
                                             </option>
                                         @endforeach
                                         <option value="tambah-baru">+ Tambah Jenis Barang Baru</option>
@@ -53,7 +53,7 @@
                                     <select class="form-select @error('item_group_id') is-invalid @enderror"
                                         id="item_group_id" name="item_group_id" required>
                                         <option value="">- Pilih Group -</option>
-                                        @foreach ($itemGroups as $group)
+                                        @foreach ($groups as $group)
                                             <option value="{{ $group->id }}"
                                                 {{ old('item_group_id') == $group->id ? 'selected' : '' }}>
                                                 {{ $group->name }}
@@ -85,22 +85,20 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="purchase_price" class="form-label"><b>Harga Beli</b></label>
-                                    <input type="number"
-                                        class="form-control @error('purchase_price') is-invalid @enderror"
-                                        id="purchase_price" name="purchase_price" value="{{ old('purchase_price') }}"
-                                        min="0" step="0.01">
-                                    @error('purchase_price')
+                                    <label for="buy_price" class="form-label"><b>Harga Beli</b></label>
+                                    <input type="number" class="form-control @error('buy_price') is-invalid @enderror"
+                                        id="buy_price" name="buy_price" value="{{ old('buy_price') }}" min="0"
+                                        step="0.01">
+                                    @error('buy_price')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="selling_price" class="form-label"><b>Harga Jual</b></label>
-                                    <input type="number"
-                                        class="form-control @error('selling_price') is-invalid @enderror"
-                                        id="selling_price" name="selling_price" value="{{ old('selling_price') }}"
+                                    <label for="sell_price" class="form-label"><b>Harga Jual</b></label>
+                                    <input type="number" class="form-control @error('sell_price') is-invalid @enderror"
+                                        id="sell_price" name="sell_price" value="{{ old('sell_price') }}"
                                         min="0" step="0.01">
-                                    @error('selling_price')
+                                    @error('sell_price')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -242,7 +240,7 @@
                 }
             });
 
-            document.getElementById('item_type_id').addEventListener('change', function() {
+            document.getElementById('item_category_id').addEventListener('change', function() {
                 if (this.value === 'tambah-baru') {
                     showModalTambahJenis();
                     this.value = '';
@@ -297,14 +295,14 @@
             document.getElementById('formTambahJenis').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const form = e.target;
-                fetch('{{ route('item-types.ajax-save') }}', {
+                fetch('{{ route('item-categories.ajax-save') }}', {
                         method: 'POST',
                         body: new FormData(form)
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.id && data.name) {
-                            const dropdown = document.getElementById('item_type_id');
+                            const dropdown = document.getElementById('item_category_id');
                             const option = document.createElement('option');
                             option.value = data.id;
                             option.textContent = data.name;

@@ -25,7 +25,6 @@ class UnitsSeeder extends Seeder
             ['unit_name' => 'Meter', 'description' => 'Length in meters'],
             ['unit_name' => 'Centimeter', 'description' => 'Length in centimeters'],
             ['unit_name' => 'Box', 'description' => 'Items sold in boxes'],
-            ['unit_name' => 'Pack', 'description' => 'Items sold in packs'],
             ['unit_name' => 'Dozen', 'description' => 'Set of 12 items'],
             ['unit_name' => 'Pair', 'description' => 'Set of 2 items'],
             ['unit_name' => 'Set', 'description' => 'Complete set of items'],

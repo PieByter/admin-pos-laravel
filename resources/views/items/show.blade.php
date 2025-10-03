@@ -1,3 +1,4 @@
+{{-- filepath: c:\laragon\www\admin-pos\resources\views\items\show.blade.php --}}
 <x-app-layout>
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
@@ -9,41 +10,41 @@
                     <div class="card-body">
                         <dl class="row mb-4">
                             <dt class="col-sm-5">Kode Barang</dt>
-                            <dd class="col-sm-7">{{ $item->code }}</dd>
+                            <dd class="col-sm-7">{{ $item->item_code }}</dd> {{-- ✅ Ganti code dengan items_code --}}
 
                             <dt class="col-sm-5">Nama Barang</dt>
-                            <dd class="col-sm-7">{{ $item->name }}</dd>
+                            <dd class="col-sm-7">{{ $item->item_name }}</dd> {{-- ✅ Ganti name dengan items_name --}}
 
                             <dt class="col-sm-5">Jenis Barang</dt>
-                            <dd class="col-sm-7">{{ $item->itemType->name ?? '-' }}</dd>
+                            <dd class="col-sm-7">{{ $item->itemCategory->category_name ?? '-' }}</dd> {{-- ✅ Ganti itemType->name dengan itemCategory->category_name --}}
 
                             <dt class="col-sm-5">Group Barang</dt>
-                            <dd class="col-sm-7">{{ $item->itemGroup->name ?? '-' }}</dd>
+                            <dd class="col-sm-7">{{ $item->itemGroup->group_name ?? '-' }}</dd> {{-- ✅ Ganti name dengan group_name --}}
 
                             <dt class="col-sm-5">Satuan Utama</dt>
-                            <dd class="col-sm-7">{{ $item->unit->name ?? '-' }}</dd>
+                            <dd class="col-sm-7">{{ $item->unit->unit_name ?? '-' }}</dd> {{-- ✅ Ganti name dengan unit_name --}}
 
                             <dt class="col-sm-5">Harga Beli</dt>
                             <dd class="col-sm-7">
                                 Rp.
-                                {{ $item->purchase_price == intval($item->purchase_price)
-                                    ? number_format($item->purchase_price, 0, ',', '.')
-                                    : number_format($item->purchase_price, 2, ',', '.') }}
+                                {{ $item->buy_price == intval($item->buy_price) {{-- ✅ Ganti purchase_price dengan buy_price --}}
+                                    ? number_format($item->buy_price, 0, ',', '.')
+                                    : number_format($item->buy_price, 2, ',', '.') }}
                             </dd>
 
                             <dt class="col-sm-5">Harga Jual</dt>
                             <dd class="col-sm-7">
                                 Rp.
-                                {{ $item->selling_price == intval($item->selling_price)
-                                    ? number_format($item->selling_price, 0, ',', '.')
-                                    : number_format($item->selling_price, 2, ',', '.') }}
+                                {{ $item->sell_price == intval($item->sell_price) {{-- ✅ Ganti selling_price dengan sell_price --}}
+                                    ? number_format($item->sell_price, 0, ',', '.')
+                                    : number_format($item->sell_price, 2, ',', '.') }}
                             </dd>
 
                             <dt class="col-sm-5">Stok</dt>
-                            <dd class="col-sm-7">{{ number_format($item->stock, 0, ',', '.') }}</dd>
+                            <dd class="col-sm-7">{{ number_format($item->stock, 0, ',', '.') }}</dd> {{-- ✅ Sudah benar --}}
 
                             <dt class="col-sm-5">Keterangan</dt>
-                            <dd class="col-sm-7">{{ $item->description ?? '-' }}</dd>
+                            <dd class="col-sm-7">{{ $item->description ?? '-' }}</dd> {{-- ✅ Atau items_description jika ada --}}
                         </dl>
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
@@ -84,10 +85,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($unitConversions as $conversion)
+                                @forelse ($item->unitConversions as $conversion) {{-- ✅ Hilangkan huruf 's' yang dobel --}}
                                     <tr>
-                                        <td>{{ $conversion->unit->name ?? '-' }}</td>
-                                        <td>{{ number_format($conversion->conversion_rate, 0, ',', '.') }}</td>
+                                        <td>{{ $conversion->fromUnit->unit_name ?? '-' }} →
+                                            {{ $conversion->toUnit->unit_name ?? '-' }}</td>
+                                        <td>{{ number_format($conversion->conversion_value, 0, ',', '.') }}</td> {{-- ✅ Ganti conversion_rate dengan conversion_value --}}
                                         <td>{{ $conversion->description ?? '-' }}</td>
                                     </tr>
                                 @empty

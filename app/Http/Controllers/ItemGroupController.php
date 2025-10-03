@@ -137,7 +137,7 @@ class ItemGroupController extends Controller
         }
 
         return view('item_groups.edit', [
-            'itemGroup' => $itemGroup,
+            'group' => $itemGroup,
             'title' => 'Edit Group Barang'
         ]);
     }

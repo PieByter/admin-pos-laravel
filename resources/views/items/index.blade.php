@@ -2,33 +2,29 @@
     <x-content-header title="Manajemen Barang" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('items.index') }}" />
 
-    @if ($can_write ?? false)
-        <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ route('items.create') }}" class="btn btn-primary" id="btn-create-barang" title="Tambah Barang Baru">
-                <i class="bi bi-plus"></i> Tambah Barang Baru
-            </a>
-        </div>
-    @endif
+    <div id="custom-buttons" class="ms-3 mb-2">
+        <a href="{{ route('items.create') }}" class="btn btn-primary" id="btn-create-barang" title="Tambah Barang Baru">
+            <i class="bi bi-plus"></i> Tambah Barang Baru
+        </a>
+    </div>
 
     <div class="content">
         <div class="container-fluid mb-3">
             <div class="table-responsive" id="barang-table-container">
                 <table class="table table-striped table-hover table-bordered align-middle table-sm small"
-                    id="barangTable" style="table-layout: fixed; width: 100%;">
+                    id="barangTable"> {{-- style="table-layout: fixed; width: 100%;"> --- IGNORE --}}
                     <thead class="table-light">
                         <tr class="text-center">
-                            <th style="width: 4%;">No</th>
-                            <th style="width: 10%;">Kode Barang</th>
-                            <th style="width: 25%;">Nama Barang</th>
-                            <th style="width: 10%;">Jenis</th>
-                            <th style="width: 15%;">Group</th>
-                            <th style="width: 10%;">Satuan</th>
-                            <th style="width: 10%;">Harga Beli</th>
-                            <th style="width: 10%;">Harga Jual</th>
-                            <th style="width: 10%;">Stok</th>
-                            @if ($can_write ?? false)
-                                <th style="width: 10%;">Aksi</th>
-                            @endif
+                            <th>No</th>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Jenis</th>
+                            <th>Group</th>
+                            <th>Satuan</th>
+                            <th>Harga Beli</th>
+                            <th>Harga Jual</th>
+                            <th>Stok</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,22 +53,22 @@
                                 <tr class="text-center" style="cursor:pointer;"
                                     onclick="window.location='{{ route('items.show', $item->id) }}'">
                                     <td>{{ $index + 1 }}</td>
-                                    <td class="text-truncate">{{ $item->code }}</td>
-                                    <td class="text-truncate">{{ $item->name }}</td>
-                                    <td>{{ $item->itemType->name ?? '-' }}</td>
-                                    <td>{{ $item->itemGroup->name ?? '-' }}</td>
-                                    <td>{{ $item->unit->name ?? '-' }}</td>
+                                    <td class="text-truncate">{{ $item->item_code }}</td>
+                                    <td class="text-truncate">{{ $item->item_name }}</td>
+                                    <td>{{ $item->itemCategory->category_name ?? '-' }}</td>
+                                    <td>{{ $item->itemGroup->group_name ?? '-' }}</td>
+                                    <td>{{ $item->unit->unit_name ?? '-' }}</td>
                                     <td>
                                         Rp.
-                                        {{ $item->purchase_price == intval($item->purchase_price)
-                                            ? number_format($item->purchase_price, 0, ',', '.')
-                                            : number_format($item->purchase_price, 2, ',', '.') }}
+                                        {{ $item->buy_price == intval($item->buy_price)
+                                            ? number_format($item->buy_price, 0, ',', '.')
+                                            : number_format($item->buy_price, 2, ',', '.') }}
                                     </td>
                                     <td>
                                         Rp.
-                                        {{ $item->selling_price == intval($item->selling_price)
-                                            ? number_format($item->selling_price, 0, ',', '.')
-                                            : number_format($item->selling_price, 2, ',', '.') }}
+                                        {{ $item->sell_price == intval($item->sell_price)
+                                            ? number_format($item->sell_price, 0, ',', '.')
+                                            : number_format($item->sell_price, 2, ',', '.') }}
                                     </td>
                                     <td>
                                         @php
@@ -87,32 +83,28 @@
                                             {{ number_format($item->stock, 0, ',', '.') }}
                                         </span>
                                     </td>
-                                    @if ($can_write ?? false)
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('items.show', $item->id) }}"
-                                                    class="btn btn-info btn-sm" title="Detail"
-                                                    onclick="event.stopPropagation();">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('items.edit', $item->id) }}"
-                                                    class="btn btn-warning btn-sm" title="Edit"
-                                                    onclick="event.stopPropagation();">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="{{ route('items.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="btn btn-danger btn-sm btn-hapus-barang"
-                                                        onclick="event.stopPropagation();" title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    @endif
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('items.show', $item->id) }}" class="btn btn-info btn-sm"
+                                                title="Detail" onclick="event.stopPropagation();">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ route('items.edit', $item->id) }}"
+                                                class="btn btn-warning btn-sm" title="Edit"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form action="{{ route('items.destroy', $item->id) }}" method="POST"
+                                                class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-barang"
+                                                    onclick="event.stopPropagation();" title="Hapus">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         @endif
@@ -120,10 +112,10 @@
                 </table>
             </div>
 
-            <!-- Export Section -->
+            {{-- <!-- Export Section -->
             <div class="card mt-3">
                 <div class="card-body d-flex justify-content-end">
-                    <form class="row align-items-center g-2" method="get" action="{{ route('items.export') }}">
+                    <form class="row align-items-center g-2" method="get" action="">
                         <div class="col-auto fw-bold">
                             <label for="jenis-export" class="form-label mb-0">Export Data Barang</label>
                         </div>
@@ -141,7 +133,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 

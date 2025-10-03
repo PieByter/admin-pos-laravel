@@ -138,7 +138,7 @@ class ItemCategoryController extends Controller
         }
 
         return view('item_categories.edit', [
-            'itemCategories' => $category,
+            'category' => $category,
             'title' => 'Edit Jenis Barang'
         ]);
     }
