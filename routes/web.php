@@ -143,8 +143,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // SuperAdmin only routes
-    Route::middleware(['role:superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
-        // User Management
+    Route::prefix('superadmin')->name('superadmin.')->group(function () {
         Route::resource('users', UserController::class);
         Route::prefix('users')->name('users.')->group(function () {
             Route::post('{id}/change-password', [UserController::class, 'changePassword'])->name('change-password');

@@ -1,9 +1,9 @@
 <x-app-layout>
     <x-content-header title="Manajemen Log Aktivitas" breadcrumb-parent="SuperAdmin"
-        breadcrumb-url="{{ route('activity-logs.index') }}" />
+        breadcrumb-url="{{ route('superadmin.activity-logs.index') }}" />
 
     <div id="custom-buttons" class="ms-3 mb-2">
-        <a href="{{ route('activity-logs.create') }}" class="btn btn-primary" id="btn-create-logs"
+        <a href="{{ route('superadmin.activity-logs.create') }}" class="btn btn-primary" id="btn-create-logs"
             title="Tambah Log Aktivitas Baru">
             <i class="bi bi-journal-plus"></i> Tambah Log Aktivitas Baru
         </a>
@@ -23,7 +23,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if ($activityLogs->isEmpty())
+                        @if ($logs->isEmpty())
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '5' : '4' }}" class="text-center py-4">
                                     <div class="text-muted">
@@ -32,7 +32,8 @@
                                             Belum ada data log aktivitas.
                                         </p>
 
-                                        <a href="{{ route('activity-logs.create') }}" class="btn btn-primary">
+                                        <a href="{{ route('superadmin.activity-logs.create') }}"
+                                            class="btn btn-primary">
                                             <i class="bi bi-plus"></i> Tambah Log Pertama
                                         </a>
 
@@ -40,7 +41,7 @@
                                 </td>
                             </tr>
                         @else
-                            @foreach ($activityLogs as $index => $log)
+                            @foreach ($logs as $index => $log)
                                 <tr class="text-center">
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $log->user->username ?? $log->username }}</td>
@@ -48,6 +49,9 @@
                                     <td>
                                         @php
                                             $waktu = $log->updated_at ?? $log->created_at;
+                                            if (!($waktu instanceof \Carbon\Carbon)) {
+                                                $waktu = \Carbon\Carbon::parse($waktu);
+                                            }
                                             $bulanIndo = [
                                                 '01' => 'Januari',
                                                 '02' => 'Februari',
@@ -62,7 +66,6 @@
                                                 '11' => 'November',
                                                 '12' => 'Desember',
                                             ];
-
                                             $tanggal =
                                                 $waktu->format('d') .
                                                 ' ' .
@@ -73,14 +76,13 @@
                                         @endphp
                                         {{ $tanggal }} ({{ $jam }})
                                     </td>
-
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('activity-logs.edit', $log->id) }}"
+                                            <a href="{{ route('superadmin.activity-logs.edit', $log->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form action="{{ route('activity-logs.destroy', $log->id) }}"
+                                            <form action="{{ route('superadmin.activity-logs.destroy', $log->id) }}"
                                                 method="POST" class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')

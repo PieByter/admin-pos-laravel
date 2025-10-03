@@ -8,7 +8,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-journal-plus fs-5"></i> Form Tambah Log Aktivitas</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('activity-logs.store') }}" method="post">
+                        <form action="{{ route('superadmin.activity-logs.store') }}" method="post">
                             @csrf
 
                             <div class="row mb-3 align-items-center">
@@ -56,7 +56,7 @@
                                 <button type="submit" class="btn btn-success">
                                     <i class="bi bi-save"></i> Simpan
                                 </button>
-                                <a href="{{ route('activity-logs.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('superadmin.activity-logs.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>

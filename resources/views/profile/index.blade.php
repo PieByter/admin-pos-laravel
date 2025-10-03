@@ -1,5 +1,6 @@
 <x-app-layout>
-    <x-content-header title="Pengaturan Akun" breadcrumb-parent="Profile" breadcrumb-url="{{ route('profile.index') }}" />
+    <x-content-header title="Pengaturan Akun" breadcrumb-parent="Profile"
+        breadcrumb-url="{{ route('superadmin.profile.index') }}" />
 
     <div class="content">
         <div class="container-fluid">
@@ -8,7 +9,7 @@
                     <div class="card h-100">
                         <div class="card-header d-flex align-items-center">
                             <h5 class="card-title mb-0">Pengaturan Profil</h5>
-                            <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-sm ms-auto">
+                            <a href="{{ route('superadmin.profile.edit') }}" class="btn btn-primary btn-sm ms-auto">
                                 <i class="bi bi-pencil"></i> Edit Profil
                             </a>
                         </div>
@@ -142,9 +143,9 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="avatar avatar-xl text-dark d-flex align-items-center justify-content-center">
-                                        @if ($user->foto && Storage::disk('public')->exists('profile/' . $user->foto))
-                                            <img src="{{ Storage::url('profile/' . $user->foto) }}" alt="Profile Photo"
-                                                class="rounded-circle"
+                                        @if ($user->foto && Storage::disk('public')->exists('superadmin.profile/' . $user->foto))
+                                            <img src="{{ Storage::url('superadmin.profile/' . $user->foto) }}"
+                                                alt="Profile Photo" class="rounded-circle"
                                                 style="width:60px; height:60px; object-fit:cover;">
                                         @else
                                             <i class="bi bi-person-circle" style="font-size:3rem;"></i>
