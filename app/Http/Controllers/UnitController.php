@@ -225,33 +225,33 @@ class UnitController extends Controller
             DB::beginTransaction();
 
             // Check if unit is being used in items - menggunakan relasi
-            $itemCount = $unit->items()->count();
-            if ($itemCount > 0) {
-                return redirect()->back()
-                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan pada ' . $itemCount . ' barang!');
-            }
+            // $itemCount = $unit->items()->count();
+            // if ($itemCount > 0) {
+            //     return redirect()->back()
+            //         ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan pada ' . $itemCount . ' barang!');
+            // }
 
-            // Check if unit is being used in unit conversions - menggunakan relasi
-            $conversionFromCount = $unit->unitConversionsFrom()->count();
-            $conversionToCount = $unit->unitConversionsTo()->count();
-            if ($conversionFromCount > 0 || $conversionToCount > 0) {
-                return redirect()->back()
-                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam konversi satuan!');
-            }
+            // // Check if unit is being used in unit conversions - menggunakan relasi
+            // $conversionFromCount = $unit->unitConversionsFrom()->count();
+            // $conversionToCount = $unit->unitConversionsTo()->count();
+            // if ($conversionFromCount > 0 || $conversionToCount > 0) {
+            //     return redirect()->back()
+            //         ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam konversi satuan!');
+            // }
 
-            // Check if unit is being used in sales order items - menggunakan relasi
-            $salesOrderItemCount = $unit->salesOrderItems()->count();
-            if ($salesOrderItemCount > 0) {
-                return redirect()->back()
-                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam penjualan!');
-            }
+            // // Check if unit is being used in sales order items - menggunakan relasi
+            // $salesOrderItemCount = $unit->salesOrderItems()->count();
+            // if ($salesOrderItemCount > 0) {
+            //     return redirect()->back()
+            //         ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam penjualan!');
+            // }
 
-            // Check if unit is being used in purchase order items - menggunakan relasi
-            $purchaseOrderItemCount = $unit->purchaseOrderItems()->count();
-            if ($purchaseOrderItemCount > 0) {
-                return redirect()->back()
-                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam pembelian!');
-            }
+            // // Check if unit is being used in purchase order items - menggunakan relasi
+            // $purchaseOrderItemCount = $unit->purchaseOrderItems()->count();
+            // if ($purchaseOrderItemCount > 0) {
+            //     return redirect()->back()
+            //         ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam pembelian!');
+            // }
 
             $unitName = $unit->unit_name;
             $unit->delete();

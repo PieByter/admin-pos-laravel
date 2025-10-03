@@ -57,22 +57,8 @@
                                                 data-action="{{ route('units.destroy', $unit->id) }}" title="Hapus">
                                                 <i class="bi bi-trash"></i>
                                             </a>
-                                            {{-- <form action="{{ route('units.destroy', $unit->id) }}" method="POST"
-                                                    class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                        class="btn btn-danger btn-sm btn-hapus-satuan" title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form> --}}
-
                                         </div>
                                     </td>
-                                    <form id="form-hapus-satuan" method="POST" style="display:none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
                                 </tr>
                             @endforeach
                         @endif
@@ -82,30 +68,13 @@
         </div>
     </div>
 
+    <form id="form-hapus-satuan" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle delete confirmation
-            document.querySelectorAll('.btn-hapus-satuan').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const form = btn.closest('.delete-form');
-
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus satuan ini?',
-                        text: 'Data satuan yang dihapus tidak bisa dikembalikan!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
 
             // Toast notifications
             const Toast = Swal.mixin({
@@ -156,31 +125,38 @@
             });
 
             // Move custom buttons to DataTable
-            $('#custom-buttons').appendTo('#custom-buttons-container');
+            $('#custom-buttons').prependTo('#custom-buttons-container');
 
-            document.querySelectorAll('.btn-hapus-satuan').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const action = btn.getAttribute('data-action');
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus satuan ini?',
-                        text: 'Data satuan yang dihapus tidak bisa dikembalikan!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            const form = document.getElementById('form-hapus-satuan');
-                            form.setAttribute('action', action);
-                            form.submit();
-                        }
-                    });
+            // Handle delete confirmation (hanya satu event, pakai form di luar tabel)
+            $('#satuanTable').on('click', '.btn-hapus-satuan', function(e) {
+                e.preventDefault();
+                const action = $(this).data('action');
+                Swal.fire({
+                    title: 'Yakin ingin menghapus satuan ini?',
+                    text: 'Data satuan yang dihapus tidak bisa dikembalikan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById('form-hapus-satuan');
+                        form.setAttribute('action', action);
+                        form.submit();
+                    }
                 });
             });
         });
     </script>
+
+    {{-- <style>
+        /* Center DataTables pagination */
+        div.dataTables_paginate {
+            display: flex !important;
+            justify-content: center !important;
+        }
+    </style> --}}
 
 </x-app-layout>

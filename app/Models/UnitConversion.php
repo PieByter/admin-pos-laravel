@@ -11,8 +11,7 @@ class UnitConversion extends Model
 
     protected $fillable = [
         'item_id',
-        'from_unit_id',
-        'to_unit_id',
+        'unit_id',
         'conversion_value',
         'description',
     ];

@@ -1,15 +1,14 @@
+{{-- filepath: c:\laragon\www\admin-pos\resources\views\unit_conversions\index.blade.php --}}
 <x-app-layout>
 
     <x-content-header title="Manajemen Satuan Konversi" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('unit-conversions.index') }}" />
-
 
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('unit-conversions.create') }}" class="btn btn-primary">
             <i class="bi bi-plus"></i> Tambah Konversi Baru
         </a>
     </div>
-
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -20,12 +19,10 @@
                         <tr class="text-center">
                             <th style="width:5%;">No</th>
                             <th style="width:20%;">Barang</th>
-                            <th style="width:15%;">Satuan</th>
-                            <th style="width:15%;">Konversi</th>
-                            <th style="width:35%;">Keterangan</th>
-
+                            <th style="width:20%;">Satuan</th>
+                            <th style="width:15%;">Nilai Konversi</th>
+                            <th style="width:30%;">Keterangan</th>
                             <th style="width:10%;">Aksi</th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -41,11 +38,9 @@
                                                 Belum ada data konversi
                                             @endif
                                         </p>
-
                                         <a href="{{ route('unit-conversions.create') }}" class="btn btn-primary">
                                             <i class="bi bi-plus"></i> Tambah Konversi Pertama
                                         </a>
-
                                     </div>
                                 </td>
                             </tr>
@@ -55,9 +50,8 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $conversion->item_name ?? '-' }}</td>
                                     <td>{{ $conversion->unit_name ?? '-' }}</td>
-                                    <td>{{ number_format($conversion->conversion_rate, 2) }}</td>
+                                    <td>{{ $conversion->conversion_value }}</td>
                                     <td>{{ $conversion->description ?? '-' }}</td>
-
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('unit-conversions.show', $conversion->id) }}"
@@ -68,18 +62,12 @@
                                                 class="btn btn-warning btn-sm" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form action="{{ route('unit-conversions.destroy', $conversion->id) }}"
-                                                method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-konversi"
-                                                    title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                            <a href="#" class="btn btn-danger btn-sm btn-hapus-konversi"
+                                                data-id="{{ $conversion->id }}" title="Hapus">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
                                         </div>
                                     </td>
-
                                 </tr>
                             @endforeach
                         @endif
@@ -88,6 +76,11 @@
             </div>
         </div>
     </div>
+
+    <form id="form-delete-konversi" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -139,26 +132,25 @@
 
             $('#custom-buttons').appendTo('#custom-buttons-container');
 
-            // Handle delete confirmation
-            document.querySelectorAll('.btn-hapus-konversi').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const form = btn.closest('.delete-form');
-
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus konversi ini?',
-                        text: 'Data konversi yang dihapus tidak bisa dikembalikan!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
+            // Event delegation agar tombol hapus tetap berfungsi di semua halaman DataTables
+            $('#satuanKonversiTable').on('click', '.btn-hapus-konversi', function(e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+                Swal.fire({
+                    title: 'Yakin ingin menghapus konversi ini?',
+                    text: 'Data konversi yang dihapus tidak bisa dikembalikan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById('form-delete-konversi');
+                        form.setAttribute('action', '/unit-conversions/' + id);
+                        form.submit();
+                    }
                 });
             });
         });

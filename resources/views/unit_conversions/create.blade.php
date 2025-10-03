@@ -21,7 +21,7 @@
                                             @foreach ($items as $item)
                                                 <option value="{{ $item->id }}"
                                                     {{ old('item_id') == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->name }}
+                                                    {{ $item->item_name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -47,7 +47,7 @@
                                         @foreach ($units as $unit)
                                             <option value="{{ $unit->id }}"
                                                 {{ old('unit_id') == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->name }}
+                                                {{ $unit->unit_name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -60,12 +60,13 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="conversion_rate" class="col-md-3 col-form-label"><b>Konversi</b></label>
+                                <label for="conversion_value" class="col-md-3 col-form-label"><b>Nilai
+                                        Konversi</b></label>
                                 <div class="col-md-9">
-                                    <input type="number" name="conversion_rate" id="conversion_rate"
-                                        class="form-control @error('conversion_rate') is-invalid @enderror"
-                                        value="{{ old('conversion_rate') }}" required min="0.01" step="0.01">
-                                    @error('conversion_rate')
+                                    <input type="number" name="conversion_value" id="conversion_value"
+                                        class="form-control @error('conversion_value') is-invalid @enderror"
+                                        value="{{ old('conversion_value') }}" required min="0.01" step="0.01">
+                                    @error('conversion_value')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -123,10 +124,10 @@
                                 </thead>
                                 <tbody id="modal-item-list">
                                     @foreach ($items as $item)
-                                        <tr data-id="{{ $item->id }}" data-name="{{ $item->name }}"
-                                            data-code="{{ $item->code ?? '' }}">
-                                            <td>{{ $item->code ?? '-' }}</td>
-                                            <td>{{ $item->name }}</td>
+                                        <tr data-id="{{ $item->id }}" data-name="{{ $item->item_name }}"
+                                            data-code="{{ $item->item_code ?? '' }}">
+                                            <td>{{ $item->item_code ?? '-' }}</td>
+                                            <td>{{ $item->item_name }}</td>
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-success btn-sm pilih-item-btn">
                                                     Pilih

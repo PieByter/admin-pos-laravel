@@ -21,7 +21,7 @@
                                             @foreach ($items as $item)
                                                 <option value="{{ $item->id }}"
                                                     {{ old('item_id', $conversion->item_id) == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->name }}
+                                                    {{ $item->item_name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -47,7 +47,7 @@
                                         @foreach ($units as $unit)
                                             <option value="{{ $unit->id }}"
                                                 {{ old('unit_id', $conversion->unit_id) == $unit->id ? 'selected' : '' }}>
-                                                {{ $unit->name }}
+                                                {{ $unit->unit_name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -60,13 +60,13 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="conversion_rate" class="col-md-3 col-form-label"><b>Konversi</b></label>
+                                <label for="conversion_value" class="col-md-3 col-form-label"><b>Konversi</b></label>
                                 <div class="col-md-9">
-                                    <input type="number" name="conversion_rate" id="conversion_rate"
-                                        class="form-control @error('conversion_rate') is-invalid @enderror"
-                                        value="{{ old('conversion_rate', $conversion->conversion_rate) }}" required
+                                    <input type="number" name="conversion_value" id="conversion_value"
+                                        class="form-control @error('conversion_value') is-invalid @enderror"
+                                        value="{{ old('conversion_value', $conversion->conversion_value) }}" required
                                         min="0.01" step="0.01">
-                                    @error('conversion_rate')
+                                    @error('conversion_value')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

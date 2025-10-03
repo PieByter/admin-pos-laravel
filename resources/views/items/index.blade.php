@@ -94,15 +94,11 @@
                                                 onclick="event.stopPropagation();">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form action="{{ route('items.destroy', $item->id) }}" method="POST"
-                                                class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-barang"
-                                                    onclick="event.stopPropagation();" title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                            <a href="#" class="btn btn-danger btn-sm btn-hapus-barang"
+                                                data-id="{{ $item->id }}" title="Hapus"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -136,6 +132,10 @@
             </div> --}}
         </div>
     </div>
+    <form id="form-delete-barang" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
 
     <style>
         .description-cell {
@@ -189,8 +189,7 @@
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    const form = btn.closest('.delete-form');
-
+                    const itemId = btn.getAttribute('data-id');
                     Swal.fire({
                         title: 'Yakin ingin menghapus barang ini?',
                         text: 'Data barang yang dihapus tidak bisa dikembalikan!',
@@ -202,6 +201,9 @@
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            // Set action form dan submit
+                            const form = document.getElementById('form-delete-barang');
+                            form.setAttribute('action', '/items/' + itemId);
                             form.submit();
                         }
                     });

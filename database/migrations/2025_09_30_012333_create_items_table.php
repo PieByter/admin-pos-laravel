@@ -51,8 +51,7 @@ return new class extends Migration
             $table->id();
             // $table->unsignedBigInteger('unit_code')->unique();
             $table->foreignId('item_id')->constrained('items')->onDelete('cascade');
-            $table->foreignId('from_unit_id')->constrained('units')->onDelete('cascade');
-            $table->foreignId('to_unit_id')->constrained('units')->onDelete('cascade');
+            $table->foreignId('unit_id')->constrained('units')->onDelete('cascade');
             $table->integer('conversion_value');
             $table->string('description')->nullable();
             $table->timestamps();
