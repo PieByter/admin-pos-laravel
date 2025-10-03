@@ -13,11 +13,11 @@
                             @method('PUT')
 
                             <div class="mb-3">
-                                <label for="name" class="form-label"><b>Nama Satuan</b></label>
-                                <input type="text" name="name" id="name"
-                                    class="form-control @error('name') is-invalid @enderror"
-                                    value="{{ old('name', $unit->name) }}" required autofocus>
-                                @error('name')
+                                <label for="unit_name" class="form-label"><b>Nama Satuan</b></label>
+                                <input type="text" name="unit_name" id="unit_name"
+                                    class="form-control @error('unit_name') is-invalid @enderror"
+                                    value="{{ old('unit_name', $unit->unit_name) }}" required autofocus>
+                                @error('unit_name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>

@@ -8,15 +8,15 @@
                         <h5 class="card-title mb-0"><i class="bi bi-tags"></i> Tambah Jenis Barang</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('item-types.store') }}" method="post">
+                        <form action="{{ route('item-categories.store') }}" method="post">
                             @csrf
 
                             <div class="mb-3">
-                                <label for="name" class="form-label"><b>Nama Jenis Barang</b></label>
-                                <input type="text" name="name" id="name"
-                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
-                                    required autofocus>
-                                @error('name')
+                                <label for="category_name" class="form-label"><b>Nama Jenis Barang</b></label>
+                                <input type="text" name="category_name" id="category_name"
+                                    class="form-control @error('category_name') is-invalid @enderror"
+                                    value="{{ old('category_name') }}" required autofocus>
+                                @error('category_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -35,7 +35,7 @@
                                 <button type="submit" class="btn btn-success me-2">
                                     <i class="bi bi-save"></i> Simpan
                                 </button>
-                                <a href="{{ route('item-types.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('item-categories.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>

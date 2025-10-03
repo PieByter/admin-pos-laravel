@@ -799,7 +799,7 @@
             const noPoInput = document.getElementById('no_po');
             if (tanggalInput && noPoInput) {
                 tanggalInput.addEventListener('change', function() {
-                    fetch('{{ url('po/generateNoPO') }}?tanggal_terbit=' + encodeURIComponent(this
+                    fetch('{{ route('po.generateNoPO') }}?tanggal_terbit=' + encodeURIComponent(this
                             .value))
                         .then(response => response.json())
                         .then(data => {

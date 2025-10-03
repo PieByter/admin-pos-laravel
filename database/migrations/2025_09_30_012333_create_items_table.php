@@ -15,12 +15,14 @@ return new class extends Migration
         Schema::create('item_groups', function (Blueprint $table) {
             $table->id();
             $table->string('group_name')->unique();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
 
         Schema::create('item_categories', function (Blueprint $table) {
             $table->id();
             $table->string('category_name')->unique();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
 

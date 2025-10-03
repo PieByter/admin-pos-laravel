@@ -7,16 +7,16 @@
                         <h5 class="card-title mb-0"><i class="bi bi-tags"></i> Edit Jenis Barang</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('item-types.update', $itemType->id) }}" method="post">
+                        <form action="{{ route('item-categories.update', $itemCategories->id) }}" method="post">
                             @csrf
                             @method('PUT')
-
                             <div class="mb-3">
-                                <label for="name" class="form-label"><b>Nama Jenis Barang</b></label>
-                                <input type="text" name="name" id="name"
-                                    class="form-control @error('name') is-invalid @enderror"
-                                    value="{{ old('name', $itemType->name) }}" required autofocus>
-                                @error('name')
+                                <label for="category_name" class="form-label"><b>Nama Jenis Barang</b></label>
+                                <input type="text" name="category_name" id="category_name"
+                                    class="form-control @error('category_name') is-invalid @enderror"
+                                    value="{{ old('category_name', $itemCategories->category_name) }}" required
+                                    autofocus>
+                                @error('category_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -25,7 +25,7 @@
                                 <label for="description" class="form-label"><b>Keterangan</b></label>
                                 <input type="text" name="description" id="description"
                                     class="form-control @error('description') is-invalid @enderror"
-                                    value="{{ old('description', $itemType->description) }}">
+                                    value="{{ old('description', $itemCategories->description) }}">
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -35,7 +35,7 @@
                                 <button type="submit" class="btn btn-primary me-2">
                                     <i class="bi bi-save"></i> Update
                                 </button>
-                                <a href="{{ route('item-types.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('item-categories.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>

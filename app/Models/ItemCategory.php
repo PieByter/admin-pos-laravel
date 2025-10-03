@@ -13,6 +13,7 @@ class ItemCategory extends Model
 
     protected $fillable = [
         'category_name',
+        'description',
     ];
 
     // ✅ Relationships

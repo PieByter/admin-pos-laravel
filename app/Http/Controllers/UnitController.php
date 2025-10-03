@@ -6,64 +6,73 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Unit;
+use App\Models\Item;
+use App\Models\UnitConversion;
 use App\Models\ActivityLog;
 
 class UnitController extends Controller
 {
-    private function canRead(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('satuan', $permissions) || in_array('satuan_read', $permissions);
-    }
+    // private function canRead(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('satuan', $permissions) || in_array('satuan_read', $permissions);
+    // }
 
-    private function canWrite(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('satuan', $permissions);
-    }
+    // private function canWrite(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('satuan', $permissions);
+    // }
 
-    private function requireReadAccess(): void
-    {
-        if (!$this->canRead()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireReadAccess(): void
+    // {
+    //     if (!$this->canRead()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function requireWriteAccess(): void
-    {
-        if (!$this->canWrite()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireWriteAccess(): void
+    // {
+    //     if (!$this->canWrite()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function getPermissionData(): array
-    {
-        return [
-            'can_read' => $this->canRead(),
-            'can_write' => $this->canWrite()
-        ];
-    }
+    // private function getPermissionData(): array
+    // {
+    //     return [
+    //         'can_read' => $this->canRead(),
+    //         'can_write' => $this->canWrite()
+    //     ];
+    // }
+
+    // public function __construct()
+    // {
+    //     $this->middleware('permission:satuan_view')->only(['index', 'show']);
+    //     $this->middleware('permission:satuan_create')->only(['create', 'store']);
+    //     $this->middleware('permission:satuan_update')->only(['edit', 'update']);
+    //     $this->middleware('permission:satuan_delete')->only(['destroy']);
+    // }
 
     // Tampilkan daftar unit
     public function index(Request $request)
     {
-        $this->requireReadAccess();
 
         $search = $request->get('search');
         $query = Unit::query();
 
         if ($search) {
-            $query->where('name', 'LIKE', "%{$search}%")
+            $query->where('unit_name', 'LIKE', "%{$search}%")
                 ->orWhere('description', 'LIKE', "%{$search}%");
         }
 
-        $units = $query->orderBy('name', 'ASC')->get();
+        $units = $query->orderBy('id', 'ASC')->get();
 
-        $data = array_merge($this->getPermissionData(), [
+        $data = array_merge([
             'units' => $units,
             'search' => $search,
             'title' => 'Daftar Satuan'
@@ -75,7 +84,6 @@ class UnitController extends Controller
     // Tampilkan form tambah unit
     public function create()
     {
-        $this->requireWriteAccess();
 
         return view('units.create', [
             'title' => 'Tambah Satuan'
@@ -85,30 +93,29 @@ class UnitController extends Controller
     // Simpan unit baru
     public function store(Request $request)
     {
-        $this->requireWriteAccess();
 
         $request->validate([
-            'name' => 'required|string|max:50|unique:units,name',
+            'unit_name' => 'required|string|max:50|unique:units,unit_name',
             'description' => 'nullable|string|max:100'
         ], [
-            'name.required' => 'Nama satuan wajib diisi',
-            'name.max' => 'Nama satuan maksimal 50 karakter',
-            'name.unique' => 'Nama satuan sudah ada',
+            'unit_name.required' => 'Nama satuan wajib diisi',
+            'unit_name.max' => 'Nama satuan maksimal 50 karakter',
+            'unit_name.unique' => 'Nama satuan sudah ada',
             'description.max' => 'Keterangan maksimal 100 karakter'
         ]);
 
         try {
             DB::beginTransaction();
 
-            $unit = Unit::create([
-                'name' => $request->name,
+            Unit::create([
+                'unit_name' => $request->unit_name,
                 'description' => $request->description
             ]);
 
             // Log activity
             ActivityLog::create([
                 'user_id' => session('user_id'),
-                'activity' => 'Menambah satuan: ' . $request->name,
+                'activity' => 'Menambah satuan: ' . $request->unit_name,
                 'created_at' => now()
             ]);
 
@@ -129,7 +136,6 @@ class UnitController extends Controller
     // Tampilkan detail unit
     public function show($id)
     {
-        $this->requireReadAccess();
 
         $unit = Unit::find($id);
         if (!$unit) {
@@ -137,23 +143,18 @@ class UnitController extends Controller
                 ->with('error', 'Satuan tidak ditemukan');
         }
 
-        // Get items using this unit
-        $items = DB::table('items')
-            ->where('unit_id', $id)
-            ->get();
+        // Get items using this unit - menggunakan relasi
+        $items = $unit->items;
 
-        // Get unit conversions
-        $conversions = DB::table('unit_conversions')
-            ->leftJoin('items', 'items.id', '=', 'unit_conversions.item_id')
-            ->select('unit_conversions.*', 'items.name as item_name')
-            ->where('unit_conversions.unit_id', $id)
-            ->get();
+        // Get unit conversions - menggunakan relasi
+        $conversionsFrom = $unit->unitConversionsFrom()->with('toUnit')->get();
+        $conversionsTo = $unit->unitConversionsTo()->with('fromUnit')->get();
+        $conversions = $conversionsFrom->merge($conversionsTo);
 
         return view('units.show', [
             'unit' => $unit,
             'items' => $items,
             'conversions' => $conversions,
-            'can_write' => $this->canWrite(),
             'title' => 'Detail Satuan'
         ]);
     }
@@ -161,13 +162,8 @@ class UnitController extends Controller
     // Tampilkan form edit unit
     public function edit($id)
     {
-        $this->requireWriteAccess();
 
-        $unit = Unit::find($id);
-        if (!$unit) {
-            return redirect()->route('units.index')
-                ->with('error', 'Satuan tidak ditemukan!');
-        }
+        $unit = Unit::findOrFail($id);
 
         return view('units.edit', [
             'unit' => $unit,
@@ -178,21 +174,15 @@ class UnitController extends Controller
     // Update unit
     public function update(Request $request, $id)
     {
-        $this->requireWriteAccess();
-
-        $unit = Unit::find($id);
-        if (!$unit) {
-            return redirect()->route('units.index')
-                ->with('error', 'Satuan tidak ditemukan!');
-        }
+        $unit = Unit::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:50|unique:units,name,' . $id,
+            'unit_name' => 'required|string|max:50|unique:units,unit_name,' . $id,
             'description' => 'nullable|string|max:100'
         ], [
-            'name.required' => 'Nama satuan wajib diisi',
-            'name.max' => 'Nama satuan maksimal 50 karakter',
-            'name.unique' => 'Nama satuan sudah ada',
+            'unit_name.required' => 'Nama satuan wajib diisi',
+            'unit_name.max' => 'Nama satuan maksimal 50 karakter',
+            'unit_name.unique' => 'Nama satuan sudah ada',
             'description.max' => 'Keterangan maksimal 100 karakter'
         ]);
 
@@ -200,14 +190,14 @@ class UnitController extends Controller
             DB::beginTransaction();
 
             $unit->update([
-                'name' => $request->name,
+                'unit_name' => $request->unit_name,
                 'description' => $request->description
             ]);
 
             // Log activity
             ActivityLog::create([
                 'user_id' => session('user_id'),
-                'activity' => 'Mengupdate satuan: ' . $request->name,
+                'activity' => 'Mengupdate satuan: ' . $request->unit_name,
                 'created_at' => now()
             ]);
 
@@ -228,46 +218,42 @@ class UnitController extends Controller
     // Hapus unit
     public function destroy($id)
     {
-        $this->requireWriteAccess();
 
-        $unit = Unit::find($id);
-        if (!$unit) {
-            return redirect()->route('units.index')
-                ->with('error', 'Satuan tidak ditemukan!');
-        }
+        $unit = Unit::findOrFail($id);
 
         try {
             DB::beginTransaction();
 
-            // Check if unit is being used in items
-            $itemCount = DB::table('items')->where('unit_id', $id)->count();
+            // Check if unit is being used in items - menggunakan relasi
+            $itemCount = $unit->items()->count();
             if ($itemCount > 0) {
                 return redirect()->back()
-                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan pada barang!');
+                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan pada ' . $itemCount . ' barang!');
             }
 
-            // Check if unit is being used in unit conversions
-            $conversionCount = DB::table('unit_conversions')->where('unit_id', $id)->count();
-            if ($conversionCount > 0) {
+            // Check if unit is being used in unit conversions - menggunakan relasi
+            $conversionFromCount = $unit->unitConversionsFrom()->count();
+            $conversionToCount = $unit->unitConversionsTo()->count();
+            if ($conversionFromCount > 0 || $conversionToCount > 0) {
                 return redirect()->back()
                     ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam konversi satuan!');
             }
 
-            // Check if unit is being used in purchase details
-            $purchaseDetailCount = DB::table('purchase_details')->where('unit_id', $id)->count();
-            if ($purchaseDetailCount > 0) {
+            // Check if unit is being used in sales order items - menggunakan relasi
+            $salesOrderItemCount = $unit->salesOrderItems()->count();
+            if ($salesOrderItemCount > 0) {
                 return redirect()->back()
-                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam detail pembelian!');
+                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam penjualan!');
             }
 
-            // Check if unit is being used in sale details
-            $saleDetailCount = DB::table('sale_details')->where('unit_id', $id)->count();
-            if ($saleDetailCount > 0) {
+            // Check if unit is being used in purchase order items - menggunakan relasi
+            $purchaseOrderItemCount = $unit->purchaseOrderItems()->count();
+            if ($purchaseOrderItemCount > 0) {
                 return redirect()->back()
-                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam detail penjualan!');
+                    ->with('error', 'Satuan tidak bisa dihapus karena masih digunakan dalam pembelian!');
             }
 
-            $unitName = $unit->name;
+            $unitName = $unit->unit_name;
             $unit->delete();
 
             // Log activity
@@ -293,13 +279,12 @@ class UnitController extends Controller
     // AJAX method untuk mencari unit
     public function search(Request $request)
     {
-        $this->requireReadAccess();
 
         $query = $request->get('q', '');
-        $units = Unit::where('name', 'LIKE', "%{$query}%")
+        $units = Unit::where('unit_name', 'LIKE', "%{$query}%")
             ->orWhere('description', 'LIKE', "%{$query}%")
             ->limit(10)
-            ->get(['id', 'name', 'description']);
+            ->get(['id', 'unit_name', 'description']);
 
         return response()->json($units);
     }
@@ -307,29 +292,27 @@ class UnitController extends Controller
     // Method untuk export data unit
     public function export()
     {
-        $this->requireReadAccess();
 
-        $units = Unit::orderBy('name', 'ASC')->get();
+        $units = Unit::orderBy('unit_name', 'ASC')->get();
 
         $csv = "Nama Satuan,Keterangan\n";
         foreach ($units as $unit) {
-            $csv .= '"' . $unit->name . '",';
+            $csv .= '"' . $unit->unit_name . '",';
             $csv .= '"' . ($unit->description ?? '') . '"';
             $csv .= "\n";
         }
 
-        $filename = 'units_' . date('Y-m-d_H-i-s') . '.csv';
+        $fileName = 'units_' . date('Y-m-d_H-i-s') . '.csv';
 
         return response($csv)
             ->header('Content-Type', 'text/csv')
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"')
             ->header('Cache-Control', 'max-age=0');
     }
 
     // Method untuk import data unit
     public function import(Request $request)
     {
-        $this->requireWriteAccess();
 
         $request->validate([
             'file' => 'required|file|mimes:csv,txt|max:2048'
@@ -353,15 +336,15 @@ class UnitController extends Controller
                 }
 
                 try {
-                    // Check if unit name already exists
-                    $existing = Unit::where('name', $row[0])->first();
+                    // Check if unit name already exists - menggunakan Eloquent
+                    $existing = Unit::where('unit_name', $row[0])->exists();
                     if ($existing) {
                         $errors[] = "Baris " . ($index + 2) . ": Satuan '{$row[0]}' sudah ada";
                         continue;
                     }
 
                     Unit::create([
-                        'name' => $row[0],
+                        'unit_name' => $row[0],
                         'description' => $row[1] ?? null
                     ]);
                     $imported++;
@@ -399,14 +382,49 @@ class UnitController extends Controller
     // Method untuk get unit conversions by item
     public function getConversionsByItem($itemId)
     {
-        $this->requireReadAccess();
 
-        $conversions = DB::table('unit_conversions')
-            ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
-            ->select('unit_conversions.*', 'units.name as unit_name')
-            ->where('unit_conversions.item_id', $itemId)
+        // Menggunakan model UnitConversion dengan relasi
+        $conversions = UnitConversion::with(['unit', 'item'])
+            ->where('item_id', $itemId)
             ->get();
 
         return response()->json($conversions);
+    }
+
+    // Method untuk AJAX save unit
+    public function ajaxSave(Request $request)
+    {
+
+        $request->validate([
+            'unit_name' => 'required|string|max:50|unique:units,unit_name',
+            'description' => 'nullable|string|max:100'
+        ]);
+
+        try {
+            $unit = Unit::create([
+                'unit_name' => $request->unit_name,
+                'description' => $request->description
+            ]);
+
+            // Log activity
+            ActivityLog::create([
+                'user_id' => session('user_id'),
+                'activity' => 'Menambah satuan via AJAX: ' . $request->unit_name,
+                'created_at' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Satuan berhasil ditambahkan',
+                'data' => $unit
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error creating unit via AJAX: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan satuan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

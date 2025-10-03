@@ -28,11 +28,12 @@
                         </dl>
                         <div class="mt-4 d-flex justify-content-end gap-2">
                             @if ($can_write ?? false)
-                                <a href="{{ url('supplier/edit/' . $supplier['id']) }}" class="btn btn-warning">
+                                <a href="{{ route('supplier.edit', $supplier['id']) }}" class="btn btn-warning">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
                             @endif
-                            <a href="{{ url('supplier') }}" class="btn btn-secondary ms-2" id="btn-back-supplier">
+                            <a href="{{ route('supplier.index') }}" class="btn btn-secondary ms-2"
+                                id="btn-back-supplier">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>
                         </div>

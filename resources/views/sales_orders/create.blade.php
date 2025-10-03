@@ -745,7 +745,7 @@
             const noNotaInput = document.getElementById('no_nota');
             if (tanggalInput && noNotaInput) {
                 function fetchNoNota() {
-                    fetch('{{ url('penjualan/generateNoNotaAjax') }}?tanggal_terbit=' + encodeURIComponent(
+                    fetch('{{ route('penjualan.generateNoNotaAjax') }}?tanggal_terbit=' + encodeURIComponent(
                             tanggalInput
                             .value))
                         .then(response => response.json())

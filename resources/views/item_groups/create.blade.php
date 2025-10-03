@@ -11,11 +11,11 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label for="name" class="form-label"><b>Nama Group Barang</b></label>
-                                <input type="text" name="name" id="name"
-                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
-                                    required autofocus>
-                                @error('name')
+                                <label for="group_name" class="form-label"><b>Nama Group Barang</b></label>
+                                <input type="text" name="group_name" id="group_name"
+                                    class="form-control @error('group_name') is-invalid @enderror"
+                                    value="{{ old('group_name') }}" required autofocus>
+                                @error('group_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>

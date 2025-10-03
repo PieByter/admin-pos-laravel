@@ -1,6 +1,6 @@
 <!-- filepath: resources/views/layouts/partials/sidebar.blade.php -->
 <aside class="main-sidebar sidebar-dark-lightblue elevation-4">
-    <a href="{{ url('dashboard') }}" class="brand-link text-decoration-none">
+    <a href="{{ route('dashboard') }}" class="brand-link text-decoration-none">
         <img src="{{ asset('img/logo/logo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3">
         <span class="brand-text">PT. STTC</span>
     </a>

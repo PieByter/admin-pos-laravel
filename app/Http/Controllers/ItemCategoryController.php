@@ -11,51 +11,51 @@ use Illuminate\Support\Facades\Log;
 
 class ItemCategoryController extends Controller
 {
-    private function canRead(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('jenis_barang', $permissions) || in_array('jenis_barang_read', $permissions);
-    }
+    // {
+    //     private function canRead(): bool
+    //     {
+    //         $role = session('role');
+    //         $permissions = session('permissions') ?? [];
+    //         if ($role === 'superadmin') return true;
+    //         return in_array('jenis_barang', $permissions) || in_array('jenis_barang_read', $permissions);
+    //     }
 
-    private function canWrite(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('jenis_barang', $permissions);
-    }
+    //     private function canWrite(): bool
+    //     {
+    //         $role = session('role');
+    //         $permissions = session('permissions') ?? [];
+    //         if ($role === 'superadmin') return true;
+    //         return in_array('jenis_barang', $permissions);
+    //     }
 
-    private function requireReadAccess(): void
-    {
-        if (!$this->canRead()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    //     private function requireReadAccess(): void
+    //     {
+    //         if (!$this->canRead()) {
+    //             abort(404, 'Access Denied');
+    //         }
+    //     }
 
-    private function requireWriteAccess(): void
-    {
-        if (!$this->canWrite()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    //     private function requireWriteAccess(): void
+    //     {
+    //         if (!$this->canWrite()) {
+    //             abort(404, 'Access Denied');
+    //         }
+    //     }
 
-    private function getPermissionData(): array
-    {
-        return [
-            'can_read' => $this->canRead(),
-            'can_write' => $this->canWrite()
-        ];
-    }
+    //     private function getPermissionData(): array
+    //     {
+    //         return [
+    //             'can_read' => $this->canRead(),
+    //             'can_write' => $this->canWrite()
+    //         ];
+    //     }
 
     public function index()
     {
-        $this->requireReadAccess();
 
-        $categories = ItemCategory::orderBy('name', 'ASC')->get()->toArray();
+        $categories = ItemCategory::orderBy('id', 'ASC')->get();
 
-        $data = array_merge($this->getPermissionData(), [
+        $data = array_merge([
             'categories' => $categories,
             'title' => 'Daftar Jenis Barang'
         ]);
@@ -65,7 +65,6 @@ class ItemCategoryController extends Controller
 
     public function create()
     {
-        $this->requireWriteAccess();
 
         return view('item_categories.create', [
             'title' => 'Tambah Jenis Barang'
@@ -74,20 +73,19 @@ class ItemCategoryController extends Controller
 
     public function store(Request $request)
     {
-        $this->requireWriteAccess();
 
         $request->validate([
-            'name' => 'required|string|max:50|unique:item_categories,name',
+            'category_name' => 'required|string|max:50|unique:item_categories,category_name',
             'description' => 'nullable|string|max:100'
         ], [
-            'name.required' => 'Nama jenis barang wajib diisi',
-            'name.max' => 'Nama jenis barang maksimal 50 karakter',
-            'name.unique' => 'Nama jenis barang sudah digunakan',
+            'category_name.required' => 'Nama jenis barang wajib diisi',
+            'category_name.max' => 'Nama jenis barang maksimal 50 karakter',
+            'category_name.unique' => 'Nama jenis barang sudah digunakan',
             'description.max' => 'Keterangan maksimal 100 karakter'
         ]);
 
         ItemCategory::create([
-            'name' => $request->name,
+            'category_name' => $request->category_name,
             'description' => $request->description
         ]);
 
@@ -95,7 +93,7 @@ class ItemCategoryController extends Controller
         try {
             ActivityLog::create([
                 'user_id' => session('user_id'),
-                'activity' => 'Menambah jenis barang: ' . $request->name,
+                'activity' => 'Menambah jenis barang: ' . $request->category_name,
                 'created_at' => now()
             ]);
         } catch (\Exception $logError) {
@@ -108,7 +106,6 @@ class ItemCategoryController extends Controller
 
     public function show($id)
     {
-        $this->requireReadAccess();
 
         $category = ItemCategory::find($id);
         if (!$category) {
@@ -118,22 +115,21 @@ class ItemCategoryController extends Controller
 
         // Ambil barang yang menggunakan kategori ini
         $items = Item::where('category_id', $id)
-            ->select('id', 'code', 'name', 'stock')
+            ->select('id', 'code', 'category_name', 'stock')
             ->get()
             ->toArray();
 
-        $data = array_merge($this->getPermissionData(), [
+        $data =  [
             'category' => $category->toArray(),
             'items' => $items,
             'title' => 'Detail Jenis Barang'
-        ]);
+        ];
 
         return view('item_categories.show', $data);
     }
 
     public function edit($id)
     {
-        $this->requireWriteAccess();
 
         $category = ItemCategory::find($id);
         if (!$category) {
@@ -142,14 +138,13 @@ class ItemCategoryController extends Controller
         }
 
         return view('item_categories.edit', [
-            'category' => $category->toArray(),
+            'itemCategories' => $category,
             'title' => 'Edit Jenis Barang'
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $this->requireWriteAccess();
 
         $category = ItemCategory::find($id);
         if (!$category) {
@@ -158,17 +153,17 @@ class ItemCategoryController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:50|unique:item_categories,name,' . $id,
+            'category_name' => 'required|string|max:50|unique:item_categories,category_name,' . $id,
             'description' => 'nullable|string|max:100'
         ], [
-            'name.required' => 'Nama jenis barang wajib diisi',
-            'name.max' => 'Nama jenis barang maksimal 50 karakter',
-            'name.unique' => 'Nama jenis barang sudah digunakan',
+            'category_name.required' => 'Nama jenis barang wajib diisi',
+            'category_name.max' => 'Nama jenis barang maksimal 50 karakter',
+            'category_name.unique' => 'Nama jenis barang sudah digunakan',
             'description.max' => 'Keterangan maksimal 100 karakter'
         ]);
 
         $category->update([
-            'name' => $request->name,
+            'category_name' => $request->category_name,
             'description' => $request->description
         ]);
 
@@ -176,7 +171,7 @@ class ItemCategoryController extends Controller
         try {
             ActivityLog::create([
                 'user_id' => session('user_id'),
-                'activity' => 'Mengupdate jenis barang: ' . $request->name,
+                'activity' => 'Mengupdate jenis barang: ' . $request->category_name,
                 'created_at' => now()
             ]);
         } catch (\Exception $logError) {
@@ -189,7 +184,6 @@ class ItemCategoryController extends Controller
 
     public function destroy($id)
     {
-        $this->requireWriteAccess();
 
         $category = ItemCategory::find($id);
         if (!$category) {
@@ -197,16 +191,16 @@ class ItemCategoryController extends Controller
                 ->with('error', 'Jenis barang tidak ditemukan!');
         }
 
-        // Cek apakah masih digunakan oleh barang
-        $itemCount = Item::where('category_id', $id)->count();
+        // // Cek apakah masih digunakan oleh barang
+        // $itemCount = Item::where('category_id', $id)->count();
 
-        if ($itemCount > 0) {
-            return redirect()->route('item-categories.index')
-                ->with('error', 'Jenis barang tidak dapat dihapus karena masih digunakan oleh ' . $itemCount . ' barang.');
-        }
+        // if ($itemCount > 0) {
+        //     return redirect()->route('item-categories.index')
+        //         ->with('error', 'Jenis barang tidak dapat dihapus karena masih digunakan oleh ' . $itemCount . ' barang.');
+        // }
 
         try {
-            $categoryName = $category->name;
+            $categoryName = $category->category_name;
             $category->delete();
 
             // Log aktivitas
@@ -228,7 +222,6 @@ class ItemCategoryController extends Controller
     // Method tambahan untuk AJAX get categories
     public function getCategories()
     {
-        $this->requireReadAccess();
 
         $categories = ItemCategory::select('id', 'name')
             ->orderBy('name', 'ASC')
@@ -239,8 +232,7 @@ class ItemCategoryController extends Controller
 
     // Method untuk bulk delete
     public function bulkDelete(Request $request)
-    {
-        $this->requireWriteAccess();
+    {;
 
         $request->validate([
             'category_ids' => 'required|array',
@@ -287,7 +279,6 @@ class ItemCategoryController extends Controller
     // Method untuk export data
     public function export()
     {
-        $this->requireReadAccess();
 
         $categories = ItemCategory::with(['items' => function ($query) {
             $query->select('category_id', DB::raw('count(*) as total'));

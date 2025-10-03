@@ -3,13 +3,11 @@
     <x-content-header title="Daftar Group Barang" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('item-groups.index') }}" />
 
-    @if ($can_write ?? false)
-        <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ route('item-groups.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Tambah Group Barang
-            </a>
-        </div>
-    @endif
+    <div id="custom-buttons" class="ms-3 mb-2">
+        <a href="{{ route('item-groups.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Tambah Group Barang
+        </a>
+    </div>
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -20,9 +18,7 @@
                             <th>No</th>
                             <th>Nama Group</th>
                             <th>Keterangan</th>
-                            @if ($can_write ?? false)
-                                <th>Aksi</th>
-                            @endif
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -32,11 +28,9 @@
                                     <div class="text-muted">
                                         <i class="bi bi-inbox display-1"></i>
                                         <p class="mt-2">Belum ada data group barang</p>
-                                        @if ($can_write ?? false)
-                                            <a href="{{ route('item-groups.create') }}" class="btn btn-primary">
-                                                <i class="bi bi-plus"></i> Tambah Group Pertama
-                                            </a>
-                                        @endif
+                                        <a href="{{ route('item-groups.create') }}" class="btn btn-primary">
+                                            <i class="bi bi-plus"></i> Tambah Group Pertama
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
@@ -44,27 +38,34 @@
                             @foreach ($itemGroups as $index => $group)
                                 <tr class="text-center">
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $group->name }}</td>
+                                    <td>{{ $group->group_name }}</td>
                                     <td>{{ $group->description ?? '-' }}</td>
-                                    @if ($can_write ?? false)
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('item-groups.edit', $group->id) }}"
-                                                    class="btn btn-warning btn-sm" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="{{ route('item-groups.destroy', $group->id) }}"
-                                                    method="POST" class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btn-hapus-group"
-                                                        title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    @endif
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('item-groups.show', $group->id) }}"
+                                                class="btn btn-info btn-sm" title="Detail">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ route('item-groups.edit', $group->id) }}"
+                                                class="btn btn-warning btn-sm" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-danger btn-sm btn-hapus-group"
+                                                data-action="{{ route('item-groups.destroy', $group->id) }}"
+                                                title="Hapus">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                            {{-- <form action="{{ route('item-groups.destroy', $group->id) }}" method="POST"
+                                                class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-group"
+                                                    title="Hapus">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form> --}}
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         @endif
@@ -73,6 +74,11 @@
             </div>
         </div>
     </div>
+
+    <form id="form-hapus-group" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -97,29 +103,6 @@
                     title: '{{ session('error') }}'
                 });
             @endif
-
-            // Handle delete confirmation
-            document.querySelectorAll('.btn-hapus-group').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const form = btn.closest('.delete-form');
-
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus group barang ini?',
-                        text: 'Data group barang yang dihapus tidak bisa dikembalikan!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
 
             // DataTable initialization
             if ($.fn.DataTable.isDataTable('#groupBarangTable')) {
@@ -151,6 +134,29 @@
             });
 
             $('#custom-buttons').appendTo('#custom-buttons-container');
+
+            // ✅ EVENT DELEGATION YANG BENAR - Menangani tombol hapus di semua halaman pagination
+            $(document).on('click', '.btn-hapus-group', function(e) {
+                e.preventDefault();
+                const action = $(this).data('action'); // ✅ Gunakan $(this), bukan btn
+
+                Swal.fire({
+                    title: 'Yakin ingin menghapus group barang ini?',
+                    text: 'Data group barang yang dihapus tidak bisa dikembalikan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById('form-hapus-group');
+                        form.setAttribute('action', action);
+                        form.submit();
+                    }
+                });
+            });
         });
     </script>
 </x-app-layout>

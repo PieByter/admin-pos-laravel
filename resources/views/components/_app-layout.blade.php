@@ -75,16 +75,17 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="transaksiDropdown">
                             @can('transactions_view')
-                                <li><a class="dropdown-item" href="{{ url('transaksi') }}">Akumulasi Transaksi</a></li>
+                                <li><a class="dropdown-item" href="{{ route('transaksi.index') }}">Akumulasi Transaksi</a>
+                                </li>
                             @endcan
                             @can('pre_purchase_orders_view')
-                                <li><a class="dropdown-item" href="{{ url('po') }}">Purchase Order</a></li>
+                                <li><a class="dropdown-item" href="{{ route('po.index') }}">Purchase Order</a></li>
                             @endcan
                             @can('purchase_orders_view')
-                                <li><a class="dropdown-item" href="{{ url('pembelian') }}">Pembelian</a></li>
+                                <li><a class="dropdown-item" href="{{ route('pembelian.index') }}">Pembelian</a></li>
                             @endcan
                             @can('sales_orders_view')
-                                <li><a class="dropdown-item" href="{{ url('penjualan') }}">Penjualan</a></li>
+                                <li><a class="dropdown-item" href="{{ route('penjualan.index') }}">Penjualan</a></li>
                             @endcan
                         </ul>
                     </li>
@@ -101,25 +102,26 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="masterDropdown">
                             @can('items_view')
-                                <li><a class="dropdown-item" href="{{ url('barang') }}">Barang</a></li>
+                                <li><a class="dropdown-item" href="{{ route('barang.index') }}">Barang</a></li>
                             @endcan
                             @can('suppliers_view')
-                                <li><a class="dropdown-item" href="{{ url('supplier') }}">Supplier</a></li>
+                                <li><a class="dropdown-item" href="{{ route('supplier.index') }}">Supplier</a></li>
                             @endcan
                             @can('customers_view')
-                                <li><a class="dropdown-item" href="{{ url('customer') }}">Customer</a></li>
+                                <li><a class="dropdown-item" href="{{ route('customer.index') }}">Customer</a></li>
                             @endcan
                             @can('unit_conversions_view')
-                                <li><a class="dropdown-item" href="{{ url('satuan-konversi') }}">Satuan Konversi</a></li>
+                                <li><a class="dropdown-item" href="{{ route('satuan-konversi.index') }}">Satuan
+                                        Konversi</a></li>
                             @endcan
                             @can('units_view')
-                                <li><a class="dropdown-item" href="{{ url('satuan') }}">Satuan Barang</a></li>
+                                <li><a class="dropdown-item" href="{{ route('satuan.index') }}">Satuan Barang</a></li>
                             @endcan
                             @can('item_categories_view')
-                                <li><a class="dropdown-item" href="{{ url('jenis-barang') }}">Jenis Barang</a></li>
+                                <li><a class="dropdown-item" href="{{ route('jenis-barang.index') }}">Jenis Barang</a></li>
                             @endcan
                             @can('item_groups_view')
-                                <li><a class="dropdown-item" href="{{ url('group-barang') }}">Group Barang</a></li>
+                                <li><a class="dropdown-item" href="{{ route('group-barang.index') }}">Group Barang</a></li>
                             @endcan
                         </ul>
                     </li>
@@ -134,10 +136,12 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                             @can('users_view')
-                                <li><a class="dropdown-item" href="{{ url('superadmin/users') }}">Manajemen User</a></li>
+                                <li><a class="dropdown-item" href="{{ route('superadmin.users.index') }}">Manajemen
+                                        User</a></li>
                             @endcan
                             @can('activity_logs_view')
-                                <li><a class="dropdown-item" href="{{ url('superadmin/logs') }}">Log Aktivitas</a></li>
+                                <li><a class="dropdown-item" href="{{ route('superadmin.logs.index') }}">Log
+                                        Aktivitas</a></li>
                             @endcan
                         </ul>
                     </li>
@@ -197,13 +201,13 @@
                         <li class="user-footer">
                             <div class="row">
                                 <div class="col-6">
-                                    <a class="btn btn-block btn-outline-primary" href="{{ url('profile') }}">
+                                    <a class="btn btn-block btn-outline-primary" href="{{ route('profile') }}">
                                         <i class="bi bi-person-circle"></i> Profile
                                     </a>
                                 </div>
                                 <div class="col-6">
                                     <a class="btn btn-block btn-outline-danger float-end"
-                                        href="{{ url('auth/logout') }}">
+                                        href="{{ route('auth.logout') }}">
                                         <i class="bi bi-box-arrow-right"></i> Sign Out
                                     </a>
                                 </div>
@@ -216,7 +220,7 @@
 
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-lightblue elevation-4">
-            <a href="{{ url('dashboard') }}" class="brand-link text-decoration-none">
+            <a href="{{ route('dashboard') }}" class="brand-link text-decoration-none">
                 <img src="{{ asset('img/logo.png') }}" alt="AdminLTE Logo"
                     class="brand-image img-circle elevation-3">
                 <span class="brand-text">PT. STTC</span>
@@ -242,7 +246,7 @@
                         role="menu" data-accordion="false">
                         <!-- Dashboard -->
                         <li class="nav-item">
-                            <a href="{{ url('dashboard') }}"
+                            <a href="{{ route('dashboard') }}"
                                 class="nav-link{{ request()->is('dashboard') ? ' active' : '' }}">
                                 <i class="nav-icon bi bi-speedometer2"></i>
                                 <p>Dashboard</p>
@@ -267,7 +271,7 @@
                                 <ul class="nav nav-treeview">
                                     @can('transactions_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('transaksi') }}"
+                                            <a href="{{ route('transaksi.index') }}"
                                                 class="nav-link{{ request()->is('transaksi*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-cash-stack"></i>
                                                 <p>Akumulasi Transaksi</p>
@@ -276,7 +280,7 @@
                                     @endcan
                                     @can('pre_purchase_orders_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('po') }}"
+                                            <a href="{{ route('po.index') }}"
                                                 class="nav-link{{ request()->is('po*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-file-earmark-text"></i>
                                                 <p>Purchase Order</p>
@@ -285,7 +289,7 @@
                                     @endcan
                                     @can('purchase_orders_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('pembelian') }}"
+                                            <a href="{{ route('pembelian.index') }}"
                                                 class="nav-link{{ request()->is('pembelian*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-cart-plus"></i>
                                                 <p>Pembelian</p>
@@ -294,7 +298,7 @@
                                     @endcan
                                     @can('sales_orders_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('penjualan') }}"
+                                            <a href="{{ route('penjualan.index') }}"
                                                 class="nav-link{{ request()->is('penjualan*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-cash-coin"></i>
                                                 <p>Penjualan</p>
@@ -322,7 +326,7 @@
                                 <ul class="nav nav-treeview">
                                     @can('items_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('barang') }}"
+                                            <a href="{{ route('barang.index') }}"
                                                 class="nav-link{{ request()->is('barang*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-box"></i>
                                                 <p>Barang</p>
@@ -331,7 +335,7 @@
                                     @endcan
                                     @can('suppliers_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('supplier') }}"
+                                            <a href="{{ route('supplier.index') }}"
                                                 class="nav-link{{ request()->is('supplier*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-truck"></i>
                                                 <p>Supplier</p>
@@ -340,7 +344,7 @@
                                     @endcan
                                     @can('customers_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('customer') }}"
+                                            <a href="{{ route('customer.index') }}"
                                                 class="nav-link{{ request()->is('customer*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-people"></i>
                                                 <p>Customer</p>
@@ -349,7 +353,7 @@
                                     @endcan
                                     @can('unit_conversions_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('satuan-konversi') }}"
+                                            <a href="{{ route('satuan-konversi.index') }}"
                                                 class="nav-link{{ request()->is('satuan-konversi*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-currency-exchange"></i>
                                                 <p>Satuan Konversi</p>
@@ -358,7 +362,7 @@
                                     @endcan
                                     @can('units_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('satuan') }}"
+                                            <a href="{{ route('satuan.index') }}"
                                                 class="nav-link{{ request()->is('satuan*') && !request()->is('satuan-konversi*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-grid"></i>
                                                 <p>Satuan Barang</p>
@@ -367,7 +371,7 @@
                                     @endcan
                                     @can('item_categories_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('jenis-barang') }}"
+                                            <a href="{{ route('jenis-barang.index') }}"
                                                 class="nav-link{{ request()->is('jenis-barang*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-diagram-2"></i>
                                                 <p>Jenis Barang</p>
@@ -376,7 +380,7 @@
                                     @endcan
                                     @can('item_groups_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('group-barang') }}"
+                                            <a href="{{ route('group-barang.index') }}"
                                                 class="nav-link{{ request()->is('group-barang*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-boxes"></i>
                                                 <p>Group Barang</p>
@@ -401,7 +405,7 @@
                                 <ul class="nav nav-treeview">
                                     @can('users_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('superadmin/users') }}"
+                                            <a href="{{ route('superadmin.users.index') }}"
                                                 class="nav-link{{ request()->is('superadmin/users*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-person-fill-gear"></i>
                                                 <p>Manajemen User</p>
@@ -410,7 +414,7 @@
                                     @endcan
                                     @can('activity_logs_view')
                                         <li class="nav-item">
-                                            <a href="{{ url('superadmin/logs') }}"
+                                            <a href="{{ route('superadmin.logs.index') }}"
                                                 class="nav-link{{ request()->is('superadmin/logs*') ? ' active' : '' }}">
                                                 <i class="nav-icon bi bi-journal-text"></i>
                                                 <p>Log Aktivitas</p>
@@ -423,7 +427,7 @@
 
                         <!-- Profil -->
                         <li class="nav-item">
-                            <a href="{{ url('profile') }}"
+                            <a href="{{ route('profile.index') }}"
                                 class="nav-link{{ request()->is('profile*') ? ' active' : '' }}">
                                 <i class="nav-icon bi bi-person-circle"></i>
                                 <p>Profil Pengguna</p>

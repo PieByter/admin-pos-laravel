@@ -13,6 +13,7 @@ class ItemGroup extends Model
 
     protected $fillable = [
         'group_name',
+        'description',
     ];
 
     // ✅ Relationships

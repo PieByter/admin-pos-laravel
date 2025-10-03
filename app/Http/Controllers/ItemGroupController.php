@@ -10,61 +10,57 @@ use App\Models\ActivityLog;
 
 class ItemGroupController extends Controller
 {
-    private function canRead(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('group_barang', $permissions) || in_array('group_barang_read', $permissions);
-    }
+    // private function canRead(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('group_barang', $permissions) || in_array('group_barang_read', $permissions);
+    // }
 
-    private function canWrite(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('group_barang', $permissions);
-    }
+    // private function canWrite(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('group_barang', $permissions);
+    // }
 
-    private function requireReadAccess(): void
-    {
-        if (!$this->canRead()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireReadAccess(): void
+    // {
+    //     if (!$this->canRead()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function requireWriteAccess(): void
-    {
-        if (!$this->canWrite()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireWriteAccess(): void
+    // {
+    //     if (!$this->canWrite()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function getPermissionData(): array
-    {
-        return [
-            'can_read' => $this->canRead(),
-            'can_write' => $this->canWrite()
-        ];
-    }
+    // private function getPermissionData(): array
+    // {
+    //     return [
+    //         'can_read' => $this->canRead(),
+    //         'can_write' => $this->canWrite()
+    //     ];
+    // }
 
     public function index()
     {
-        $this->requireReadAccess();
-
-        $groups = ItemGroup::orderBy('name', 'ASC')->get()->toArray();
-
-        $data = array_merge($this->getPermissionData(), [
-            'groups' => $groups,
+        // $this->requireReadAccess();
+        $itemGroups = ItemGroup::orderBy('id', 'ASC')->get(); // gunakan koleksi, bukan toArray()
+        return view('item_groups.index', [
+            'itemGroups' => $itemGroups,
             'title' => 'Daftar Group Barang'
         ]);
-
-        return view('item_groups.index', $data);
     }
 
     public function create()
     {
-        $this->requireWriteAccess();
+        // $this->requireWriteAccess();
 
         return view('item_groups.create', [
             'title' => 'Tambah Group Barang'
@@ -73,20 +69,20 @@ class ItemGroupController extends Controller
 
     public function store(Request $request)
     {
-        $this->requireWriteAccess();
+        // $this->requireWriteAccess();
 
         $request->validate([
-            'name' => 'required|string|max:50|unique:item_groups,name',
+            'group_name' => 'required|string|max:50|unique:item_groups,group_name',
             'description' => 'nullable|string|max:100'
         ], [
-            'name.required' => 'Nama group barang wajib diisi',
-            'name.max' => 'Nama group barang maksimal 50 karakter',
-            'name.unique' => 'Nama group barang sudah digunakan',
+            'group_name.required' => 'Nama group barang wajib diisi',
+            'group_name.max' => 'Nama group barang maksimal 50 karakter',
+            'group_name.unique' => 'Nama group barang sudah digunakan',
             'description.max' => 'Keterangan maksimal 100 karakter'
         ]);
 
         ItemGroup::create([
-            'name' => $request->name,
+            'group_name' => $request->group_name,
             'description' => $request->description
         ]);
 
@@ -94,7 +90,7 @@ class ItemGroupController extends Controller
         try {
             ActivityLog::create([
                 'user_id' => session('user_id'),
-                'activity' => 'Menambah group barang: ' . $request->name,
+                'activity' => 'Menambah group barang: ' . $request->group_name,
                 'created_at' => now()
             ]);
         } catch (\Exception $logError) {
@@ -107,7 +103,7 @@ class ItemGroupController extends Controller
 
     public function show($id)
     {
-        $this->requireReadAccess();
+        // $this->requireReadAccess();
 
         $group = ItemGroup::find($id);
         if (!$group) {
@@ -117,11 +113,11 @@ class ItemGroupController extends Controller
 
         // Ambil barang yang menggunakan group ini
         $items = Item::where('group_id', $id)
-            ->select('id', 'code', 'name', 'stock')
+            ->select('id', 'code', 'group_name', 'stock')
             ->get()
             ->toArray();
 
-        $data = array_merge($this->getPermissionData(), [
+        $data = array_merge([
             'group' => $group->toArray(),
             'items' => $items,
             'title' => 'Detail Group Barang'
@@ -132,23 +128,23 @@ class ItemGroupController extends Controller
 
     public function edit($id)
     {
-        $this->requireWriteAccess();
+        // $this->requireWriteAccess();
 
-        $group = ItemGroup::find($id);
-        if (!$group) {
+        $itemGroup = ItemGroup::find($id);
+        if (!$itemGroup) {
             return redirect()->route('item-groups.index')
                 ->with('error', 'Group barang tidak ditemukan!');
         }
 
         return view('item_groups.edit', [
-            'group' => $group->toArray(),
+            'itemGroup' => $itemGroup,
             'title' => 'Edit Group Barang'
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $this->requireWriteAccess();
+        // $this->requireWriteAccess();
 
         $group = ItemGroup::find($id);
         if (!$group) {
@@ -157,17 +153,17 @@ class ItemGroupController extends Controller
         }
 
         $request->validate([
-            'name' => 'required|string|max:50|unique:item_groups,name,' . $id,
+            'group_name' => 'required|string|max:50|unique:item_groups,group_name,' . $id,
             'description' => 'nullable|string|max:100'
         ], [
-            'name.required' => 'Nama group barang wajib diisi',
-            'name.max' => 'Nama group barang maksimal 50 karakter',
-            'name.unique' => 'Nama group barang sudah digunakan',
+            'group_name.required' => 'Nama group barang wajib diisi',
+            'group_name.max' => 'Nama group barang maksimal 50 karakter',
+            'group_name.unique' => 'Nama group barang sudah digunakan',
             'description.max' => 'Keterangan maksimal 100 karakter'
         ]);
 
         $group->update([
-            'name' => $request->name,
+            'group_name' => $request->group_name,
             'description' => $request->description
         ]);
 
@@ -175,7 +171,7 @@ class ItemGroupController extends Controller
         try {
             ActivityLog::create([
                 'user_id' => session('user_id'),
-                'activity' => 'Mengupdate group barang: ' . $request->name,
+                'activity' => 'Mengupdate group barang: ' . $request->group_name,
                 'created_at' => now()
             ]);
         } catch (\Exception $logError) {
@@ -188,7 +184,7 @@ class ItemGroupController extends Controller
 
     public function destroy($id)
     {
-        $this->requireWriteAccess();
+        // $this->requireWriteAccess();
 
         $group = ItemGroup::find($id);
         if (!$group) {
@@ -196,16 +192,8 @@ class ItemGroupController extends Controller
                 ->with('error', 'Group barang tidak ditemukan!');
         }
 
-        // Cek apakah masih digunakan oleh barang
-        $itemCount = Item::where('group_id', $id)->count();
-
-        if ($itemCount > 0) {
-            return redirect()->route('item-groups.index')
-                ->with('error', 'Group barang tidak dapat dihapus karena masih digunakan oleh ' . $itemCount . ' barang.');
-        }
-
         try {
-            $groupName = $group->name;
+            $groupName = $group->group_name;
             $group->delete();
 
             // Log aktivitas
@@ -227,10 +215,10 @@ class ItemGroupController extends Controller
     // Method tambahan untuk AJAX get groups
     public function getGroups()
     {
-        $this->requireReadAccess();
+        // $this->requireReadAccess();
 
-        $groups = ItemGroup::select('id', 'name')
-            ->orderBy('name', 'ASC')
+        $groups = ItemGroup::select('id', 'group_name')
+            ->orderBy('group_name', 'ASC')
             ->get();
 
         return response()->json($groups);
@@ -239,7 +227,7 @@ class ItemGroupController extends Controller
     // Method untuk bulk delete
     public function bulkDelete(Request $request)
     {
-        $this->requireWriteAccess();
+        // $this->requireWriteAccess();
 
         $request->validate([
             'group_ids' => 'required|array',
@@ -251,9 +239,9 @@ class ItemGroupController extends Controller
         // Cek apakah ada group yang masih digunakan
         $usedGroups = Item::whereIn('group_id', $groupIds)
             ->join('item_groups', 'item_groups.id', '=', 'items.group_id')
-            ->select('item_groups.name')
+            ->select('item_groups.group_name')
             ->distinct()
-            ->pluck('name')
+            ->pluck('group_name')
             ->toArray();
 
         if (!empty($usedGroups)) {
@@ -263,7 +251,7 @@ class ItemGroupController extends Controller
 
         try {
             $groups = ItemGroup::whereIn('id', $groupIds)->get();
-            $groupNames = $groups->pluck('name')->toArray();
+            $groupNames = $groups->pluck('group_name')->toArray();
 
             ItemGroup::whereIn('id', $groupIds)->delete();
 
@@ -286,9 +274,9 @@ class ItemGroupController extends Controller
     // Method untuk export data
     public function export()
     {
-        $this->requireReadAccess();
+        // $this->requireReadAccess();
 
-        $groups = ItemGroup::orderBy('name')->get();
+        $groups = ItemGroup::orderBy('group_name')->get();
 
         $filename = 'item_groups_' . date('Y-m-d_H-i-s') . '.csv';
 
@@ -305,7 +293,7 @@ class ItemGroupController extends Controller
                 $itemCount = Item::where('group_id', $group->id)->count();
                 fputcsv($file, [
                     $group->id,
-                    $group->name,
+                    $group->group_name,
                     $group->description,
                     $itemCount,
                     $group->created_at,
@@ -321,7 +309,7 @@ class ItemGroupController extends Controller
     // Method untuk move items to another group
     public function moveItems(Request $request, $fromGroupId)
     {
-        $this->requireWriteAccess();
+        // $this->requireWriteAccess();
 
         $request->validate([
             'to_group_id' => 'required|integer|exists:item_groups,id|different:from_group_id',
@@ -349,7 +337,7 @@ class ItemGroupController extends Controller
             // Log aktivitas
             ActivityLog::create([
                 'user_id' => session('user_id'),
-                'activity' => "Memindahkan {$movedCount} barang dari group '{$fromGroup->name}' ke '{$toGroup->name}'",
+                'activity' => "Memindahkan {$movedCount} barang dari group '{$fromGroup->group_ame}' ke '{$toGroup->group_name}'",
                 'created_at' => now()
             ]);
 

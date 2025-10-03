@@ -11,9 +11,15 @@ class ContentHeader extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public string $title;
+    public string $breadcrumbParent;
+    public string $breadcrumbUrl;
+
+    public function __construct($title = '', $breadcrumbParent = '', $breadcrumbUrl = '#')
     {
-        //
+        $this->title = $title;
+        $this->breadcrumbParent = $breadcrumbParent;
+        $this->breadcrumbUrl = $breadcrumbUrl;
     }
 
     /**

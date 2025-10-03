@@ -39,6 +39,7 @@ class ItemGroupsSeeder extends Seeder
         foreach ($groups as $group) {
             DB::table('item_groups')->insert([
                 'group_name' => $group,
+                'description' => 'Kategori grup barang: ' . $group,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

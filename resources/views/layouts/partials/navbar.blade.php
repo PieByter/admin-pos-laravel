@@ -54,9 +54,9 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li>
+                        {{-- <li>
                             <h6 class="dropdown-header">Retur</h6>
-                        </li>
+                        </li> --}}
                     @endcanany
 
                     @can('purchase_returns_view')

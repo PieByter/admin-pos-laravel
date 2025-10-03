@@ -1,4 +1,4 @@
-<x-guest-layout title="Login Page">
+<x-guest-layout title="Admin POS | Login Page">
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <img src="{{ asset('img/logo/logo.png') }}" alt="PT. STTC" class="mx-auto h-10 w-auto dark:hidden" />
@@ -9,7 +9,7 @@
         </div>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form action="{{ url('auth/login') }}" method="POST" class="space-y-6">
+            <form action="{{ route('auth.login') }}" method="POST" class="space-y-6">
                 @csrf
                 <div>
                     <label for="email" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">Email
@@ -55,7 +55,7 @@
 
             <p class="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
                 Don't have an account?
-                <a href="{{ url('auth/register') }}"
+                <a href="{{ route('auth.register') }}"
                     class="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
                     Register Now</a>
             </p>

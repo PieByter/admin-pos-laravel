@@ -1,11 +1,11 @@
 <x-app-layout>
 
     <x-content-header title="Manajemen User" breadcrumb-parent="SuperAdmin"
-        breadcrumb-url="{{ url('superadmin/users') }}" />
+        breadcrumb-url="{{ route('superadmin.users.index') }}" />
 
     @if ($can_write ?? false)
         <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ url('superadmin/users/create') }}" class="btn btn-primary" id="btn-create-user"
+            <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary" id="btn-create-user"
                 title="Tambah User Baru">
                 <i class="bi bi-person-plus"></i> Tambah User Baru
             </a>
@@ -41,7 +41,7 @@
                                             {{ $search ? 'Tidak ada user yang sesuai dengan pencarian "' . e($search) . '"' : 'Belum ada data user' }}
                                         </p>
                                         @if ($can_write ?? false)
-                                            <a href="{{ url('superadmin/users/create') }}" class="btn btn-primary">
+                                            <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary">
                                                 <i class="bi bi-person-plus"></i> Tambah User Pertama
                                             </a>
                                         @endif
@@ -53,7 +53,7 @@
 
                             @foreach ($users as $user)
                                 <tr style="cursor:pointer;"
-                                    onclick="window.location='{{ url('superadmin/users/detail/' . $user['id']) }}'">
+                                    onclick="window.location='{{ route('superadmin.users.detail', $user['id']) }}'">
                                     <td>{{ $no++ }}</td>
                                     <td>{{ e($user['username']) }}</td>
                                     <td>{{ e($user['email'] ?? '-') }}</td>
@@ -171,12 +171,12 @@
                                     @if ($can_write ?? false)
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="{{ url('superadmin/users/edit/' . $user['id']) }}"
+                                                <a href="{{ route('superadmin.users.edit', $user['id']) }}"
                                                     class="btn btn-warning btn-sm" title="Edit User">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 @if ($user['id'] != session('user_id'))
-                                                    <a href="{{ url('superadmin/users/delete/' . $user['id']) }}"
+                                                    <a href="{{ route('superadmin.users.delete', $user['id']) }}"
                                                         class="btn btn-danger btn-sm btn-hapus-user"
                                                         onclick="event.stopPropagation();" title="Hapus User">
                                                         <i class="bi bi-trash"></i>

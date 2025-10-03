@@ -721,7 +721,7 @@
             const noFakturInput = document.getElementById('no_faktur');
             if (tanggalInput && noFakturInput) {
                 function fetchNoFaktur() {
-                    fetch('{{ url('pembelian/generateNoFakturAjax') }}?tanggal_terbit=' + encodeURIComponent(
+                    fetch('{{ route('pembelian.generateNoFakturAjax') }}?tanggal_terbit=' + encodeURIComponent(
                             tanggalInput
                             .value))
                         .then(response => response.json())

@@ -7,7 +7,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-person-plus"></i> Form Tambah User Baru</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ url('superadmin/users/save') }}" method="post">
+                        <form action="{{ route('superadmin.users.save') }}" method="post">
                             @csrf
 
                             <div class="row mb-3 align-items-center">
@@ -388,7 +388,7 @@
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-success"><i class="bi bi-save"></i>
                                     Simpan</button>
-                                <a href="{{ url('superadmin/users') }}" class="btn btn-secondary">
+                                <a href="{{ route('superadmin.users.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>

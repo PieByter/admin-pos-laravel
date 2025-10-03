@@ -4,13 +4,11 @@
     <x-content-header title="Manajemen Satuan" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('units.index') }}" />
 
-    @if ($can_write ?? false)
-        <div id="custom-buttons" class="ms-3 mb-2">
-            <a href="{{ route('units.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Tambah Satuan Baru
-            </a>
-        </div>
-    @endif
+    <div id="custom-buttons" class="ms-3 mb-2">
+        <a href="{{ route('units.create') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Tambah Satuan Baru
+        </a>
+    </div>
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -21,9 +19,7 @@
                             <th style="width:5%;">No</th>
                             <th style="width:30%;">Nama Satuan</th>
                             <th style="width:45%;">Keterangan</th>
-                            @if ($can_write ?? false)
-                                <th style="width:20%;">Aksi</th>
-                            @endif
+                            <th style="width:20%;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,11 +31,9 @@
                                         <p class="mt-2">
                                             Belum ada data satuan
                                         </p>
-                                        @if ($can_write ?? false)
-                                            <a href="{{ route('units.create') }}" class="btn btn-primary">
-                                                <i class="bi bi-plus"></i> Tambah Satuan Pertama
-                                            </a>
-                                        @endif
+                                        <a href="{{ route('units.create') }}" class="btn btn-primary">
+                                            <i class="bi bi-plus"></i> Tambah Satuan Pertama
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
@@ -47,20 +41,23 @@
                             @foreach ($units as $index => $unit)
                                 <tr class="text-center">
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $unit->name }}</td>
+                                    <td>{{ $unit->unit_name }}</td>
                                     <td>{{ $unit->description ?? '-' }}</td>
-                                    @if ($can_write ?? false)
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ route('units.show', $unit->id) }}"
-                                                    class="btn btn-info btn-sm" title="Detail">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('units.edit', $unit->id) }}"
-                                                    class="btn btn-warning btn-sm" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form action="{{ route('units.destroy', $unit->id) }}" method="POST"
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('units.show', $unit->id) }}" class="btn btn-info btn-sm"
+                                                title="Detail">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ route('units.edit', $unit->id) }}"
+                                                class="btn btn-warning btn-sm" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-danger btn-sm btn-hapus-satuan"
+                                                data-action="{{ route('units.destroy', $unit->id) }}" title="Hapus">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                            {{-- <form action="{{ route('units.destroy', $unit->id) }}" method="POST"
                                                     class="d-inline delete-form">
                                                     @csrf
                                                     @method('DELETE')
@@ -68,10 +65,14 @@
                                                         class="btn btn-danger btn-sm btn-hapus-satuan" title="Hapus">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    @endif
+                                                </form> --}}
+
+                                        </div>
+                                    </td>
+                                    <form id="form-hapus-satuan" method="POST" style="display:none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
                                 </tr>
                             @endforeach
                         @endif
@@ -156,6 +157,29 @@
 
             // Move custom buttons to DataTable
             $('#custom-buttons').appendTo('#custom-buttons-container');
+
+            document.querySelectorAll('.btn-hapus-satuan').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const action = btn.getAttribute('data-action');
+                    Swal.fire({
+                        title: 'Yakin ingin menghapus satuan ini?',
+                        text: 'Data satuan yang dihapus tidak bisa dikembalikan!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const form = document.getElementById('form-hapus-satuan');
+                            form.setAttribute('action', action);
+                            form.submit();
+                        }
+                    });
+                });
+            });
         });
     </script>
 

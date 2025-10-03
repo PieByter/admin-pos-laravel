@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Dashboard' }}</title>
+    <title>Admin POS{{ isset($title) ? ' | ' . $title : '' }}</title>
 
     @include('layouts.partials.styles')
     @stack('styles')
