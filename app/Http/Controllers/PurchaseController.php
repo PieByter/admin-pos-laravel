@@ -17,56 +17,55 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PurchaseController extends Controller
 {
-    private function canRead(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('pembelian', $permissions) || in_array('pembelian_read', $permissions);
-    }
+    // private function canRead(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('pembelian', $permissions) || in_array('pembelian_read', $permissions);
+    // }
 
-    private function canWrite(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('pembelian', $permissions);
-    }
+    // private function canWrite(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('pembelian', $permissions);
+    // }
 
-    private function requireReadAccess(): void
-    {
-        if (!$this->canRead()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireReadAccess(): void
+    // {
+    //     if (!$this->canRead()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function requireWriteAccess(): void
-    {
-        if (!$this->canWrite()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireWriteAccess(): void
+    // {
+    //     if (!$this->canWrite()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function getPermissionData(): array
-    {
-        return [
-            'can_read' => $this->canRead(),
-            'can_write' => $this->canWrite()
-        ];
-    }
+    // private function getPermissionData(): array
+    // {
+    //     return [
+    //         'can_read' => $this->canRead(),
+    //         'can_write' => $this->canWrite()
+    //     ];
+    // }
 
     public function index()
     {
-        $this->requireReadAccess();
+        // $this->requireReadAccess();
 
-        $purchases = DB::table('purchases')
-            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
-            ->select('purchases.*', 'suppliers.name as supplier_name')
-            ->orderByRaw('MONTH(purchases.issue_date) DESC')
-            ->orderByRaw('YEAR(purchases.issue_date) DESC')
-            ->orderBy('purchases.id', 'DESC')
-            ->get()
-            ->toArray();
+        $purchases = DB::table('purchase_orders')
+            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id')
+            ->select('purchase_orders.*', 'suppliers.name as supplier_name')
+            ->orderByRaw('MONTH(purchase_orders.issue_date) DESC')
+            ->orderByRaw('YEAR(purchase_orders.issue_date) DESC')
+            ->orderBy('purchase_orders.id', 'DESC')
+            ->get();
 
         // Get items and suppliers for mapping
         $suppliers = Supplier::all()->toArray();
@@ -78,10 +77,10 @@ class PurchaseController extends Controller
             $purchase->supplier_name = $supplierMap[$purchase->supplier_id] ?? '-';
 
             // Get purchase details
-            $details = DB::table('purchase_details')
-                ->leftJoin('units', 'units.id', '=', 'purchase_details.unit_id')
-                ->select('purchase_details.*', 'units.name as unit_name')
-                ->where('purchase_details.purchase_id', $purchase->id)
+            $details = DB::table('purchase_order_items')
+                ->leftJoin('units', 'units.id', '=', 'purchase_order_items.unit_id')
+                ->select('purchase_order_items.*', 'units.unit_name as unit_name')
+                ->where('purchase_order_items.purchase_order_id', $purchase->id)
                 ->get()
                 ->toArray();
 
@@ -99,29 +98,28 @@ class PurchaseController extends Controller
             }, $authorizationIds));
         }
 
-        $data = array_merge($this->getPermissionData(), [
+        $data = [
             'purchases' => $purchases,
             'title' => 'Daftar Pembelian'
-        ]);
+        ];
 
-        return view('purchases.index', $data);
+        return view('purchase_orders.index', $data);
     }
 
     public function show($id)
     {
-        $this->requireReadAccess();
 
-        $purchase = DB::table('purchases')->where('id', $id)->first();
+        $purchase = DB::table('purchase_orders')->where('id', $id)->first();
         if (!$purchase) {
-            return redirect()->route('purchases.index')
+            return redirect()->route('purchase_orders.index')
                 ->with('error', 'Data pembelian tidak ditemukan');
         }
 
         $supplier = Supplier::find($purchase->supplier_id);
-        $details = DB::table('purchase_details')
-            ->leftJoin('units', 'units.id', '=', 'purchase_details.unit_id')
-            ->select('purchase_details.*', 'units.name as unit_name')
-            ->where('purchase_id', $id)
+        $details = DB::table('purchase_order_items')
+            ->leftJoin('units', 'units.id', '=', 'purchase_order_items.unit_id')
+            ->select('purchase_order_items.*', 'units.unit_name as unit_name')
+            ->where('purchase_order_id', $id)
             ->get()
             ->toArray();
 
@@ -135,20 +133,18 @@ class PurchaseController extends Controller
             return $usernames[$id] ?? 'Unknown';
         }, $authorizationIds));
 
-        return view('purchases.show', [
+        return view('purchase_orders.show', [
             'purchase' => $purchase,
             'supplier' => $supplier,
             'details' => $details,
             'item_map' => $itemMap,
             'authorization_str' => $authorizationStr,
-            'can_write' => $this->canWrite(),
             'title' => 'Detail Pembelian'
         ]);
     }
 
     public function create()
     {
-        $this->requireWriteAccess();
 
         $suppliers = Supplier::orderBy('name')->get()->toArray();
         $items = Item::orderBy('name')->get()->toArray();
@@ -160,7 +156,7 @@ class PurchaseController extends Controller
         foreach ($items as $item) {
             $conversions = DB::table('unit_conversions')
                 ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
-                ->select('unit_conversions.*', 'units.name as unit_name')
+                ->select('unit_conversions.*', 'units.unit_name as unit_name')
                 ->where('unit_conversions.item_id', $item['id'])
                 ->get()
                 ->toArray();
@@ -170,7 +166,7 @@ class PurchaseController extends Controller
         $issueDate = date('Y-m-d');
         $invoiceNumber = $this->generateInvoiceNumber($issueDate);
 
-        return view('purchases.create', [
+        return view('purchase_orders.create', [
             'suppliers' => $suppliers,
             'items' => $items,
             'units' => $units,
@@ -184,7 +180,6 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-        $this->requireWriteAccess();
 
         $details = $request->input('details', []);
         $itemIds = [];
@@ -217,7 +212,7 @@ class PurchaseController extends Controller
         }
 
         $request->validate([
-            'invoice_number' => 'required|unique:purchases,invoice_number',
+            'invoice_number' => 'required|unique:purchase_orders,invoice_number',
             'issue_date' => 'required|date',
             'supplier_id' => 'required|exists:suppliers,id',
             'status' => 'required|string',
@@ -244,7 +239,7 @@ class PurchaseController extends Controller
                 'payment_method' => $request->payment_method
             ];
 
-            $purchaseId = DB::table('purchases')->insertGetId($purchaseData);
+            $purchaseId = DB::table('purchase_orders')->insertGetId($purchaseData);
 
             // Insert purchase details and update stock
             if (!empty($details)) {
@@ -261,8 +256,8 @@ class PurchaseController extends Controller
                     $quantity = (int)$detail['quantity'];
                     $baseQuantity = $quantity * $conversion;
 
-                    DB::table('purchase_details')->insert([
-                        'purchase_id' => $purchaseId,
+                    DB::table('purchase_order_items')->insert([
+                        'purchase_order_id' => $purchaseId,
                         'item_id' => $itemId,
                         'unit_id' => $unitId,
                         'quantity' => $quantity,
@@ -286,7 +281,7 @@ class PurchaseController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('purchases.index')
+            return redirect()->route('purchase_orders.index')
                 ->with('success', 'Data pembelian berhasil dibuat dan disimpan');
         } catch (\Exception $e) {
             DB::rollback();
@@ -299,13 +294,12 @@ class PurchaseController extends Controller
 
     public function edit($id)
     {
-        $this->requireWriteAccess();
 
-        $purchase = DB::table('purchases')->where('id', $id)->first();
-        $details = DB::table('purchase_details')->where('purchase_id', $id)->get()->toArray();
+        $purchase = DB::table('purchase_orders')->where('id', $id)->first();
+        $details = DB::table('purchase_order_items')->where('purchase_order_id', $id)->get()->toArray();
 
         if (!$purchase) {
-            return redirect()->route('purchases.index')
+            return redirect()->route('purchase_orders.index')
                 ->with('error', 'Data pembelian tidak ditemukan!');
         }
 
@@ -319,7 +313,7 @@ class PurchaseController extends Controller
         foreach ($items as $item) {
             $conversions = DB::table('unit_conversions')
                 ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
-                ->select('unit_conversions.*', 'units.name as unit_name')
+                ->select('unit_conversions.*', 'units.unit_name as unit_name')
                 ->where('unit_conversions.item_id', $item['id'])
                 ->get()
                 ->toArray();
@@ -345,7 +339,7 @@ class PurchaseController extends Controller
         }
         $authorizationStr = implode(', ', $usernames);
 
-        return view('purchases.edit', [
+        return view('purchase_orders.edit', [
             'id' => $id,
             'purchase' => $purchase,
             'details' => $details,
@@ -362,7 +356,6 @@ class PurchaseController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->requireWriteAccess();
 
         $details = $request->input('details', []);
         $itemIds = [];
@@ -381,8 +374,8 @@ class PurchaseController extends Controller
                 ->with('error', 'Detail barang tidak boleh kosong!');
         }
 
-        $purchase = DB::table('purchases')->where('id', $id)->first();
-        $oldDetails = DB::table('purchase_details')->where('purchase_id', $id)->get();
+        $purchase = DB::table('purchase_orders')->where('id', $id)->first();
+        $oldDetails = DB::table('purchase_order_items')->where('purchase_order_id', $id)->get();
 
         // Check if data changed
         $dataChanged = $this->isDataChanged($purchase, $request, $details);
@@ -415,7 +408,7 @@ class PurchaseController extends Controller
             }
 
             // Delete old details
-            DB::table('purchase_details')->where('purchase_id', $id)->delete();
+            DB::table('purchase_order_items')->where('purchase_order_id', $id)->delete();
 
             // Insert new details and update stock
             $totalAmount = 0;
@@ -432,8 +425,8 @@ class PurchaseController extends Controller
                 $quantity = (int)$detail['quantity'];
                 $baseQuantity = $quantity * $conversion;
 
-                DB::table('purchase_details')->insert([
-                    'purchase_id' => $id,
+                DB::table('purchase_order_items')->insert([
+                    'purchase_order_id' => $id,
                     'item_id' => $itemId,
                     'unit_id' => $unitId,
                     'quantity' => $quantity,
@@ -461,7 +454,7 @@ class PurchaseController extends Controller
                 'status' => $request->status,
                 'payment_method' => $request->payment_method
             ];
-            DB::table('purchases')->where('id', $id)->update($purchaseData);
+            DB::table('purchase_orders')->where('id', $id)->update($purchaseData);
 
             // Log activity
             ActivityLog::create([
@@ -471,7 +464,7 @@ class PurchaseController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('purchases.index')
+            return redirect()->route('purchase_orders.index')
                 ->with('success', 'Data pembelian berhasil diupdate');
         } catch (\Exception $e) {
             DB::rollback();
@@ -484,13 +477,12 @@ class PurchaseController extends Controller
 
     public function destroy($id)
     {
-        $this->requireWriteAccess();
 
-        $purchase = DB::table('purchases')->where('id', $id)->first();
-        $details = DB::table('purchase_details')->where('purchase_id', $id)->get();
+        $purchase = DB::table('purchase_orders')->where('id', $id)->first();
+        $details = DB::table('purchase_order_items')->where('purchase_order_id', $id)->get();
 
         if (!$purchase) {
-            return redirect()->route('purchases.index')
+            return redirect()->route('purchase_orders.index')
                 ->with('error', 'Data pembelian tidak ditemukan');
         }
 
@@ -509,7 +501,7 @@ class PurchaseController extends Controller
 
             $item = Item::find($itemId);
             if ($item->stock < $baseQuantity) {
-                return redirect()->route('purchases.index')
+                return redirect()->route('purchase_orders.index')
                     ->with('error', 'Stok barang tidak mencukupi untuk menghapus pembelian! (Stok saat ini: ' . $item->stock . ', akan dikurangi sebesar: ' . $baseQuantity . ')');
             }
         }
@@ -535,8 +527,8 @@ class PurchaseController extends Controller
             }
 
             // Delete details and purchase
-            DB::table('purchase_details')->where('purchase_id', $id)->delete();
-            DB::table('purchases')->where('id', $id)->delete();
+            DB::table('purchase_order_items')->where('purchase_order_id', $id)->delete();
+            DB::table('purchase_orders')->where('id', $id)->delete();
 
             // Log activity
             ActivityLog::create([
@@ -546,12 +538,12 @@ class PurchaseController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('purchases.index')
+            return redirect()->route('purchase_orders.index')
                 ->with('success', 'Data pembelian berhasil dihapus');
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Error deleting purchase: ' . $e->getMessage());
-            return redirect()->route('purchases.index')
+            return redirect()->route('purchase_orders.index')
                 ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
     }
@@ -562,7 +554,7 @@ class PurchaseController extends Controller
         $year = date('Y', strtotime($issueDate));
         $month = date('m', strtotime($issueDate));
 
-        $invoices = DB::table('purchases')
+        $invoices = DB::table('purchase_orders')
             ->select('invoice_number')
             ->whereYear('issue_date', $year)
             ->whereMonth('issue_date', $month)
@@ -608,7 +600,7 @@ class PurchaseController extends Controller
         }
 
         // Check if details changed
-        $oldDetails = DB::table('purchase_details')->where('purchase_id', $purchase->id)->get();
+        $oldDetails = DB::table('purchase_order_items')->where('purchase_order_id', $purchase->id)->get();
 
         if (count($oldDetails) != count($newDetails)) {
             return true;
@@ -641,37 +633,35 @@ class PurchaseController extends Controller
     // Export Excel
     public function export(Request $request)
     {
-        $this->requireReadAccess();
-
         $type = $request->get('type', 'monthly');
-        $query = DB::table('purchases')
-            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
-            ->select('purchases.*', 'suppliers.name as supplier_name');
+        $query = DB::table('purchase_orders')
+            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id')
+            ->select('purchase_orders.*', 'suppliers.name as supplier_name');
 
         if ($type === 'daily') {
             $date = $request->get('issue_date') ?? date('Y-m-d');
-            $query->whereDate('purchases.issue_date', $date);
+            $query->whereDate('purchase_orders.issue_date', $date);
             $filename = "Pembelian_Harian_" . $date . ".xlsx";
         } elseif ($type === 'monthly') {
             $month = (int)($request->get('month') ?? date('n'));
             $year = (int)($request->get('year') ?? date('Y'));
-            $query->whereMonth('purchases.issue_date', $month)
-                ->whereYear('purchases.issue_date', $year);
+            $query->whereMonth('purchase_orders.issue_date', $month)
+                ->whereYear('purchase_orders.issue_date', $year);
             $filename = "Pembelian_Bulan_{$month}_{$year}.xlsx";
         } elseif ($type === 'yearly') {
             $year = (int)($request->get('year') ?? date('Y'));
-            $query->whereYear('purchases.issue_date', $year);
+            $query->whereYear('purchase_orders.issue_date', $year);
             $filename = "Pembelian_Tahun_{$year}.xlsx";
         } else {
             // Default monthly
             $month = (int)($request->get('month') ?? date('n'));
             $year = (int)($request->get('year') ?? date('Y'));
-            $query->whereMonth('purchases.issue_date', $month)
-                ->whereYear('purchases.issue_date', $year);
+            $query->whereMonth('purchase_orders.issue_date', $month)
+                ->whereYear('purchase_orders.issue_date', $year);
             $filename = "Pembelian_Bulan_{$month}_{$year}.xlsx";
         }
 
-        $query->orderBy('purchases.issue_date', 'ASC');
+        $query->orderBy('purchase_orders.issue_date', 'ASC');
         $purchases = $query->get();
 
         // Prepare data for Excel
@@ -692,10 +682,10 @@ class PurchaseController extends Controller
         $row = 2;
         foreach ($purchases as $i => $purchase) {
             // Get item details
-            $details = DB::table('purchase_details')
-                ->leftJoin('items', 'items.id', '=', 'purchase_details.item_id')
-                ->select('purchase_details.*', 'items.name as item_name')
-                ->where('purchase_id', $purchase->id)
+            $details = DB::table('purchase_order_items')
+                ->leftJoin('items', 'items.id', '=', 'purchase_order_items.item_id')
+                ->select('purchase_order_items.*', 'items.name as item_name')
+                ->where('purchase_order_id', $purchase->id)
                 ->get();
 
             $detailCount = count($details);

@@ -12,22 +12,22 @@
         <div class="container-fluid mb-3">
             <div class="table-responsive" id="pembelian-table-container">
                 <table class="table table-striped table-hover table-bordered align-middle table-sm small"
-                    id="pembelianTable" style="width:100%; table-layout: fixed;">
+                    id="pembelianTable">
                     <thead>
                         <tr class="text-center">
-                            <th style="width:4%;">No</th>
-                            <th style="width:13%;">Nomor Faktur</th>
-                            <th style="width:11%;">Tanggal Terbit</th>
-                            <th style="width:10%;">Supplier</th>
-                            <th style="width:14%;">Total Harga</th>
-                            <th style="width:10%;">Status</th>
-                            <th style="width:10%;">Payment</th>
-                            <th style="width:19%;">Detail Barang</th>
-                            <th style="width:10%;">Aksi</th>
+                            <th>No</th>
+                            <th>Nomor Faktur</th>
+                            <th>Tanggal Terbit</th>
+                            <th>Supplier</th>
+                            <th>Total Harga</th>
+                            <th>Status</th>
+                            <th>Payment</th>
+                            <th>Detail Barang</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if ($purchaseOrders->isEmpty())
+                        @if ($purchases->isEmpty())
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '9' : '8' }}" class="text-center py-4">
                                     <div class="text-muted">
@@ -48,9 +48,9 @@
                                 </td>
                             </tr>
                         @else
-                            @foreach ($purchaseOrders as $index => $purchaseOrder)
+                            @foreach ($purchases as $index => $purchaseOrder)
                                 <tr style="cursor:pointer;"
-                                    onclick="window.location='{{ route('purchase-orders.show', $purchaseOrder->id) }}'">
+                                    onclick="window.location='{{ route('purchases.show', $purchaseOrder->id) }}'">
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td class="text-center">{{ $purchaseOrder->invoice_number }}</td>
                                     <td class="text-center">
@@ -96,16 +96,16 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @if ($purchaseOrder->details->count() > 0)
+                                        @if (!empty($purchaseOrder->details) && count($purchaseOrder->details) > 0)
                                             @foreach ($purchaseOrder->details as $index => $detail)
                                                 <div>
                                                     {{ $detail->item->name ?? '-' }},
                                                     Qty: {{ number_format($detail->quantity, 0) }}
                                                     {{ $detail->unit->name ?? '-' }},
-                                                    Harga: Rp. {{ number_format($detail->unit_price, 0, ',', '.') }}
+                                                    Harga: Rp. {{ number_format($detail->buy_price, 0, ',', '.') }}
                                                     Subtotal: Rp. {{ number_format($detail->subtotal, 0, ',', '.') }}
                                                 </div>
-                                                @if ($index < $purchaseOrder->details->count() - 1)
+                                                @if ($index < count($purchaseOrder->details) - 1)
                                                     <hr class="my-1">
                                                 @endif
                                             @endforeach
