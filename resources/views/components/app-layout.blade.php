@@ -1,4 +1,5 @@
-<!doctype html>
+@props(['title' => null])
+<!DOCTYPE html>
 <html lang="en">
 
 <head>

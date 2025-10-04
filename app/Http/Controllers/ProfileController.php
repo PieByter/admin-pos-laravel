@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use App\Models\Permission;
 use App\Models\ActivityLog;
 
 class ProfileController extends Controller
@@ -16,40 +15,72 @@ class ProfileController extends Controller
     public function index()
     {
         $userId = session('user_id');
-        $user = User::find($userId);
+        $user = User::with(['roles', 'permissions'])->find($userId);
 
         if (!$user) {
             return redirect()->route('dashboard')
                 ->with('error', 'Data pengguna tidak ditemukan');
         }
 
-        // Ambil permission user yang sedang login
+        // Ambil semua permission user (dari role + direct permission)
         $userPermissions = [];
-        $permissions = DB::table('user_permissions')
-            ->join('permissions', 'permissions.id', '=', 'user_permissions.permission_id')
-            ->where('user_permissions.user_id', $userId)
-            ->select('permissions.name', 'permissions.display_name')
-            ->get();
 
-        foreach ($permissions as $perm) {
-            // Tentukan tipe permission
-            $type = 'full';
-            if (str_ends_with($perm->name, '_read')) {
+        // Get direct permissions
+        foreach ($user->permissions as $perm) {
+            $type = 'direct';
+            if (str_contains($perm->name, 'view') || str_contains($perm->name, 'read')) {
                 $type = 'read';
+            } elseif (str_contains($perm->name, 'create')) {
+                $type = 'create';
+            } elseif (str_contains($perm->name, 'edit') || str_contains($perm->name, 'update')) {
+                $type = 'edit';
+            } elseif (str_contains($perm->name, 'delete')) {
+                $type = 'delete';
+            } else {
+                $type = 'full';
             }
 
-            $userPermissions[] = [
-                'display_name' => $perm->display_name,
-                'type' => $type
+            $userPermissions[] = (object) [
+                'name' => $perm->name,
+                'display_name' => str_replace('.', ' ', ucfirst($perm->name)),
+                'type' => $type,
+                'source' => 'direct'
             ];
         }
 
-        $userData = $user->toArray();
-        $userData['permissions'] = $userPermissions;
+        // Get permissions from roles
+        $rolePermissions = $user->getPermissionsViaRoles();
+        foreach ($rolePermissions as $perm) {
+            $type = 'role';
+            if (str_contains($perm->name, 'view') || str_contains($perm->name, 'read')) {
+                $type = 'read';
+            } elseif (str_contains($perm->name, 'create')) {
+                $type = 'create';
+            } elseif (str_contains($perm->name, 'edit') || str_contains($perm->name, 'update')) {
+                $type = 'edit';
+            } elseif (str_contains($perm->name, 'delete')) {
+                $type = 'delete';
+            } else {
+                $type = 'full';
+            }
+
+            $userPermissions[] = (object) [
+                'name' => $perm->name,
+                'display_name' => str_replace('.', ' ', ucfirst($perm->name)),
+                'type' => $type,
+                'source' => 'role'
+            ];
+        }
+
+        // Remove duplicates based on permission name
+        $userPermissions = collect($userPermissions)->unique('name')->values();
+
+        // Tambahkan permission ke user sebagai collection, bukan overwrite
+        $user->custom_permissions = $userPermissions;
 
         $data = [
             'title' => 'Profil Saya',
-            'user' => $userData
+            'user' => $user // Kirim objek, bukan array
         ];
 
         return view('profile.index', $data);
@@ -67,7 +98,7 @@ class ProfileController extends Controller
 
         $data = [
             'title' => 'Edit Profil',
-            'user' => $user->toArray()
+            'user' => $user
         ];
 
         return view('profile.edit', $data);
@@ -88,6 +119,8 @@ class ProfileController extends Controller
             $rules = [
                 'username' => 'required|min:4|unique:users,username,' . $userId,
                 'email' => 'required|email|unique:users,email,' . $userId,
+                'jabatan' => 'nullable|string|max:100',
+                'bagian' => 'nullable|string|max:100',
             ];
 
             $messages = [
@@ -149,6 +182,8 @@ class ProfileController extends Controller
             $updateData = [
                 'username' => $request->username,
                 'email' => strtolower($request->email),
+                'jabatan' => $request->jabatan,
+                'bagian' => $request->bagian,
                 'updated_at' => now()
             ];
 
@@ -168,7 +203,9 @@ class ProfileController extends Controller
             // Update session data
             $sessionData = [
                 'username' => $updateData['username'],
-                'email' => $updateData['email']
+                'email' => $updateData['email'],
+                'jabatan' => $updateData['jabatan'],
+                'bagian' => $updateData['bagian']
             ];
 
             if (isset($updateData['photo'])) {
@@ -409,5 +446,49 @@ class ProfileController extends Controller
             Log::error('Photo removal error: ' . $e->getMessage());
             return response()->json(['error' => 'Gagal menghapus foto'], 500);
         }
+    }
+
+    // Helper method untuk check user permission (menggunakan Spatie)
+    public function hasPermission($permission)
+    {
+        $userId = session('user_id');
+        if (!$userId) return false;
+
+        $user = User::find($userId);
+        return $user ? $user->can($permission) : false;
+    }
+
+    // Helper method untuk check user role (menggunakan Spatie)
+    public function hasRole($role)
+    {
+        $userId = session('user_id');
+        if (!$userId) return false;
+
+        $user = User::find($userId);
+        return $user ? $user->hasRole($role) : false;
+    }
+
+    // Method untuk get all user permissions
+    public function getUserPermissions()
+    {
+        $userId = session('user_id');
+        if (!$userId) return [];
+
+        $user = User::with(['roles', 'permissions'])->find($userId);
+        if (!$user) return [];
+
+        return $user->getAllPermissions()->pluck('name')->toArray();
+    }
+
+    // Method untuk get user roles
+    public function getUserRoles()
+    {
+        $userId = session('user_id');
+        if (!$userId) return [];
+
+        $user = User::with('roles')->find($userId);
+        if (!$user) return [];
+
+        return $user->roles->pluck('name')->toArray();
     }
 }

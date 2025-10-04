@@ -1,4 +1,3 @@
-{{-- filepath: c:\laragon\www\admin-pos\resources\views\purchase_orders\index.blade.php --}}
 <x-app-layout>
     <x-content-header title="Manajemen Pembelian (Purchase Order)" breadcrumb-parent="Transaksi"
         breadcrumb-url="{{ route('purchase-orders.index') }}" />

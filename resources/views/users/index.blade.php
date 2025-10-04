@@ -1,5 +1,4 @@
 <x-app-layout>
-
     <x-content-header title="Manajemen User" breadcrumb-parent="SuperAdmin"
         breadcrumb-url="{{ route('superadmin.users.index') }}" />
 
@@ -10,7 +9,6 @@
             <i class="bi bi-person-plus"></i> Tambah User Baru
         </a>
     </div>
-
 
     <div class="content">
         <div class="container-fluid mb-3">
@@ -26,9 +24,7 @@
                             <th style="width: 10%;">Jabatan</th>
                             <th style="width: 10%;">Bagian</th>
                             <th style="width: 40%;">Akses</th>
-
                             <th style="width: 10%;">Aksi</th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -52,7 +48,7 @@
 
                             @foreach ($users as $user)
                                 <tr style="cursor:pointer;"
-                                    onclick="window.location='{{ route('superadmin.users.detail', $user['id']) }}'">
+                                    onclick="window.location='{{ route('superadmin.users.show', $user['id']) }}'">
                                     <td>{{ $no++ }}</td>
                                     <td>{{ e($user['username']) }}</td>
                                     <td>{{ e($user['email'] ?? '-') }}</td>
@@ -71,7 +67,7 @@
                                             {{ ucfirst($user['role']) }}
                                         </span>
                                     </td>
-                                    @php
+                                    {{-- @php
                                         $jabatanList = [
                                             'staff' => 'Staff',
                                             'karyawan' => 'Karyawan',
@@ -94,11 +90,11 @@
                                             'kasubgu' => 'Kepala Sub Regu (Kasubgu)',
                                             'wakasubgu' => 'Wakil Kepala Sub Regu (Wakasubgu)',
                                         ];
-                                    @endphp
+                                    @endphp --}}
                                     <td>
-                                        {{ e($jabatanList[$user['jabatan']] ?? '-') }}
+                                        {{ e($user->job_title ?? '-') }}
                                     </td>
-                                    <td>{{ e($user['bagian'] ?? '-') }}</td>
+                                    <td>{{ e($user->position ?? '-') }}</td>
                                     <td>
                                         @if (isset($user['permissions']) && is_array($user['permissions']) && count($user['permissions']))
                                             @php
@@ -175,7 +171,7 @@
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             @if ($user['id'] != session('user_id'))
-                                                <a href="{{ route('superadmin.users.delete', $user['id']) }}"
+                                                <a href="{{ route('superadmin.users.destroy', $user['id']) }}"
                                                     class="btn btn-danger btn-sm btn-hapus-user"
                                                     onclick="event.stopPropagation();" title="Hapus User">
                                                     <i class="bi bi-trash"></i>

@@ -17,11 +17,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role')->default('useradmin');
-            $table->string('job_title')->nullable();
             $table->string('position')->nullable();
-            $table->string('profile_picture')->nullable();
+            $table->string('job_title')->nullable();
+            $table->string('division')->nullable();
+            $table->string('photo')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
         });
 

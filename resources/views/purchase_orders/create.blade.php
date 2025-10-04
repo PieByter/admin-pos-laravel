@@ -809,10 +809,10 @@
             });
         });
 
-        let currentSelectSupplier = document.getElementById('id_supplier');
+        let currentSelectSupplier = document.getElementById('supplier_id');
 
         function openSupplierModal(btn) {
-            currentSelectSupplier = btn.closest('.input-group').querySelector('select[name="id_supplier"]');
+            currentSelectSupplier = btn.closest('.input-group').querySelector('select[name="supplier_id"]');
             document.getElementById('modal-supplier-search').value = '';
             filterModalSupplier('');
             var modal = new bootstrap.Modal(document.getElementById('modalSupplier'));

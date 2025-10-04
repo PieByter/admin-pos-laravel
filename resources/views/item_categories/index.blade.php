@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="Manajemen Kategori Barang">
     <x-content-header title="Manajemen Jenis Barang" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('item-categories.index') }}" />
 

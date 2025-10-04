@@ -1,4 +1,4 @@
-<x-guest-layout title="Admin POS | Register Page">
+<x-guest-layout title="Register Page">
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <img src="{{ asset('img/logo/logo.png') }}" alt="PT. STTC" class="mx-auto h-10 w-auto dark:hidden" />

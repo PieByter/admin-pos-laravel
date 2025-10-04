@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="Manajemen Log Aktivitas">
     <x-content-header title="Manajemen Log Aktivitas" breadcrumb-parent="SuperAdmin"
         breadcrumb-url="{{ route('superadmin.activity-logs.index') }}" />
 

@@ -1,6 +1,5 @@
 <x-app-layout>
-    <x-content-header title="Edit Profil" breadcrumb-parent="Profile"
-        breadcrumb-url="{{ route('superadmin.profile.index') }}" />
+    <x-content-header title="Edit Profil" breadcrumb-parent="Profile" breadcrumb-url="{{ route('profile.index') }}" />
 
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
@@ -10,8 +9,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-person-lines-fill"></i> Form Edit Profil</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('superadmin.profile.update') }}" method="post"
-                            enctype="multipart/form-data">
+                        <form action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
@@ -85,8 +83,8 @@
                             <div class="mb-3 text-center">
                                 <label class="form-label"><b>Foto Profil</b></label>
                                 <div class="mb-3">
-                                    @if ($user->foto && Storage::disk('public')->exists('superadmin.profile/' . $user->foto))
-                                        <img src="{{ Storage::url('superadmin.profile/' . $user->foto) }}"
+                                    @if ($user->foto && Storage::disk('public')->exists('profile/' . $user->foto))
+                                        <img src="{{ Storage::url('profile/' . $user->foto) }}"
                                             alt="Current Profile Photo" class="rounded-circle mb-2"
                                             style="width:100px; height:100px; object-fit:cover;" id="preview-image">
                                     @else
@@ -108,7 +106,7 @@
                                 <button type="submit" class="btn btn-primary me-2">
                                     <i class="bi bi-save"></i> Simpan Perubahan
                                 </button>
-                                <a href="{{ route('superadmin.profile.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('profile.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>

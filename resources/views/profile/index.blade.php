@@ -1,6 +1,5 @@
 <x-app-layout>
-    <x-content-header title="Pengaturan Akun" breadcrumb-parent="Profile"
-        breadcrumb-url="{{ route('superadmin.profile.index') }}" />
+    <x-content-header title="Pengaturan Akun" breadcrumb-parent="Profile" breadcrumb-url="{{ route('profile.index') }}" />
 
     <div class="content">
         <div class="container-fluid">
@@ -9,7 +8,7 @@
                     <div class="card h-100">
                         <div class="card-header d-flex align-items-center">
                             <h5 class="card-title mb-0">Pengaturan Profil</h5>
-                            <a href="{{ route('superadmin.profile.edit') }}" class="btn btn-primary btn-sm ms-auto">
+                            <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-sm ms-auto">
                                 <i class="bi bi-pencil"></i> Edit Profil
                             </a>
                         </div>
@@ -27,8 +26,8 @@
                                         $roleConfig = [
                                             'superadmin' => 'bg-primary',
                                             'useradmin' => 'bg-info',
-                                            'kasir' => 'bg-warning',
-                                            'gudang' => 'bg-secondary',
+                                            'cashier' => 'bg-warning',
+                                            'warehouse' => 'bg-secondary',
                                             'viewer' => 'bg-success',
                                         ];
                                         $badgeClass = $roleConfig[$user->role] ?? 'bg-secondary';
@@ -40,7 +39,7 @@
 
                                 <dt class="col-sm-3">Jabatan</dt>
                                 <dd class="col-sm-9">
-                                    @php
+                                    {{-- @php
                                         $jabatanList = [
                                             'staff' => 'Staff',
                                             'karyawan' => 'Karyawan',
@@ -63,12 +62,15 @@
                                             'kasubgu' => 'Kepala Sub Regu (Kasubgu)',
                                             'wakasubgu' => 'Wakil Kepala Sub Regu (Wakasubgu)',
                                         ];
-                                    @endphp
-                                    {{ $jabatanList[$user->jabatan] ?? '-' }}
+                                    @endphp --}}
+                                    {{ $user->position ?? '-' }}
                                 </dd>
 
+                                <dt class="col-sm-3">Jabatan Fungsional</dt>
+                                <dd class="col-sm-9">{{ $user->job_title ?? '-' }}</dd>
+
                                 <dt class="col-sm-3">Bagian/Divisi</dt>
-                                <dd class="col-sm-9">{{ $user->bagian ?? '-' }}</dd>
+                                <dd class="col-sm-9">{{ $user->division ?? '-' }}</dd>
 
                                 <dt class="col-sm-3">Akses</dt>
                                 <dd class="col-sm-9">
@@ -143,9 +145,9 @@
                                 <div class="flex-shrink-0">
                                     <div
                                         class="avatar avatar-xl text-dark d-flex align-items-center justify-content-center">
-                                        @if ($user->foto && Storage::disk('public')->exists('superadmin.profile/' . $user->foto))
-                                            <img src="{{ Storage::url('superadmin.profile/' . $user->foto) }}"
-                                                alt="Profile Photo" class="rounded-circle"
+                                        @if ($user->foto && Storage::disk('public')->exists('profile/' . $user->foto))
+                                            <img src="{{ Storage::url('profile/' . $user->foto) }}" alt="Profile Photo"
+                                                class="rounded-circle"
                                                 style="width:60px; height:60px; object-fit:cover;">
                                         @else
                                             <i class="bi bi-person-circle" style="font-size:3rem;"></i>
@@ -169,7 +171,7 @@
                                 </p>
                             </div>
 
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            <form action="{{ route('auth.logout') }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-danger btn-sm">
                                     <i class="bi bi-box-arrow-right"></i> Sign Out

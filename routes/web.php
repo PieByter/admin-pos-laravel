@@ -24,7 +24,7 @@ use App\Http\Controllers\UnitConversionController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\PurchaseReturnController;
 
-Route::view('forbidden', 'errors.forbidden')->name('forbidden');
+Route::view('/forbidden', 'errors.forbidden')->name('forbidden');
 
 // Auth routes (login, register, logout)
 Route::get('/', [AuthController::class, 'login'])->name('home');
@@ -154,5 +154,23 @@ Route::middleware(['auth'])->group(function () {
 
         // Activity Logs
         Route::resource('activity-logs', ActivityLogController::class);
+    });
+
+    Route::resource('purchase-returns', PurchaseReturnController::class);
+    Route::prefix('purchase-returns')->name('purchase-returns.')->group(function () {
+        Route::get('generate-return-number', [PurchaseReturnController::class, 'generateReturnNumber'])->name('generate-return-number');
+        Route::get('{id}/print', [PurchaseReturnController::class, 'print'])->name('print');
+        Route::get('export', [PurchaseReturnController::class, 'export'])->name('export');
+        Route::post('{id}/approve', [PurchaseReturnController::class, 'approve'])->name('approve');
+        Route::post('{id}/reject', [PurchaseReturnController::class, 'reject'])->name('reject');
+    });
+
+    Route::resource('sales-returns', SalesReturnController::class);
+    Route::prefix('sales-returns')->name('sales-returns.')->group(function () {
+        Route::get('generate-return-number', [SalesReturnController::class, 'generateReturnNumber'])->name('generate-return-number');
+        Route::get('{id}/print', [SalesReturnController::class, 'print'])->name('print');
+        Route::get('export', [SalesReturnController::class, 'export'])->name('export');
+        Route::post('{id}/approve', [SalesReturnController::class, 'approve'])->name('approve');
+        Route::post('{id}/reject', [SalesReturnController::class, 'reject'])->name('reject');
     });
 });

@@ -2,132 +2,95 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use App\Models\User;
-use App\Models\Permission;
-use App\Models\UserPermission;
 use App\Models\ActivityLog;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
-    private function canRead(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('user', $permissions) || in_array('user_read', $permissions);
-    }
+    // private function canRead(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('user', $permissions) || in_array('user_read', $permissions);
+    // }
 
-    private function canWrite(): bool
-    {
-        $role = session('role');
-        $permissions = session('permissions') ?? [];
-        if ($role === 'superadmin') return true;
-        return in_array('user', $permissions);
-    }
+    // private function canWrite(): bool
+    // {
+    //     $role = session('role');
+    //     $permissions = session('permissions') ?? [];
+    //     if ($role === 'superadmin') return true;
+    //     return in_array('user', $permissions);
+    // }
 
-    private function requireReadAccess(): void
-    {
-        if (!$this->canRead()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireReadAccess(): void
+    // {
+    //     if (!$this->canRead()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function requireWriteAccess(): void
-    {
-        if (!$this->canWrite()) {
-            abort(404, 'Access Denied');
-        }
-    }
+    // private function requireWriteAccess(): void
+    // {
+    //     if (!$this->canWrite()) {
+    //         abort(404, 'Access Denied');
+    //     }
+    // }
 
-    private function getPermissionData(): array
-    {
-        return [
-            'can_read' => $this->canRead(),
-            'can_write' => $this->canWrite()
-        ];
-    }
+    // private function getPermissionData(): array
+    // {
+    //     return [
+    //         'can_read' => $this->canRead(),
+    //         'can_write' => $this->canWrite()
+    //     ];
+    // }
 
     // Tampilkan daftar user
     public function index()
     {
-        $this->requireReadAccess();
+        $users = User::with(['roles', 'permissions'])->orderBy('id')->get();
 
-        $users = DB::table('users')
-            ->leftJoin('user_permissions', 'user_permissions.user_id', '=', 'users.id')
-            ->leftJoin('permissions', 'permissions.id', '=', 'user_permissions.permission_id')
-            ->select('users.*')
-            ->groupBy('users.id')
-            ->orderBy('users.username')
-            ->get()
-            ->toArray();
-
-        // Get permissions for each user
-        foreach ($users as $i => $user) {
-            $userPermissions = DB::table('user_permissions')
-                ->leftJoin('permissions', 'permissions.id', '=', 'user_permissions.permission_id')
-                ->select('permissions.display_name')
-                ->where('user_permissions.user_id', $user->id)
-                ->get()
-                ->toArray();
-
-            $users[$i]->permissions = array_map(function ($perm) {
-                return ['display_name' => $perm->display_name];
-            }, $userPermissions);
-        }
-
-        $data = array_merge($this->getPermissionData(), [
+        $data = [
             'title' => 'Manajemen User',
             'users' => $users
-        ]);
+        ];
 
         return view('users.index', $data);
     }
 
-    // Tampilkan form tambah user
     public function create()
     {
-        $this->requireWriteAccess();
-
-        $permissions = Permission::orderBy('display_name')->get();
+        $roles = Role::orderBy('name')->get();
+        $permissions = Permission::orderBy('name')->get();
 
         $data = [
             'title' => 'Tambah User Baru',
+            'roles' => $roles,
             'permissions' => $permissions
         ];
 
         return view('users.create', $data);
     }
 
-    // Simpan user baru
     public function store(Request $request)
     {
-        $this->requireWriteAccess();
-
         $request->validate([
             'username' => 'required|string|min:4|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'jabatan' => 'nullable|string|max:100',
             'bagian' => 'nullable|string|max:100',
-            'role' => 'required|in:superadmin,admin,user',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,id',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id'
-        ], [
-            'username.required' => 'Username wajib diisi',
-            'username.min' => 'Username minimal 4 karakter',
-            'username.unique' => 'Username sudah digunakan',
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah digunakan',
-            'password.required' => 'Password wajib diisi',
-            'password.min' => 'Password minimal 6 karakter',
-            'role.required' => 'Role wajib dipilih',
-            'role.in' => 'Role tidak valid'
         ]);
 
         try {
@@ -140,59 +103,23 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
                 'jabatan' => $request->jabatan,
                 'bagian' => $request->bagian,
-                'role' => $request->role
             ]);
 
-            // Handle permissions
-            $allPermissions = Permission::all();
-            $permissionNameById = $allPermissions->pluck('name', 'id')->toArray();
+            // Assign roles
+            if ($request->roles) {
+                $roleNames = Role::whereIn('id', $request->roles)->pluck('name')->toArray();
+                $user->assignRole($roleNames);
+            }
 
-            if ($request->role === 'superadmin') {
-                // Superadmin gets full access (no _read permissions)
-                foreach ($allPermissions as $perm) {
-                    if (strpos($perm->name, '_read') === false) {
-                        UserPermission::create([
-                            'user_id' => $user->id,
-                            'permission_id' => $perm->id
-                        ]);
-                    }
-                }
-            } else {
-                $permissions = $request->permissions ?? [];
-
-                // Filter: if full permission exists, don't save read permission for same module
-                $finalPermissions = [];
-                $fullModules = [];
-
-                foreach ($permissions as $permId) {
-                    $permName = $permissionNameById[$permId] ?? '';
-                    if ($permName && substr($permName, -5) !== '_read') {
-                        $fullModules[] = $permName;
-                    }
-                }
-
-                foreach ($permissions as $permId) {
-                    $permName = $permissionNameById[$permId] ?? '';
-                    if (substr($permName, -5) === '_read') {
-                        $baseName = substr($permName, 0, -5);
-                        if (in_array($baseName, $fullModules)) {
-                            continue; // skip _read if full permission exists
-                        }
-                    }
-                    $finalPermissions[] = $permId;
-                }
-
-                foreach ($finalPermissions as $permId) {
-                    UserPermission::create([
-                        'user_id' => $user->id,
-                        'permission_id' => $permId
-                    ]);
-                }
+            // Assign direct permissions (selain dari role)
+            if ($request->permissions) {
+                $permissionNames = Permission::whereIn('id', $request->permissions)->pluck('name')->toArray();
+                $user->givePermissionTo($permissionNames);
             }
 
             // Log activity
             ActivityLog::create([
-                'user_id' => session('user_id'),
+                'user_id' => auth()->id() ?? session('user_id'),
                 'activity' => 'Menambah user: ' . $request->username . ' (' . $request->email . ')',
                 'created_at' => now()
             ]);
@@ -211,81 +138,51 @@ class UserController extends Controller
         }
     }
 
-    // Tampilkan detail user
     public function show($id)
     {
-        $this->requireReadAccess();
-
-        $user = User::find($id);
+        $user = User::with(['roles', 'permissions'])->find($id);
         if (!$user) {
             return redirect()->route('users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        // Get user permissions
-        $userPermissions = DB::table('user_permissions')
-            ->leftJoin('permissions', 'permissions.id', '=', 'user_permissions.permission_id')
-            ->select('permissions.display_name')
-            ->where('user_permissions.user_id', $user->id)
-            ->get()
-            ->map(function ($perm) {
-                return ['display_name' => $perm->display_name];
-            })
-            ->toArray();
-
-        $user->permissions = $userPermissions;
-
         $data = [
             'title' => 'Detail User',
             'user' => $user,
-            'can_write' => $this->canWrite()
         ];
 
         return view('users.show', $data);
     }
 
-    // Tampilkan form edit user
     public function edit($id)
     {
-        $this->requireWriteAccess();
-
-        $user = User::find($id);
+        $user = User::with(['roles', 'permissions'])->find($id);
         if (!$user) {
             return redirect()->route('users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        $permissions = Permission::orderBy('display_name')->get();
+        $roles = Role::orderBy('name')->get();
+        $permissions = Permission::orderBy('name')->get();
 
-        // Get user permissions (permission IDs)
-        $userPermissions = UserPermission::where('user_id', $id)
-            ->pluck('permission_id')
-            ->toArray();
-
-        // Get user permission names untuk radio button
-        $userPermissionNames = [];
-        if (!empty($userPermissions)) {
-            $userPermissionNames = Permission::whereIn('id', $userPermissions)
-                ->pluck('name')
-                ->toArray();
-        }
+        // Get user's current role and permission IDs
+        $userRoleIds = $user->roles->pluck('id')->toArray();
+        $userPermissionIds = $user->permissions->pluck('id')->toArray();
 
         $data = [
             'title' => 'Edit Data User',
             'user' => $user,
+            'roles' => $roles,
             'permissions' => $permissions,
-            'user_permissions' => $userPermissions,
-            'user_permission_names' => $userPermissionNames
+            'user_role_ids' => $userRoleIds,
+            'user_permission_ids' => $userPermissionIds
         ];
 
         return view('users.edit', $data);
     }
 
-    // Update user
     public function update(Request $request, $id)
     {
-        $this->requireWriteAccess();
-
         $user = User::find($id);
         if (!$user) {
             return redirect()->route('users.index')
@@ -297,7 +194,8 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($id)],
             'jabatan' => 'nullable|string|max:100',
             'bagian' => 'nullable|string|max:100',
-            'role' => 'required|in:superadmin,admin,user',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,id',
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,id'
         ];
@@ -306,17 +204,7 @@ class UserController extends Controller
             $rules['password'] = 'string|min:6';
         }
 
-        $request->validate($rules, [
-            'username.required' => 'Username wajib diisi',
-            'username.min' => 'Username minimal 4 karakter',
-            'username.unique' => 'Username sudah digunakan',
-            'email.required' => 'Email wajib diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah digunakan',
-            'password.min' => 'Password minimal 6 karakter',
-            'role.required' => 'Role wajib dipilih',
-            'role.in' => 'Role tidak valid'
-        ]);
+        $request->validate($rules);
 
         try {
             DB::beginTransaction();
@@ -327,7 +215,6 @@ class UserController extends Controller
                 'email' => strtolower($request->email),
                 'jabatan' => $request->jabatan,
                 'bagian' => $request->bagian,
-                'role' => $request->role
             ];
 
             if ($request->filled('password')) {
@@ -336,68 +223,23 @@ class UserController extends Controller
 
             $user->update($userData);
 
-            // Delete existing permissions
-            UserPermission::where('user_id', $id)->delete();
-
-            // Handle new permissions
-            $allPermissions = Permission::all();
-            $permissionNameById = $allPermissions->pluck('name', 'id')->toArray();
-
-            if ($request->role === 'superadmin') {
-                // Superadmin gets full access (no _read permissions)
-                foreach ($allPermissions as $perm) {
-                    if (strpos($perm->name, '_read') === false) {
-                        UserPermission::create([
-                            'user_id' => $id,
-                            'permission_id' => $perm->id
-                        ]);
-                    }
-                }
-            } else {
-                $permissions = $request->permissions ?? [];
-
-                // Filter: if full permission exists, don't save read permission for same module
-                $finalPermissions = [];
-                $fullModules = [];
-
-                foreach ($permissions as $permId) {
-                    $permName = $permissionNameById[$permId] ?? '';
-                    if ($permName && substr($permName, -5) !== '_read') {
-                        $fullModules[] = $permName;
-                    }
-                }
-
-                foreach ($permissions as $permId) {
-                    $permName = $permissionNameById[$permId] ?? '';
-                    if (substr($permName, -5) === '_read') {
-                        $baseName = substr($permName, 0, -5);
-                        if (in_array($baseName, $fullModules)) {
-                            continue; // skip _read if full permission exists
-                        }
-                    }
-                    $finalPermissions[] = $permId;
-                }
-
-                foreach ($finalPermissions as $permId) {
-                    UserPermission::create([
-                        'user_id' => $id,
-                        'permission_id' => $permId
-                    ]);
-                }
+            // Sync roles (hapus semua role lama, assign role baru)
+            $user->syncRoles([]);
+            if ($request->roles) {
+                $roleNames = Role::whereIn('id', $request->roles)->pluck('name')->toArray();
+                $user->assignRole($roleNames);
             }
 
-            // Update session permissions if editing current user
-            if ($id == session('user_id')) {
-                $newPermissions = UserPermission::where('user_id', $id)
-                    ->leftJoin('permissions', 'permissions.id', '=', 'user_permissions.permission_id')
-                    ->pluck('permissions.name')
-                    ->toArray();
-                session(['permissions' => $newPermissions]);
+            // Sync permissions (hapus semua permission langsung lama, assign permission baru)
+            $user->syncPermissions([]);
+            if ($request->permissions) {
+                $permissionNames = Permission::whereIn('id', $request->permissions)->pluck('name')->toArray();
+                $user->givePermissionTo($permissionNames);
             }
 
             // Log activity
             ActivityLog::create([
-                'user_id' => session('user_id'),
+                'user_id' => auth()->id() ?? session('user_id'),
                 'activity' => 'Mengupdate user: ' . $request->username . ' (' . $user->email . ')',
                 'created_at' => now()
             ]);
@@ -416,18 +258,15 @@ class UserController extends Controller
         }
     }
 
-    // Hapus user
     public function destroy($id)
     {
-        $this->requireWriteAccess();
-
         $user = User::find($id);
         if (!$user) {
             return redirect()->route('users.index')
                 ->with('error', 'User tidak ditemukan');
         }
 
-        if ($id == session('user_id')) {
+        if ($id == (auth()->id() ?? session('user_id'))) {
             return redirect()->route('users.index')
                 ->with('error', 'Tidak dapat menghapus akun yang sedang digunakan');
         }
@@ -445,15 +284,12 @@ class UserController extends Controller
             $username = $user->username;
             $email = $user->email;
 
-            // Delete user permissions first
-            UserPermission::where('user_id', $id)->delete();
-
-            // Delete user
+            // Hapus semua role dan permission user (otomatis oleh Spatie)
             $user->delete();
 
             // Log activity
             ActivityLog::create([
-                'user_id' => session('user_id'),
+                'user_id' => auth()->id() ?? session('user_id'),
                 'activity' => 'Menghapus user: ' . $username . ' (' . $email . ')',
                 'created_at' => now()
             ]);
@@ -471,10 +307,23 @@ class UserController extends Controller
         }
     }
 
+    // Method untuk check permission user
+    public function checkPermission($permission)
+    {
+        $user = auth()->user();
+        return $user ? $user->can($permission) : false;
+    }
+
+    // Method untuk check role user
+    public function checkRole($role)
+    {
+        $user = auth()->user();
+        return $user ? $user->hasRole($role) : false;
+    }
+
     // Method untuk change password
     public function changePassword(Request $request, $id)
     {
-        $this->requireWriteAccess();
 
         $user = User::find($id);
         if (!$user) {
@@ -517,8 +366,6 @@ class UserController extends Controller
     // Method untuk toggle status user
     public function toggleStatus($id)
     {
-        $this->requireWriteAccess();
-
         $user = User::find($id);
         if (!$user) {
             return response()->json(['success' => false, 'message' => 'User tidak ditemukan'], 404);
@@ -553,7 +400,6 @@ class UserController extends Controller
     // Method untuk search users
     public function search(Request $request)
     {
-        $this->requireReadAccess();
 
         $query = $request->get('q', '');
         $users = User::where('username', 'LIKE', "%{$query}%")
@@ -568,8 +414,7 @@ class UserController extends Controller
 
     // Method untuk export users
     public function export()
-    {
-        $this->requireReadAccess();
+    {;
 
         $users = User::orderBy('username')->get();
 

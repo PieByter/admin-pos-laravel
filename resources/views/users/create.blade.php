@@ -7,7 +7,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-person-plus"></i> Form Tambah User Baru</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('superadmin.users.save') }}" method="post">
+                        <form action="{{ route('superadmin.users.store') }}" method="post">
                             @csrf
 
                             <div class="row mb-3 align-items-center">

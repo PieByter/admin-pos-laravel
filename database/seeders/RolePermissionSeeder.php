@@ -86,7 +86,7 @@ class RolePermissionSeeder extends Seeder
                 'activity_logs' => 'view_only',
                 'transactions' => 'view_only',
             ],
-            'kasir' => [
+            'cashier' => [
                 'items' => 'view_only',
                 'suppliers' => 'none',
                 'customers' => 'view_only',
@@ -102,7 +102,7 @@ class RolePermissionSeeder extends Seeder
                 'activity_logs' => 'none',
                 'transactions' => 'full',
             ],
-            'gudang' => [
+            'warehouse' => [
                 'items' => 'full',
                 'suppliers' => 'full',
                 'customers' => 'view_only',
