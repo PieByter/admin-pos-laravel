@@ -9,7 +9,7 @@
         </div>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form action="{{ route('auth.register') }}" method="POST" class="space-y-6">
+            <form action="{{ route('register') }}" method="POST" class="space-y-6">
                 @csrf
                 <div>
                     <label for="username"
@@ -75,8 +75,7 @@
             </form>
             <p class="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
                 Already have an account?
-                <a href="{{ route('auth.login') }}"
-                    class="font-semibold text-indigo-400 hover:text-indigo-300">Login</a>
+                <a href="{{ route('login') }}" class="font-semibold text-indigo-400 hover:text-indigo-300">Login</a>
             </p>
         </div>
     </div>

@@ -26,13 +26,22 @@ use App\Http\Controllers\PurchaseReturnController;
 
 Route::view('/forbidden', 'errors.forbidden')->name('forbidden');
 
-// Auth routes (login, register, logout)
+// Route::get('/login', [AuthController::class, 'login'])->name('login');
+// Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
 Route::get('/', [AuthController::class, 'login'])->name('home');
-Route::prefix('auth')->name('auth.')->group(function () {
-    Route::match(['GET', 'POST'], 'login', [AuthController::class, 'login'])->name('login');
-    Route::match(['GET', 'POST'], 'register', [AuthController::class, 'register'])->name('register');
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-});
+Route::match(['GET', 'POST'], '/login', [AuthController::class, 'login'])->name('login');
+Route::match(['GET', 'POST'], '/register', [AuthController::class, 'register'])->name('register');
+Route::match(['GET', 'POST'], '/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+// // Auth routes (login, register, logout)
+// Route::get('/', [AuthController::class, 'login'])->name('home');
+// Route::prefix('auth')->name('auth.')->group(function () {
+//     Route::match(['GET', 'POST'], 'login', [AuthController::class, 'login'])->name('login');
+//     Route::match(['GET', 'POST'], 'register', [AuthController::class, 'register'])->name('register');
+//     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+// });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -120,26 +129,6 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('sales')->name('sales.')->group(function () {
         Route::get('generate-invoice-number', [SalesController::class, 'generateInvoiceNumber'])->name('generate-invoice-number');
         Route::get('export', [SalesController::class, 'export'])->name('export');
-    });
-
-    // Process - Purchase Returns (Retur Pembelian)
-    Route::resource('purchase-returns', PurchaseReturnController::class);
-    Route::prefix('purchase-returns')->name('purchase-returns.')->group(function () {
-        Route::get('generate-return-number', [PurchaseReturnController::class, 'generateReturnNumber'])->name('generate-return-number');
-        Route::get('{id}/print', [PurchaseReturnController::class, 'print'])->name('print');
-        Route::get('export', [PurchaseReturnController::class, 'export'])->name('export');
-        Route::post('{id}/approve', [PurchaseReturnController::class, 'approve'])->name('approve');
-        Route::post('{id}/reject', [PurchaseReturnController::class, 'reject'])->name('reject');
-    });
-
-    // Process - Sales Returns (Retur Penjualan)
-    Route::resource('sales-returns', PurchaseReturnController::class);
-    Route::prefix('sales-returns')->name('sales-returns.')->group(function () {
-        Route::get('generate-return-number', [PurchaseReturnController::class, 'generateReturnNumber'])->name('generate-return-number');
-        Route::get('{id}/print', [PurchaseReturnController::class, 'print'])->name('print');
-        Route::get('export', [PurchaseReturnController::class, 'export'])->name('export');
-        Route::post('{id}/approve', [PurchaseReturnController::class, 'approve'])->name('approve');
-        Route::post('{id}/reject', [PurchaseReturnController::class, 'reject'])->name('reject');
     });
 
     // SuperAdmin only routes

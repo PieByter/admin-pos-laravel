@@ -85,8 +85,9 @@ class UserController extends Controller
             'username' => 'required|string|min:4|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'jabatan' => 'nullable|string|max:100',
-            'bagian' => 'nullable|string|max:100',
+            'position' => 'nullable|string|max:100',
+            'job_title' => 'nullable|string|max:100',
+            'division' => 'nullable|string|max:100',
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,id',
             'permissions' => 'nullable|array',
@@ -101,9 +102,10 @@ class UserController extends Controller
                 'username' => $request->username,
                 'email' => strtolower($request->email),
                 'password' => Hash::make($request->password),
-                'jabatan' => $request->jabatan,
-                'bagian' => $request->bagian,
-            ]);
+                'position' => $request->position,
+                'job_title' => $request->job_title,
+                'division' => $request->division,
+            ]);;
 
             // Assign roles
             if ($request->roles) {

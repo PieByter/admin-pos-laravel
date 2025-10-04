@@ -21,9 +21,10 @@
                             <th style="width: 10%;">Username</th>
                             <th style="width: 15%;">Email</th>
                             <th style="width: 10%;">Role</th>
-                            <th style="width: 10%;">Jabatan</th>
+                            <th style="width: 10%;">Posisi</th>
+                            <th style="width: 10%;">Jabatan Fungsional</th>
                             <th style="width: 10%;">Bagian</th>
-                            <th style="width: 40%;">Akses</th>
+                            <th style="width: 20%;">Akses</th>
                             <th style="width: 10%;">Aksi</th>
                         </tr>
                     </thead>
@@ -91,10 +92,11 @@
                                             'wakasubgu' => 'Wakil Kepala Sub Regu (Wakasubgu)',
                                         ];
                                     @endphp --}}
+                                    <td>{{ e($user->position ?? '-') }}</td>
                                     <td>
                                         {{ e($user->job_title ?? '-') }}
                                     </td>
-                                    <td>{{ e($user->position ?? '-') }}</td>
+                                    <td>{{ e($user->division ?? '-') }}</td>
                                     <td>
                                         @if (isset($user['permissions']) && is_array($user['permissions']) && count($user['permissions']))
                                             @php

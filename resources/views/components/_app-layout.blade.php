@@ -207,7 +207,7 @@
                                 </div>
                                 <div class="col-6">
                                     <a class="btn btn-block btn-outline-danger float-end"
-                                        href="{{ route('auth.logout') }}">
+                                        href="{{ route('logout') }}">
                                         <i class="bi bi-box-arrow-right"></i> Sign Out
                                     </a>
                                 </div>

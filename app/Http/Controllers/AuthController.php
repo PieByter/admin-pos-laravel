@@ -42,7 +42,7 @@ class AuthController extends Controller
                         'username' => $user->username,
                         'email' => $user->email,
                         'role' => $user->role,
-                        'profile_picture' => $user->profile_picture,
+                        'photo' => $user->photo,
                     ]);
 
                     // Set permissions ke session (seperti di CodeIgniter)
@@ -124,7 +124,7 @@ class AuthController extends Controller
                     Log::error('Error logging registration: ' . $logError->getMessage());
                 }
 
-                return redirect()->route('auth.login')
+                return redirect()->route('login')
                     ->with('success', 'Pendaftaran berhasil! Silakan login dengan email Anda.');
             } catch (\Exception $e) {
                 Log::error('Registration error: ' . $e->getMessage());
@@ -159,7 +159,7 @@ class AuthController extends Controller
         session()->flush();
         session()->regenerate();
 
-        return redirect()->route('auth.login')
+        return redirect()->route('login')
             ->with('success', 'Logout berhasil!');
     }
 }

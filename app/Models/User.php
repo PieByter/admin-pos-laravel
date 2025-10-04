@@ -25,7 +25,7 @@ class User extends Authenticatable
         'job_title',
         'division',
         'status',
-        'profile_picture',
+        'photo',
     ];
 
     /**
@@ -136,8 +136,8 @@ class User extends Authenticatable
 
     public function getProfilePictureUrlAttribute()
     {
-        if ($this->profile_picture) {
-            return asset('storage/profile_pictures/' . $this->profile_picture);
+        if ($this->photo) {
+            return asset('storage/photos/' . $this->photo);
         }
 
         // Default avatar
