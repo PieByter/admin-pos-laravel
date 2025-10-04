@@ -54,7 +54,7 @@ class ItemGroupController extends Controller
         $itemGroups = ItemGroup::orderBy('id', 'ASC')->get(); // gunakan koleksi, bukan toArray()
         return view('item_groups.index', [
             'itemGroups' => $itemGroups,
-            'title' => 'Daftar Group Barang'
+            // 'title' => 'Daftar Group Barang'
         ]);
     }
 

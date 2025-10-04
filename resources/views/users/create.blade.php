@@ -1,3 +1,4 @@
+{{-- filepath: c:\laragon\www\admin-pos\resources\views\users\create.blade.php --}}
 <x-app-layout>
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
@@ -34,37 +35,24 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="jabatan" class="col-md-3 col-form-label"><b>Jabatan</b></label>
+                                <label for="position" class="col-md-3 col-form-label"><b>Posisi</b></label>
                                 <div class="col-md-9">
-                                    <select class="form-select" id="jabatan" name="jabatan" required>
+                                    <select class="form-select" id="position" name="position" required>
+                                        <option value="">- Pilih Posisi -</option>
                                         @php
-                                            $jabatanList = [
+                                            $positionList = [
                                                 'staff' => 'Staff',
-                                                'karyawan' => 'Karyawan',
-                                                'kadept' => 'Kadept - Kepala Depot',
-                                                'wakadept' => 'Wakadept - Wakil Kepala Depot',
-                                                'kabid' => 'Kabid - Kepala Bidang',
-                                                'wakabid' => 'Wakabid - Wakil Kepala Bidang',
-                                                'kasubid' => 'Kasubid - Kepala Sub Bidang',
-                                                'wakasubid' => 'Wakasubid - Wakil Kepala Sub Bidang',
-                                                'kabag' => 'Kabag - Kepala Bagian',
-                                                'wakabag' => 'Wakabag - Wakil Kepala Bagian',
-                                                'kasubag' => 'Kasubag - Kepala Sub Bagian',
-                                                'wakasubag' => 'Wakasubag - Wakil Kepala Sub Bagian',
-                                                'kasie' => 'Kasie - Kepala Seksi',
-                                                'wakasie' => 'Wakasie - Wakil Kepala Seksi',
-                                                'kasubsie' => 'Kasubsie - Kepala Sub Seksi',
-                                                'wakasubsie' => 'Wakasubsie - Wakil Kepala Sub Seksi',
-                                                'kagu' => 'Kagu - Kepala Regu',
-                                                'wakagu' => 'Wakagu - Wakil Kepala Regu',
-                                                'kasubgu' => 'Kasubgu - Kepala Sub Regu',
-                                                'wakasubgu' => 'Wakasubgu - Wakil Kepala Sub Regu',
+                                                'supervisor' => 'Supervisor',
+                                                'manager' => 'Manager',
+                                                'assistant_manager' => 'Assistant Manager',
+                                                'team_lead' => 'Team Lead',
+                                                'coordinator' => 'Coordinator',
+                                                'executive' => 'Executive',
                                             ];
-                                            $selectedJabatan = old('jabatan', $user['jabatan'] ?? 'staff');
                                         @endphp
-                                        @foreach ($jabatanList as $kode => $label)
-                                            <option value="{{ $kode }}"
-                                                {{ $selectedJabatan == $kode ? 'selected' : '' }}>
+                                        @foreach ($positionList as $value => $label)
+                                            <option value="{{ $value }}"
+                                                {{ old('position') == $value ? 'selected' : '' }}>
                                                 {{ $label }}
                                             </option>
                                         @endforeach
@@ -73,34 +61,42 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="bagian" class="col-md-3 col-form-label"><b>Bagian/Divisi</b></label>
+                                <label for="job_title" class="col-md-3 col-form-label"><b>Jabatan Fungsional</b></label>
                                 <div class="col-md-9">
-                                    <select class="form-select" id="bagian" name="bagian" required>
+                                    <input type="text" class="form-control" id="job_title" name="job_title"
+                                        value="{{ old('job_title') }}"
+                                        placeholder="Contoh: AI Engineer, Web Developer, System Analyst">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 align-items-center">
+                                <label for="division" class="col-md-3 col-form-label"><b>Bagian/Divisi</b></label>
+                                <div class="col-md-9">
+                                    <select class="form-select" id="division" name="division" required>
                                         <option value="">- Pilih Bagian/Divisi -</option>
                                         @php
-                                            $bagianList = [
-                                                'ITS',
+                                            $divisionList = [
+                                                'IT',
                                                 'HR',
                                                 'Finance',
                                                 'Marketing',
                                                 'Operasional',
                                                 'Purchasing',
-                                                'Gudang',
-                                                'Penjualan',
-                                                'Produksi',
+                                                'Warehouse',
+                                                'Sales',
+                                                'Production',
                                                 'R&D',
                                                 'Quality Control',
                                                 'Customer Service',
                                                 'Legal',
-                                                'Admin',
+                                                'Administration',
                                                 'Personalia',
                                             ];
-                                            $selectedBagian = old('bagian', '');
                                         @endphp
-                                        @foreach ($bagianList as $bagian)
-                                            <option value="{{ $bagian }}"
-                                                {{ $selectedBagian == $bagian ? 'selected' : '' }}>
-                                                {{ $bagian }}
+                                        @foreach ($divisionList as $division)
+                                            <option value="{{ $division }}"
+                                                {{ old('division') == $division ? 'selected' : '' }}>
+                                                {{ $division }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -108,286 +104,147 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="role" class="col-md-3 col-form-label"><b>Role</b></label>
+                                <label for="roles" class="col-md-3 col-form-label"><b>Role</b></label>
                                 <div class="col-md-9">
-                                    <select class="form-select" id="role" name="role" required>
-                                        <option value="useradmin" {{ old('role') == 'useradmin' ? 'selected' : '' }}>
-                                            User Admin
-                                        </option>
-                                        <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}>
-                                            Super Admin
-                                        </option>
-                                        <option value="kasir" {{ old('role') == 'kasir' ? 'selected' : '' }}>
-                                            Kasir
-                                        </option>
-                                        <option value="gudang" {{ old('role') == 'gudang' ? 'selected' : '' }}>
-                                            Gudang
-                                        </option>
-                                        <option value="viewer" {{ old('role') == 'viewer' ? 'selected' : '' }}>
-                                            Viewer (Read-Only)
-                                        </option>
+                                    <select class="form-select" id="roles" name="roles[]" multiple>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->id }}"
+                                                {{ in_array($role->id, old('roles', [])) ? 'selected' : '' }}>
+                                                {{ ucfirst($role->name) }}
+                                            </option>
+                                        @endforeach
                                     </select>
+                                    <small class="text-muted">Tahan Ctrl/Cmd untuk memilih multiple role</small>
                                 </div>
                             </div>
 
-                            <div class="mb-3" id="permissionGroup">
-                                <label class="form-label"><b>Hak Akses Modul</b></label>
+                            <div class="mb-3">
+                                <label class="form-label"><b>Permissions (Hak Akses)</b></label>
 
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th width="30%">Modul</th>
-                                                <th width="23%" class="text-center">Tidak Ada Akses</th>
-                                                <th width="23%" class="text-center">Read-Only (Lihat)</th>
-                                                <th width="24%" class="text-center">Full Akses (Kelola)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Barang -->
-                                            <tr>
-                                                <td><i class="bi bi-box"></i> <strong>Barang</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="barang_access" value="none"
-                                                        id="barang_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="barang_access" value="read"
-                                                        id="barang_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="barang_access" value="full"
-                                                        id="barang_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Supplier -->
-                                            <tr>
-                                                <td><i class="bi bi-truck"></i> <strong>Supplier</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="supplier_access" value="none"
-                                                        id="supplier_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="supplier_access" value="read"
-                                                        id="supplier_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="supplier_access" value="full"
-                                                        id="supplier_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Customer -->
-                                            <tr>
-                                                <td><i class="bi bi-people"></i> <strong>Customer</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="customer_access" value="none"
-                                                        id="customer_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="customer_access" value="read"
-                                                        id="customer_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="customer_access" value="full"
-                                                        id="customer_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Satuan -->
-                                            <tr>
-                                                <td><i class="bi bi-calculator"></i> <strong>Satuan</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="satuan_access" value="none"
-                                                        id="satuan_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="satuan_access" value="read"
-                                                        id="satuan_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="satuan_access" value="full"
-                                                        id="satuan_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Jenis Barang -->
-                                            <tr>
-                                                <td><i class="bi bi-tags"></i> <strong>Jenis Barang</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="jenis_barang_access" value="none"
-                                                        id="jenis_barang_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="jenis_barang_access" value="read"
-                                                        id="jenis_barang_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="jenis_barang_access" value="full"
-                                                        id="jenis_barang_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Group Barang -->
-                                            <tr>
-                                                <td><i class="bi bi-collection"></i> <strong>Group Barang</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="group_barang_access" value="none"
-                                                        id="group_barang_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="group_barang_access" value="read"
-                                                        id="group_barang_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="group_barang_access" value="full"
-                                                        id="group_barang_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Satuan Konversi -->
-                                            <tr>
-                                                <td><i class="bi bi-arrow-left-right"></i> <strong>Satuan
-                                                        Konversi</strong>
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="satuan_konversi_access"
-                                                        value="none" id="satuan_konversi_none"
-                                                        class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="satuan_konversi_access"
-                                                        value="read" id="satuan_konversi_read"
-                                                        class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="satuan_konversi_access"
-                                                        value="full" id="satuan_konversi_full"
-                                                        class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Purchase Order -->
-                                            <tr>
-                                                <td><i class="bi bi-cart-plus"></i> <strong>Purchase Order</strong>
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="po_access" value="none"
-                                                        id="po_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="po_access" value="read"
-                                                        id="po_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="po_access" value="full"
-                                                        id="po_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Pembelian -->
-                                            <tr>
-                                                <td><i class="bi bi-bag-plus"></i> <strong>Pembelian</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="pembelian_access" value="none"
-                                                        id="pembelian_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="pembelian_access" value="read"
-                                                        id="pembelian_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="pembelian_access" value="full"
-                                                        id="pembelian_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Penjualan -->
-                                            <tr>
-                                                <td><i class="bi bi-bag-check"></i> <strong>Penjualan</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="penjualan_access" value="none"
-                                                        id="penjualan_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="penjualan_access" value="read"
-                                                        id="penjualan_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="penjualan_access" value="full"
-                                                        id="penjualan_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- User Management -->
-                                            <tr>
-                                                <td><i class="bi bi-person-gear"></i> <strong>Kelola User</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="user_access" value="none"
-                                                        id="user_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="user_access" value="read"
-                                                        id="user_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="user_access" value="full"
-                                                        id="user_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Logs -->
-                                            <tr>
-                                                <td><i class="bi bi-file-text"></i> <strong>Log Aktivitas</strong></td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="logs_access" value="none"
-                                                        id="logs_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="logs_access" value="read"
-                                                        id="logs_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="logs_access" value="full"
-                                                        id="logs_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-
-                                            <!-- Transaksi (hanya full akses, tidak ada read) -->
-                                            <tr>
-                                                <td><i class="bi bi-bar-chart-line"></i> <strong>Transaksi</strong>
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="transaksi_access" value="none"
-                                                        id="transaksi_none" class="form-check-input radio-none">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="transaksi_access" value="read"
-                                                        id="transaksi_read" class="form-check-input radio-read">
-                                                </td>
-                                                <td class="text-center">
-                                                    <input type="radio" name="transaksi_access" value="full"
-                                                        id="transaksi_full" class="form-check-input radio-full">
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <!-- Quick Role Presets -->
+                                <div class="mb-3">
+                                    <small class="text-muted d-block mb-2">Quick Preset:</small>
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-2"
+                                        onclick="setPreset('superadmin')">Super Admin</button>
+                                    <button type="button" class="btn btn-sm btn-outline-info me-2"
+                                        onclick="setPreset('admin')">Admin</button>
+                                    <button type="button" class="btn btn-sm btn-outline-warning me-2"
+                                        onclick="setPreset('cashier')">Cashier</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary me-2"
+                                        onclick="setPreset('warehouse')">Warehouse</button>
+                                    <button type="button" class="btn btn-sm btn-outline-success me-2"
+                                        onclick="setPreset('viewer')">Viewer</button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                        onclick="clearAll()">Clear All</button>
                                 </div>
 
-                                <!-- Hidden checkboxes for permissions -->
-                                <div id="hiddenPermissions" style="display: none;">
-                                    @foreach ($permissions as $perm)
-                                        : ?>
-                                        <input type="checkbox" name="permissions[]" value="{{ $perm['id'] }}"
-                                            id="perm_{{ $perm['name'] }}" data-perm-name="{{ $perm['name'] }}">
+                                <div class="row">
+                                    @php
+                                        $modules = [
+                                            'items' => ['label' => 'Items (Barang)', 'icon' => 'bi-box'],
+                                            'suppliers' => ['label' => 'Suppliers', 'icon' => 'bi-truck'],
+                                            'customers' => ['label' => 'Customers', 'icon' => 'bi-people'],
+                                            'units' => ['label' => 'Units (Satuan)', 'icon' => 'bi-calculator'],
+                                            'item_categories' => ['label' => 'Item Categories', 'icon' => 'bi-tags'],
+                                            'item_groups' => ['label' => 'Item Groups', 'icon' => 'bi-collection'],
+                                            'unit_conversions' => [
+                                                'label' => 'Unit Conversions',
+                                                'icon' => 'bi-arrow-left-right',
+                                            ],
+                                            'purchase_orders' => [
+                                                'label' => 'Purchase Orders',
+                                                'icon' => 'bi-cart-plus',
+                                            ],
+                                            'purchases' => ['label' => 'Purchases', 'icon' => 'bi-bag-plus'],
+                                            'sales' => ['label' => 'Sales', 'icon' => 'bi-bag-check'],
+                                            'purchase_returns' => [
+                                                'label' => 'Purchase Returns',
+                                                'icon' => 'bi-arrow-return-left',
+                                            ],
+                                            'sales_returns' => [
+                                                'label' => 'Sales Returns',
+                                                'icon' => 'bi-arrow-return-right',
+                                            ],
+                                            'users' => ['label' => 'Users Management', 'icon' => 'bi-person-gear'],
+                                            'activity_logs' => ['label' => 'Activity Logs', 'icon' => 'bi-file-text'],
+                                            'transactions' => [
+                                                'label' => 'Transactions',
+                                                'icon' => 'bi-bar-chart-line',
+                                            ],
+                                        ];
+                                        $actions = ['view', 'create', 'update', 'delete'];
+                                    @endphp
+
+                                    @foreach ($modules as $module => $moduleData)
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card border-light">
+                                                <div class="card-header py-2 bg-light">
+                                                    <h6 class="mb-0">
+                                                        <i class="{{ $moduleData['icon'] }}"></i>
+                                                        {{ $moduleData['label'] }}
+                                                    </h6>
+                                                </div>
+                                                <div class="card-body py-2">
+                                                    <div class="row">
+                                                        @foreach ($actions as $action)
+                                                            @php
+                                                                $permissionName = $module . '_' . $action;
+                                                                $permission = $permissions
+                                                                    ->where('name', $permissionName)
+                                                                    ->first();
+                                                            @endphp
+                                                            @if ($permission)
+                                                                <div class="col-6 mb-2">
+                                                                    <div class="form-check">
+                                                                        <input
+                                                                            class="form-check-input permission-checkbox"
+                                                                            type="checkbox" name="permissions[]"
+                                                                            value="{{ $permission->id }}"
+                                                                            id="perm_{{ $permission->id }}"
+                                                                            data-module="{{ $module }}"
+                                                                            data-action="{{ $action }}"
+                                                                            {{ in_array($permission->id, old('permissions', [])) ? 'checked' : '' }}>
+                                                                        <label class="form-check-label small"
+                                                                            for="perm_{{ $permission->id }}">
+                                                                            {{ ucfirst($action) }}
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                    <!-- Select All Module Button -->
+                                                    <div class="mt-2">
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-outline-secondary"
+                                                            onclick="toggleModule('{{ $module }}')">
+                                                            Select All {{ $moduleData['label'] }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endforeach
+                                </div>
+
+                                <!-- Global Actions -->
+                                <div class="mt-3">
+                                    <small class="text-muted d-block mb-2">Global Actions:</small>
+                                    <button type="button" class="btn btn-sm btn-outline-success me-2"
+                                        onclick="selectAllAction('view')">Select All View</button>
+                                    <button type="button" class="btn btn-sm btn-outline-info me-2"
+                                        onclick="selectAllAction('create')">Select All Create</button>
+                                    <button type="button" class="btn btn-sm btn-outline-warning me-2"
+                                        onclick="selectAllAction('update')">Select All Update</button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger me-2"
+                                        onclick="selectAllAction('delete')">Select All Delete</button>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="submit" class="btn btn-success"><i class="bi bi-save"></i>
-                                    Simpan</button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-save"></i> Simpan
+                                </button>
                                 <a href="{{ route('superadmin.users.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
@@ -400,219 +257,107 @@
     </div>
 
     <script>
-        // Mapping radio to permissions
-        const permissionMapping = {
-            barang: {
-                read: 'barang_read',
-                full: 'barang'
-            },
-            supplier: {
-                read: 'supplier_read',
-                full: 'supplier'
-            },
-            customer: {
-                read: 'customer_read',
-                full: 'customer'
-            },
-            satuan: {
-                read: 'satuan_read',
-                full: 'satuan'
-            },
-            jenis_barang: {
-                read: 'jenis_barang_read',
-                full: 'jenis_barang'
-            },
-            group_barang: {
-                read: 'group_barang_read',
-                full: 'group_barang'
-            },
-            satuan_konversi: {
-                read: 'satuan_konversi_read',
-                full: 'satuan_konversi'
-            },
-            po: {
-                read: 'purchase_order_read',
-                full: 'purchase_order'
-            },
-            pembelian: {
-                read: 'pembelian_read',
-                full: 'pembelian'
-            },
-            penjualan: {
-                read: 'penjualan_read',
-                full: 'penjualan'
-            },
-            user: {
-                read: 'user_read',
-                full: 'user'
-            },
-            logs: {
-                read: 'aktivitas_logs_read',
-                full: 'aktivitas_logs'
-            },
-            transaksi: {
-                read: 'transaksi_read',
-                full: 'transaksi'
-            }
+        // Permission presets
+        const presets = {
+            superadmin: [
+                'items_view', 'items_create', 'items_update', 'items_delete',
+                'suppliers_view', 'suppliers_create', 'suppliers_update', 'suppliers_delete',
+                'customers_view', 'customers_create', 'customers_update', 'customers_delete',
+                'units_view', 'units_create', 'units_update', 'units_delete',
+                'item_categories_view', 'item_categories_create', 'item_categories_update',
+                'item_categories_delete',
+                'item_groups_view', 'item_groups_create', 'item_groups_update', 'item_groups_delete',
+                'unit_conversions_view', 'unit_conversions_create', 'unit_conversions_update',
+                'unit_conversions_delete',
+                'purchase_orders_view', 'purchase_orders_create', 'purchase_orders_update',
+                'purchase_orders_delete',
+                'purchases_view', 'purchases_create', 'purchases_update', 'purchases_delete',
+                'sales_view', 'sales_create', 'sales_update', 'sales_delete',
+                'purchase_returns_view', 'purchase_returns_create', 'purchase_returns_update',
+                'purchase_returns_delete',
+                'sales_returns_view', 'sales_returns_create', 'sales_returns_update', 'sales_returns_delete',
+                'users_view', 'users_create', 'users_update', 'users_delete',
+                'activity_logs_view', 'activity_logs_create', 'activity_logs_update', 'activity_logs_delete',
+                'transactions_view', 'transactions_create', 'transactions_update', 'transactions_delete'
+            ],
+            admin: [
+                'items_view', 'items_create', 'items_update',
+                'suppliers_view', 'suppliers_create', 'suppliers_update',
+                'customers_view', 'customers_create', 'customers_update',
+                'units_view', 'units_create', 'units_update',
+                'item_categories_view', 'item_categories_create', 'item_categories_update',
+                'item_groups_view', 'item_groups_create', 'item_groups_update',
+                'purchase_orders_view', 'purchase_orders_create', 'purchase_orders_update',
+                'purchases_view', 'purchases_create', 'purchases_update',
+                'sales_view', 'sales_create', 'sales_update',
+                'users_view',
+                'activity_logs_view',
+                'transactions_view'
+            ],
+            cashier: [
+                'items_view',
+                'customers_view', 'customers_create', 'customers_update',
+                'sales_view', 'sales_create', 'sales_update',
+                'transactions_view'
+            ],
+            warehouse: [
+                'items_view', 'items_create', 'items_update',
+                'suppliers_view', 'suppliers_create', 'suppliers_update',
+                'units_view', 'units_create', 'units_update',
+                'item_categories_view', 'item_categories_create', 'item_categories_update',
+                'item_groups_view', 'item_groups_create', 'item_groups_update',
+                'unit_conversions_view', 'unit_conversions_create', 'unit_conversions_update',
+                'purchase_orders_view', 'purchase_orders_create', 'purchase_orders_update',
+                'purchases_view', 'purchases_create', 'purchases_update',
+                'purchase_returns_view', 'purchase_returns_create', 'purchase_returns_update'
+            ],
+            viewer: [
+                'items_view', 'suppliers_view', 'customers_view', 'units_view',
+                'item_categories_view', 'item_groups_view', 'unit_conversions_view',
+                'purchase_orders_view', 'purchases_view', 'sales_view',
+                'purchase_returns_view', 'sales_returns_view', 'users_view',
+                'activity_logs_view', 'transactions_view'
+            ]
         };
 
-        // Role presets
-        const rolePresets = {
-            superadmin: {
-                barang: 'full',
-                supplier: 'full',
-                customer: 'full',
-                satuan: 'full',
-                jenis_barang: 'full',
-                group_barang: 'full',
-                satuan_konversi: 'full',
-                po: 'full',
-                pembelian: 'full',
-                penjualan: 'full',
-                user: 'full',
-                logs: 'full',
-                transaksi: 'full',
-            },
-            useradmin: {
-                barang: 'read',
-                supplier: 'read',
-                customer: 'read',
-                satuan: 'read',
-                jenis_barang: 'read',
-                group_barang: 'read',
-                satuan_konversi: 'read',
-                po: 'read',
-                pembelian: 'read',
-                penjualan: 'read',
-                user: 'read',
-                logs: 'read',
-                transaksi: 'read',
-            },
-            kasir: {
-                barang: 'read',
-                supplier: 'none',
-                customer: 'read',
-                satuan: 'read',
-                jenis_barang: 'none',
-                group_barang: 'none',
-                satuan_konversi: 'none',
-                po: 'none',
-                pembelian: 'none',
-                penjualan: 'full',
-                user: 'none',
-                logs: 'none',
-                transaksi: 'full',
-            },
-            gudang: {
-                barang: 'full',
-                supplier: 'full',
-                customer: 'read',
-                satuan: 'full',
-                jenis_barang: 'full',
-                group_barang: 'full',
-                satuan_konversi: 'full',
-                po: 'full',
-                pembelian: 'full',
-                penjualan: 'read',
-                user: 'none',
-                logs: 'none',
-                transaksi: 'none',
-            },
-            viewer: {
-                barang: 'read',
-                supplier: 'read',
-                customer: 'read',
-                satuan: 'read',
-                jenis_barang: 'read',
-                group_barang: 'read',
-                satuan_konversi: 'read',
-                po: 'read',
-                pembelian: 'read',
-                penjualan: 'read',
-                user: 'read',
-                logs: 'read',
-                transaksi: 'read',
-            }
-        };
+        function setPreset(presetName) {
+            // Clear all checkboxes first
+            document.querySelectorAll('.permission-checkbox').forEach(cb => cb.checked = false);
 
-        function setPermissionsByRole() {
-            const role = document.getElementById('role').value;
-            const preset = rolePresets[role];
-
-            if (!preset) return;
-
-            // Reset all permissions
-            document.querySelectorAll('#hiddenPermissions input[type="checkbox"]').forEach(cb => {
-                cb.checked = false;
-            });
-
-            // Set radio buttons and permissions based on role
-            Object.keys(preset).forEach(module => {
-                const level = preset[module];
-
-                // Set radio button
-                const radioBtn = document.querySelector(`input[name="${module}_access"][value="${level}"]`);
-                if (radioBtn) {
-                    radioBtn.checked = true;
-                }
-
-                // Set hidden permission checkbox
-                updatePermissionCheckbox(module, level);
-            });
-
-            // Logic disable radio
-            document.querySelectorAll('input[type="radio"]').forEach(radio => {
-                // Superadmin: disable semua radio
-                if (role === 'superadmin') {
-                    radio.disabled = true;
-                }
-                // Viewer: disable semua radio
-                else if (role === 'viewer') {
-                    radio.disabled = true;
-                }
-                // Role lain: radio tetap aktif (bisa diubah)
-                else {
-                    radio.disabled = false;
-                }
-            });
-
-            // Tombol aksi (Simpan, Batal) tetap aktif untuk semua role
-            document.querySelectorAll('.btn-action').forEach(btn => {
-                btn.disabled = false;
-            });
-        }
-
-        function updatePermissionCheckbox(module, level) {
-            const mapping = permissionMapping[module];
-            if (!mapping) return;
-
-            // Uncheck all related permissions first
-            Object.values(mapping).forEach(permName => {
-                const checkbox = document.querySelector(`#perm_${permName}`);
-                if (checkbox) checkbox.checked = false;
-            });
-
-            // Check specific permission based on level
-            if (level !== 'none' && mapping[level]) {
-                const checkbox = document.querySelector(`#perm_${mapping[level]}`);
-                if (checkbox) checkbox.checked = true;
+            // Check permissions in preset
+            if (presets[presetName]) {
+                presets[presetName].forEach(permName => {
+                    const checkbox = document.querySelector(
+                        `[data-module="${permName.split('_')[0]}"][data-action="${permName.split('_').slice(1).join('_')}"]`
+                    );
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
             }
         }
 
-        // Event listeners for radio buttons
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const name = this.name.replace('_access', '');
-                const level = this.value;
-                updatePermissionCheckbox(name, level);
+        function clearAll() {
+            document.querySelectorAll('.permission-checkbox').forEach(cb => cb.checked = false);
+        }
+
+        function toggleModule(module) {
+            const moduleCheckboxes = document.querySelectorAll(`[data-module="${module}"]`);
+            const allChecked = Array.from(moduleCheckboxes).every(cb => cb.checked);
+
+            moduleCheckboxes.forEach(cb => {
+                cb.checked = !allChecked;
             });
-        });
+        }
 
-        // Role change event
-        document.getElementById('role').addEventListener('change', setPermissionsByRole);
+        function selectAllAction(action) {
+            const actionCheckboxes = document.querySelectorAll(`[data-action="${action}"]`);
+            const allChecked = Array.from(actionCheckboxes).every(cb => cb.checked);
 
-        // Initialize
-        setPermissionsByRole();
+            actionCheckboxes.forEach(cb => {
+                cb.checked = !allChecked;
+            });
+        }
     </script>
 
     @if (session()->has('validation'))
@@ -624,64 +369,12 @@
                     showConfirmButton: false,
                     timer: 4000,
                     timerProgressBar: true,
-                    icon: 'error',
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
+                    icon: 'error'
                 });
                 Toast.fire({
-                    title: '{{ implode('<br>', array_map('esc', session('validation')->getErrors())) }}'
+                    title: '{{ implode('<br>', session('validation')->all()) }}'
                 });
             });
         </script>
     @endif
-
-    <style>
-        .table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .table td {
-            vertical-align: middle !important;
-            text-align: center !important;
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
-        }
-
-        .form-check-input[type="radio"] {
-            display: block;
-            margin: 0 auto;
-            position: relative;
-            transform: translateY(0%);
-            box-shadow: none !important;
-        }
-
-        .form-check-input.radio-none:checked {
-            background-color: #dc3545 !important;
-            border-color: #dc3545 !important;
-        }
-
-        .form-check-input.radio-read:checked {
-            background-color: #ffc107 !important;
-            border-color: #ffc107 !important;
-        }
-
-        .form-check-input.radio-full:checked {
-            background-color: #198754 !important;
-            border-color: #198754 !important;
-        }
-
-        .table-responsive {
-            border-radius: 0.375rem;
-            overflow: hidden;
-        }
-
-        .table {
-            margin-bottom: 0;
-        }
-    </style>
-
 </x-app-layout>
