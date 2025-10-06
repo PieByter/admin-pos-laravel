@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\Purchase;
-use App\Models\PurchaseDetail;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderItem;
 use App\Models\Supplier;
 use App\Models\Item;
 use App\Models\Unit;
@@ -17,139 +17,38 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PurchaseController extends Controller
 {
-    // private function canRead(): bool
-    // {
-    //     $role = session('role');
-    //     $permissions = session('permissions') ?? [];
-    //     if ($role === 'superadmin') return true;
-    //     return in_array('pembelian', $permissions) || in_array('pembelian_read', $permissions);
-    // }
-
-    // private function canWrite(): bool
-    // {
-    //     $role = session('role');
-    //     $permissions = session('permissions') ?? [];
-    //     if ($role === 'superadmin') return true;
-    //     return in_array('pembelian', $permissions);
-    // }
-
-    // private function requireReadAccess(): void
-    // {
-    //     if (!$this->canRead()) {
-    //         abort(404, 'Access Denied');
-    //     }
-    // }
-
-    // private function requireWriteAccess(): void
-    // {
-    //     if (!$this->canWrite()) {
-    //         abort(404, 'Access Denied');
-    //     }
-    // }
-
-    // private function getPermissionData(): array
-    // {
-    //     return [
-    //         'can_read' => $this->canRead(),
-    //         'can_write' => $this->canWrite()
-    //     ];
-    // }
-
     public function index()
     {
-        // $this->requireReadAccess();
-
-        $purchases = DB::table('purchase_orders')
-            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id')
-            ->select('purchase_orders.*', 'suppliers.name as supplier_name')
-            ->orderByRaw('MONTH(purchase_orders.issue_date) DESC')
-            ->orderByRaw('YEAR(purchase_orders.issue_date) DESC')
-            ->orderBy('purchase_orders.id', 'DESC')
+        $purchases = PurchaseOrder::with(['supplier', 'purchaseOrderItems.item', 'purchaseOrderItems.unit', 'createdBy', 'updatedBy'])
+            ->orderByRaw('MONTH(issue_date) DESC')
+            ->orderByRaw('YEAR(issue_date) DESC')
+            ->orderBy('id', 'DESC')
             ->get();
 
-        // Get items and suppliers for mapping
-        $suppliers = Supplier::all()->toArray();
-        $items = Item::all()->toArray();
-        $supplierMap = array_column($suppliers, 'name', 'id');
-        $itemMap = array_column($items, 'name', 'id');
-
-        foreach ($purchases as &$purchase) {
-            $purchase->supplier_name = $supplierMap[$purchase->supplier_id] ?? '-';
-
-            // Get purchase details
-            $details = DB::table('purchase_order_items')
-                ->leftJoin('units', 'units.id', '=', 'purchase_order_items.unit_id')
-                ->select('purchase_order_items.*', 'units.unit_name as unit_name')
-                ->where('purchase_order_items.purchase_order_id', $purchase->id)
-                ->get()
-                ->toArray();
-
-            foreach ($details as &$detail) {
-                $detail->item_name = $itemMap[$detail->item_id] ?? '-';
-            }
-            $purchase->details = $details;
-
-            // Get authorization users
-            $authorizationIds = json_decode($purchase->authorization ?? '[]', true);
-            $userList = User::whereIn('id', $authorizationIds)->get()->toArray();
-            $usernames = array_column($userList, 'username', 'id');
-            $purchase->authorization_str = implode(', ', array_map(function ($id) use ($usernames) {
-                return $usernames[$id] ?? 'Unknown';
-            }, $authorizationIds));
-        }
-
-        $data = [
+        return view('purchase_orders.index', [
             'purchases' => $purchases,
             'title' => 'Daftar Pembelian'
-        ];
-
-        return view('purchase_orders.index', $data);
+        ]);
     }
 
     public function show($id)
     {
-
-        $purchase = DB::table('purchase_orders')->where('id', $id)->first();
-        if (!$purchase) {
-            return redirect()->route('purchase_orders.index')
-                ->with('error', 'Data pembelian tidak ditemukan');
-        }
-
-        $supplier = Supplier::find($purchase->supplier_id);
-        $details = DB::table('purchase_order_items')
-            ->leftJoin('units', 'units.id', '=', 'purchase_order_items.unit_id')
-            ->select('purchase_order_items.*', 'units.unit_name as unit_name')
-            ->where('purchase_order_id', $id)
-            ->get()
-            ->toArray();
-
-        $items = Item::all()->toArray();
-        $itemMap = array_column($items, 'name', 'id');
-
-        $authorizationIds = json_decode($purchase->authorization ?? '[]', true);
-        $userList = User::whereIn('id', $authorizationIds)->get()->toArray();
-        $usernames = array_column($userList, 'username', 'id');
-        $authorizationStr = implode(', ', array_map(function ($id) use ($usernames) {
-            return $usernames[$id] ?? 'Unknown';
-        }, $authorizationIds));
+        $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems.item', 'purchaseOrderItems.unit', 'createdBy', 'updatedBy'])
+            ->findOrFail($id);
 
         return view('purchase_orders.show', [
-            'purchase' => $purchase,
-            'supplier' => $supplier,
-            'details' => $details,
-            'item_map' => $itemMap,
-            'authorization_str' => $authorizationStr,
+            'purchaseOrder' => $purchaseOrder,
+            'supplier' => $purchaseOrder->supplier,
+            'details' => $purchaseOrder->purchaseOrderItems,
             'title' => 'Detail Pembelian'
         ]);
     }
 
     public function create()
     {
-
-        $suppliers = Supplier::orderBy('name')->get()->toArray();
-        $items = Item::orderBy('name')->get()->toArray();
-        $units = Unit::orderBy('name')->get()->toArray();
-        $users = User::orderBy('username')->get()->toArray();
+        $suppliers = Supplier::where('status', 'active')->orderBy('name')->get();
+        $items = Item::orderBy('item_name')->get();
+        $units = Unit::orderBy('unit_name')->get();
 
         // Unit conversion mapping
         $unitConversionMap = [];
@@ -157,10 +56,9 @@ class PurchaseController extends Controller
             $conversions = DB::table('unit_conversions')
                 ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
                 ->select('unit_conversions.*', 'units.unit_name as unit_name')
-                ->where('unit_conversions.item_id', $item['id'])
-                ->get()
-                ->toArray();
-            $unitConversionMap[$item['id']] = $conversions;
+                ->where('unit_conversions.item_id', $item->id)
+                ->get();
+            $unitConversionMap[$item->id] = $conversions;
         }
 
         $issueDate = date('Y-m-d');
@@ -170,8 +68,7 @@ class PurchaseController extends Controller
             'suppliers' => $suppliers,
             'items' => $items,
             'units' => $units,
-            'unit_conversion_map' => $unitConversionMap,
-            'users' => $users,
+            'unitConversionMap' => $unitConversionMap,
             'issue_date' => $issueDate,
             'invoice_number' => $invoiceNumber,
             'title' => 'Tambah Data Pembelian'
@@ -180,7 +77,6 @@ class PurchaseController extends Controller
 
     public function store(Request $request)
     {
-
         $details = $request->input('details', []);
         $itemIds = [];
 
@@ -200,17 +96,6 @@ class PurchaseController extends Controller
             }
         }
 
-        // Handle authorization
-        $authorization = $request->input('authorization', []);
-        if (!is_array($authorization)) {
-            $authorization = json_decode($authorization, true) ?? [];
-        }
-        $authorization = array_map('intval', $authorization);
-        $currentUserId = (int)session('user_id');
-        if ($currentUserId && !in_array($currentUserId, $authorization)) {
-            $authorization[] = $currentUserId;
-        }
-
         $request->validate([
             'invoice_number' => 'required|unique:purchase_orders,invoice_number',
             'issue_date' => 'required|date',
@@ -221,27 +106,26 @@ class PurchaseController extends Controller
             'details.*.item_id' => 'required|exists:items,id',
             'details.*.unit_id' => 'required|exists:units,id',
             'details.*.quantity' => 'required|numeric|min:1',
-            'details.*.purchase_price' => 'required|numeric|min:0',
+            'details.*.buy_price' => 'required|numeric|min:0',
             'details.*.subtotal' => 'required|numeric|min:0',
         ]);
 
         DB::beginTransaction();
         try {
-            // Insert purchase
-            $purchaseData = [
+            // Insert purchase order
+            $purchaseOrder = PurchaseOrder::create([
                 'invoice_number' => $request->invoice_number,
                 'issue_date' => $request->issue_date,
-                'description' => $request->description,
-                'authorization' => json_encode($authorization),
+                'notes' => $request->notes,
                 'supplier_id' => $request->supplier_id,
                 'total_amount' => $totalAmount,
                 'status' => $request->status,
-                'payment_method' => $request->payment_method
-            ];
+                'payment_method' => $request->payment_method,
+                'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
+            ]);
 
-            $purchaseId = DB::table('purchase_orders')->insertGetId($purchaseData);
-
-            // Insert purchase details and update stock
+            // Insert purchase order items and update stock
             if (!empty($details)) {
                 foreach ($details as $detail) {
                     $itemId = $detail['item_id'];
@@ -256,17 +140,17 @@ class PurchaseController extends Controller
                     $quantity = (int)$detail['quantity'];
                     $baseQuantity = $quantity * $conversion;
 
-                    DB::table('purchase_order_items')->insert([
-                        'purchase_order_id' => $purchaseId,
+                    PurchaseOrderItem::create([
+                        'purchase_order_id' => $purchaseOrder->id,
                         'item_id' => $itemId,
                         'unit_id' => $unitId,
                         'quantity' => $quantity,
                         'base_quantity' => $baseQuantity,
-                        'purchase_price' => $detail['purchase_price'],
+                        'buy_price' => $detail['buy_price'],
                         'subtotal' => $detail['subtotal']
                     ]);
 
-                    // Update item stock
+                    // Update item stock (increase)
                     DB::table('items')
                         ->where('id', $itemId)
                         ->increment('stock', $baseQuantity);
@@ -275,17 +159,17 @@ class PurchaseController extends Controller
 
             // Log activity
             ActivityLog::create([
-                'user_id' => session('user_id'),
+                'user_id' => auth()->id(),
                 'activity' => 'Menambah pembelian: ' . $request->invoice_number,
                 'created_at' => now()
             ]);
 
             DB::commit();
-            return redirect()->route('purchase_orders.index')
+            return redirect()->route('purchases.index')
                 ->with('success', 'Data pembelian berhasil dibuat dan disimpan');
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error creating purchase: ' . $e->getMessage());
+            Log::error('Error creating purchase order: ' . $e->getMessage());
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
@@ -294,19 +178,12 @@ class PurchaseController extends Controller
 
     public function edit($id)
     {
+        $purchaseOrder = PurchaseOrder::with(['supplier', 'purchaseOrderItems.item', 'purchaseOrderItems.unit'])
+            ->findOrFail($id);
 
-        $purchase = DB::table('purchase_orders')->where('id', $id)->first();
-        $details = DB::table('purchase_order_items')->where('purchase_order_id', $id)->get()->toArray();
-
-        if (!$purchase) {
-            return redirect()->route('purchase_orders.index')
-                ->with('error', 'Data pembelian tidak ditemukan!');
-        }
-
-        $suppliers = Supplier::orderBy('name')->get()->toArray();
-        $items = Item::orderBy('name')->get()->toArray();
-        $units = Unit::orderBy('name')->get()->toArray();
-        $users = User::orderBy('username')->get()->toArray();
+        $suppliers = Supplier::where('status', 'active')->orderBy('name')->get();
+        $items = Item::orderBy('item_name')->get();
+        $units = Unit::orderBy('unit_name')->get();
 
         // Unit conversion mapping
         $unitConversionMap = [];
@@ -314,49 +191,25 @@ class PurchaseController extends Controller
             $conversions = DB::table('unit_conversions')
                 ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
                 ->select('unit_conversions.*', 'units.unit_name as unit_name')
-                ->where('unit_conversions.item_id', $item['id'])
-                ->get()
-                ->toArray();
-            $unitConversionMap[$item['id']] = $conversions;
+                ->where('unit_conversions.item_id', $item->id)
+                ->get();
+            $unitConversionMap[$item->id] = $conversions;
         }
-
-        $authorization = [];
-        if (!empty($purchase->authorization)) {
-            $authorization = json_decode($purchase->authorization, true);
-            if (!is_array($authorization)) $authorization = [];
-            $authorization = array_values(array_map('intval', $authorization));
-        }
-
-        // Get authorization usernames
-        $usernames = [];
-        foreach ($authorization as $uid) {
-            foreach ($users as $u) {
-                if ($u['id'] == $uid) {
-                    $usernames[] = $u['username'];
-                    break;
-                }
-            }
-        }
-        $authorizationStr = implode(', ', $usernames);
 
         return view('purchase_orders.edit', [
             'id' => $id,
-            'purchase' => $purchase,
-            'details' => $details,
+            'purchaseOrder' => $purchaseOrder,
+            'details' => $purchaseOrder->purchaseOrderItems,
             'suppliers' => $suppliers,
             'items' => $items,
             'units' => $units,
-            'unit_conversion_map' => $unitConversionMap,
-            'users' => $users,
-            'authorization' => $authorization,
-            'authorization_str' => $authorizationStr,
+            'unitConversionMap' => $unitConversionMap,
             'title' => 'Edit Data Pembelian'
         ]);
     }
 
     public function update(Request $request, $id)
     {
-
         $details = $request->input('details', []);
         $itemIds = [];
         foreach ($details as $detail) {
@@ -374,43 +227,21 @@ class PurchaseController extends Controller
                 ->with('error', 'Detail barang tidak boleh kosong!');
         }
 
-        $purchase = DB::table('purchase_orders')->where('id', $id)->first();
-        $oldDetails = DB::table('purchase_order_items')->where('purchase_order_id', $id)->get();
-
-        // Check if data changed
-        $dataChanged = $this->isDataChanged($purchase, $request, $details);
-
-        $authorization = $request->input('authorization', []);
-        if (!is_array($authorization)) {
-            $authorization = json_decode($authorization, true) ?? [];
-        }
-        $authorization = array_values(array_map('intval', $authorization));
-
-        $currentUser = (int)session('user_id');
-        if ($dataChanged && $currentUser && !in_array($currentUser, $authorization)) {
-            $authorization[] = $currentUser;
-        }
+        $purchaseOrder = PurchaseOrder::with('purchaseOrderItems')->findOrFail($id);
 
         DB::beginTransaction();
         try {
-            // Revert old stock changes
-            foreach ($oldDetails as $oldDetail) {
-                $conversionRow = DB::table('unit_conversions')
-                    ->where('item_id', $oldDetail->item_id)
-                    ->where('unit_id', $oldDetail->unit_id)
-                    ->first();
-                $conversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
-                $baseQuantity = (int)$oldDetail->quantity * $conversion;
-
+            // Revert old stock changes (subtract from stock)
+            foreach ($purchaseOrder->purchaseOrderItems as $oldItem) {
                 DB::table('items')
-                    ->where('id', $oldDetail->item_id)
-                    ->decrement('stock', $baseQuantity);
+                    ->where('id', $oldItem->item_id)
+                    ->decrement('stock', $oldItem->base_quantity);
             }
 
-            // Delete old details
-            DB::table('purchase_order_items')->where('purchase_order_id', $id)->delete();
+            // Delete old items
+            $purchaseOrder->purchaseOrderItems()->delete();
 
-            // Insert new details and update stock
+            // Insert new items and update stock
             $totalAmount = 0;
             foreach ($details as $detail) {
                 $itemId = $detail['item_id'];
@@ -425,17 +256,17 @@ class PurchaseController extends Controller
                 $quantity = (int)$detail['quantity'];
                 $baseQuantity = $quantity * $conversion;
 
-                DB::table('purchase_order_items')->insert([
+                PurchaseOrderItem::create([
                     'purchase_order_id' => $id,
                     'item_id' => $itemId,
                     'unit_id' => $unitId,
                     'quantity' => $quantity,
                     'base_quantity' => $baseQuantity,
-                    'purchase_price' => $detail['purchase_price'],
+                    'buy_price' => $detail['buy_price'],
                     'subtotal' => $detail['subtotal']
                 ]);
 
-                // Update item stock
+                // Update item stock (increase)
                 DB::table('items')
                     ->where('id', $itemId)
                     ->increment('stock', $baseQuantity);
@@ -443,32 +274,31 @@ class PurchaseController extends Controller
                 $totalAmount += $detail['subtotal'];
             }
 
-            // Update purchase
-            $purchaseData = [
+            // Update purchase order
+            $purchaseOrder->update([
                 'invoice_number' => $request->invoice_number,
                 'issue_date' => $request->issue_date,
                 'supplier_id' => $request->supplier_id,
-                'description' => $request->description,
-                'authorization' => json_encode($authorization),
+                'notes' => $request->notes,
                 'total_amount' => $totalAmount,
                 'status' => $request->status,
-                'payment_method' => $request->payment_method
-            ];
-            DB::table('purchase_orders')->where('id', $id)->update($purchaseData);
+                'payment_method' => $request->payment_method,
+                'updated_by' => auth()->id(),
+            ]);
 
             // Log activity
             ActivityLog::create([
-                'user_id' => session('user_id'),
+                'user_id' => auth()->id(),
                 'activity' => 'Mengupdate pembelian: ' . $request->invoice_number,
                 'created_at' => now()
             ]);
 
             DB::commit();
-            return redirect()->route('purchase_orders.index')
+            return redirect()->route('purchases.index')
                 ->with('success', 'Data pembelian berhasil diupdate');
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error updating purchase: ' . $e->getMessage());
+            Log::error('Error updating purchase order: ' . $e->getMessage());
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Gagal mengupdate data: ' . $e->getMessage());
@@ -477,85 +307,55 @@ class PurchaseController extends Controller
 
     public function destroy($id)
     {
-
-        $purchase = DB::table('purchase_orders')->where('id', $id)->first();
-        $details = DB::table('purchase_order_items')->where('purchase_order_id', $id)->get();
-
-        if (!$purchase) {
-            return redirect()->route('purchase_orders.index')
-                ->with('error', 'Data pembelian tidak ditemukan');
-        }
+        $purchaseOrder = PurchaseOrder::with('purchaseOrderItems')->findOrFail($id);
 
         // Validate stock for all items first
-        foreach ($details as $detail) {
-            $itemId = $detail->item_id;
-            $unitId = $detail->unit_id;
-
-            $conversionRow = DB::table('unit_conversions')
-                ->where('item_id', $itemId)
-                ->where('unit_id', $unitId)
-                ->first();
-            $conversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
-
-            $baseQuantity = (int)$detail->quantity * $conversion;
-
-            $item = Item::find($itemId);
-            if ($item->stock < $baseQuantity) {
-                return redirect()->route('purchase_orders.index')
-                    ->with('error', 'Stok barang tidak mencukupi untuk menghapus pembelian! (Stok saat ini: ' . $item->stock . ', akan dikurangi sebesar: ' . $baseQuantity . ')');
+        foreach ($purchaseOrder->purchaseOrderItems as $item) {
+            $currentItem = Item::find($item->item_id);
+            if ($currentItem->stock < $item->base_quantity) {
+                return redirect()->route('purchases.index')
+                    ->with('error', 'Stok barang tidak mencukupi untuk menghapus pembelian! (Stok saat ini: ' . $currentItem->stock . ', akan dikurangi sebesar: ' . $item->base_quantity . ')');
             }
         }
 
         DB::beginTransaction();
         try {
-            // If validation passes, execute stock reduction and delete data
-            foreach ($details as $detail) {
-                $itemId = $detail->item_id;
-                $unitId = $detail->unit_id;
-
-                $conversionRow = DB::table('unit_conversions')
-                    ->where('item_id', $itemId)
-                    ->where('unit_id', $unitId)
-                    ->first();
-                $conversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
-
-                $baseQuantity = (int)$detail->quantity * $conversion;
-
+            // Subtract stock (reverse the original purchase)
+            foreach ($purchaseOrder->purchaseOrderItems as $item) {
                 DB::table('items')
-                    ->where('id', $itemId)
-                    ->decrement('stock', $baseQuantity);
+                    ->where('id', $item->item_id)
+                    ->decrement('stock', $item->base_quantity);
             }
 
-            // Delete details and purchase
-            DB::table('purchase_order_items')->where('purchase_order_id', $id)->delete();
-            DB::table('purchase_orders')->where('id', $id)->delete();
+            // Delete items and purchase order
+            $purchaseOrder->purchaseOrderItems()->delete();
+            $purchaseOrder->delete();
 
             // Log activity
             ActivityLog::create([
-                'user_id' => session('user_id'),
-                'activity' => 'Menghapus pembelian: ' . ($purchase ? $purchase->invoice_number : 'ID ' . $id),
+                'user_id' => auth()->id(),
+                'activity' => 'Menghapus pembelian: ' . $purchaseOrder->invoice_number,
                 'created_at' => now()
             ]);
 
             DB::commit();
-            return redirect()->route('purchase_orders.index')
+            return redirect()->route('purchases.index')
                 ->with('success', 'Data pembelian berhasil dihapus');
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error deleting purchase: ' . $e->getMessage());
-            return redirect()->route('purchase_orders.index')
+            Log::error('Error deleting purchase order: ' . $e->getMessage());
+            return redirect()->route('purchases.index')
                 ->with('error', 'Gagal menghapus data: ' . $e->getMessage());
         }
     }
 
     // Generate invoice number
-    public function generateInvoiceNumber($issueDate)
+    private function generateInvoiceNumber($issueDate)
     {
         $year = date('Y', strtotime($issueDate));
         $month = date('m', strtotime($issueDate));
 
-        $invoices = DB::table('purchase_orders')
-            ->select('invoice_number')
+        $invoices = PurchaseOrder::select('invoice_number')
             ->whereYear('issue_date', $year)
             ->whereMonth('issue_date', $month)
             ->get();
@@ -580,88 +380,36 @@ class PurchaseController extends Controller
         return response()->json(['invoice_number' => $invoiceNumber]);
     }
 
-    // Helper untuk cek apakah data berubah
-    private function isDataChanged($purchase, $request, $newDetails)
-    {
-        $fieldsToCheck = [
-            'invoice_number',
-            'issue_date',
-            'supplier_id',
-            'description',
-            'total_amount',
-            'status',
-            'payment_method'
-        ];
-
-        foreach ($fieldsToCheck as $field) {
-            if ($purchase->$field != $request->input($field)) {
-                return true;
-            }
-        }
-
-        // Check if details changed
-        $oldDetails = DB::table('purchase_order_items')->where('purchase_order_id', $purchase->id)->get();
-
-        if (count($oldDetails) != count($newDetails)) {
-            return true;
-        }
-
-        // Normalize and compare details
-        $normalizeDetail = function ($detail) {
-            return [
-                'item_id' => (int)($detail['item_id'] ?? $detail->item_id ?? 0),
-                'unit_id' => (int)($detail['unit_id'] ?? $detail->unit_id ?? 0),
-                'quantity' => (float)($detail['quantity'] ?? $detail->quantity ?? 0),
-                'purchase_price' => (float)($detail['purchase_price'] ?? $detail->purchase_price ?? 0),
-                'subtotal' => (float)($detail['subtotal'] ?? $detail->subtotal ?? 0)
-            ];
-        };
-
-        $newDetailsNorm = array_map($normalizeDetail, $newDetails);
-        $oldDetailsNorm = $oldDetails->map($normalizeDetail)->toArray();
-
-        usort($newDetailsNorm, function ($a, $b) {
-            return $a['item_id'] <=> $b['item_id'];
-        });
-        usort($oldDetailsNorm, function ($a, $b) {
-            return $a['item_id'] <=> $b['item_id'];
-        });
-
-        return $newDetailsNorm != $oldDetailsNorm;
-    }
-
     // Export Excel
     public function export(Request $request)
     {
         $type = $request->get('type', 'monthly');
-        $query = DB::table('purchase_orders')
-            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id')
-            ->select('purchase_orders.*', 'suppliers.name as supplier_name');
+        $query = PurchaseOrder::with(['supplier', 'purchaseOrderItems.item']);
 
         if ($type === 'daily') {
             $date = $request->get('issue_date') ?? date('Y-m-d');
-            $query->whereDate('purchase_orders.issue_date', $date);
+            $query->whereDate('issue_date', $date);
             $filename = "Pembelian_Harian_" . $date . ".xlsx";
         } elseif ($type === 'monthly') {
             $month = (int)($request->get('month') ?? date('n'));
             $year = (int)($request->get('year') ?? date('Y'));
-            $query->whereMonth('purchase_orders.issue_date', $month)
-                ->whereYear('purchase_orders.issue_date', $year);
+            $query->whereMonth('issue_date', $month)
+                ->whereYear('issue_date', $year);
             $filename = "Pembelian_Bulan_{$month}_{$year}.xlsx";
         } elseif ($type === 'yearly') {
             $year = (int)($request->get('year') ?? date('Y'));
-            $query->whereYear('purchase_orders.issue_date', $year);
+            $query->whereYear('issue_date', $year);
             $filename = "Pembelian_Tahun_{$year}.xlsx";
         } else {
             // Default monthly
             $month = (int)($request->get('month') ?? date('n'));
             $year = (int)($request->get('year') ?? date('Y'));
-            $query->whereMonth('purchase_orders.issue_date', $month)
-                ->whereYear('purchase_orders.issue_date', $year);
+            $query->whereMonth('issue_date', $month)
+                ->whereYear('issue_date', $year);
             $filename = "Pembelian_Bulan_{$month}_{$year}.xlsx";
         }
 
-        $query->orderBy('purchase_orders.issue_date', 'ASC');
+        $query->orderBy('issue_date', 'ASC');
         $purchases = $query->get();
 
         // Prepare data for Excel
@@ -681,13 +429,7 @@ class PurchaseController extends Controller
 
         $row = 2;
         foreach ($purchases as $i => $purchase) {
-            // Get item details
-            $details = DB::table('purchase_order_items')
-                ->leftJoin('items', 'items.id', '=', 'purchase_order_items.item_id')
-                ->select('purchase_order_items.*', 'items.name as item_name')
-                ->where('purchase_order_id', $purchase->id)
-                ->get();
-
+            $details = $purchase->purchaseOrderItems;
             $detailCount = count($details);
             $startRow = $row;
             $endRow = $row + ($detailCount > 0 ? $detailCount - 1 : 0);
@@ -704,7 +446,7 @@ class PurchaseController extends Controller
             $sheet->setCellValue('A' . $startRow, $i + 1);
             $sheet->setCellValue('B' . $startRow, $purchase->invoice_number);
             $sheet->setCellValue('C' . $startRow, $purchase->issue_date);
-            $sheet->setCellValue('D' . $startRow, $purchase->supplier_name);
+            $sheet->setCellValue('D' . $startRow, $purchase->supplier->name ?? '-');
             $sheet->setCellValue('E' . $startRow, $purchase->total_amount);
             $sheet->setCellValue('F' . $startRow, $purchase->status);
             $sheet->setCellValue('G' . $startRow, $purchase->payment_method);
@@ -712,9 +454,9 @@ class PurchaseController extends Controller
             // Fill item details in columns H-K
             if ($detailCount > 0) {
                 foreach ($details as $detail) {
-                    $sheet->setCellValue('H' . $row, $detail->item_name);
+                    $sheet->setCellValue('H' . $row, $detail->item->item_name ?? '-');
                     $sheet->setCellValue('I' . $row, $detail->quantity);
-                    $sheet->setCellValue('J' . $row, $detail->purchase_price);
+                    $sheet->setCellValue('J' . $row, $detail->buy_price);
                     $sheet->setCellValue('K' . $row, $detail->subtotal);
                     $row++;
                 }
