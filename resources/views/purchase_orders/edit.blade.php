@@ -83,13 +83,18 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label class="col-md-3 col-form-label"><b>Otorisasi</b></label>
+                                <label for="created_by" class="col-md-3 col-form-label"><b>Dibuat Oleh</b></label>
                                 <div class="col-md-9">
-                                    <input type="hidden" name="authorized_by"
-                                        value="{{ json_encode($authorizedUsers) }}">
-                                    <div class="form-control bg-light" readonly>
-                                        {{ implode(', ', $authorizedUsernames) }}
-                                    </div>
+                                    <input type="text" class="form-control bg-light" readonly
+                                        value="{{ $purchaseOrder->createdBy->name ?? '-' }}">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 align-items-center">
+                                <label for="updated_by" class="col-md-3 col-form-label"><b>Diupdate Oleh</b></label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control bg-light" readonly
+                                        value="{{ $purchaseOrder->updatedBy->name ?? '-' }}">
                                 </div>
                             </div>
 
@@ -344,7 +349,7 @@
 
     <script>
         let detailIndex = {{ count($details) }};
-        const satuanKonversiMap = {{ json_encode($satuanKonversiMap) }};
+        const satuanKonversiMap = {{ json_encode($unitConversionMap) }};
 
         function formatRupiahInputValue(angka) {
             angka = Number(angka);
@@ -488,14 +493,14 @@
             row.innerHTML = `
         <td>
             <div class="input-group">
-                <select name="detail[${detailIndex}][id_barang]" class="form-select barang-select" required>
+                <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required>
                     <option value="">- Pilih Barang -</option>
-                    @foreach ($barangs as $b)
-                        <option value="{{ $b['id'] }}"
-                            data-stok="{{ $b['stok'] }}"
-                            data-harga="{{ $b['harga_beli'] }}"
-                            data-id_satuan="{{ $b['id_satuan'] }}">
-                            {{ $b['nama_barang'] }}
+                    @foreach ($items as $item)
+                        <option value="{{ $item->id }}"
+                            data-stok="{{ $item->stock }}"
+                            data-harga="{{ $item->purchase_price }}"
+                            data-id_satuan="{{ $item->unit_id }}">
+                            {{ $item->name }}
                         </option>
                     @endforeach
                 </select>
@@ -506,15 +511,15 @@
             <span class="text-success small stok-info" style="display:none;"></span>
         </td>
         <td>
-            <select name="detail[${detailIndex}][id_satuan]" class="form-select satuan-select" required  value="{{ $detail['id_satuan'] }}">
+            <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
                 <option value="">- Pilih Satuan -</option>
             </select>
         </td>
         <td>
-            <input type="number" name="detail[${detailIndex}][qty]" class="form-control qty-input" required min="1">
+            <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
         </td>
         <td>
-            <input type="text" name="detail[${detailIndex}][harga_beli]" class="form-control harga-input" required>
+            <input type="text" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required>
         </td>
         <td>
             <input type="text" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>

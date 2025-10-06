@@ -135,7 +135,7 @@ class PurchaseController extends Controller
                         ->where('item_id', $itemId)
                         ->where('unit_id', $unitId)
                         ->first();
-                    $conversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
+                    $conversion = $conversionRow ? (int)$conversionRow->conversion_value : 1;
 
                     $quantity = (int)$detail['quantity'];
                     $baseQuantity = $quantity * $conversion;
@@ -251,7 +251,7 @@ class PurchaseController extends Controller
                     ->where('item_id', $itemId)
                     ->where('unit_id', $unitId)
                     ->first();
-                $conversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
+                $conversion = $conversionRow ? (int)$conversionRow->conversion_value : 1;
 
                 $quantity = (int)$detail['quantity'];
                 $baseQuantity = $quantity * $conversion;

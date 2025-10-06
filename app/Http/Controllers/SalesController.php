@@ -47,7 +47,7 @@ class SalesController extends Controller
     public function create()
     {
         $customers = Customer::where('status', 'active')->orderBy('name')->get();
-        $items = Item::orderBy('name')->get();
+        $items = Item::orderBy('item_name')->get();
         $units = Unit::orderBy('unit_name')->get();
 
         // Unit conversion mapping
@@ -55,11 +55,17 @@ class SalesController extends Controller
         foreach ($items as $item) {
             $conversions = DB::table('unit_conversions')
                 ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
-                ->select('unit_conversions.*', 'units.unit_name as unit_name')
+                ->select(
+                    'unit_conversions.unit_id as id_satuan',
+                    'units.unit_name as nama_satuan',
+                    'unit_conversions.conversion_value as konversi'
+                )
                 ->where('unit_conversions.item_id', $item->id)
-                ->get();
+                ->get()
+                ->toArray();
             $unitConversionMap[$item->id] = $conversions;
         }
+
 
         $issueDate = date('Y-m-d');
         $invoiceNumber = $this->generateInvoiceNumber($issueDate);
@@ -68,7 +74,7 @@ class SalesController extends Controller
             'customers' => $customers,
             'items' => $items,
             'units' => $units,
-            'unit_conversion_map' => $unitConversionMap,
+            'unitConversionMap' => $unitConversionMap,
             'issue_date' => $issueDate,
             'invoice_number' => $invoiceNumber,
             'title' => 'Tambah Data Penjualan'
@@ -99,7 +105,7 @@ class SalesController extends Controller
                     ->where('item_id', $itemId)
                     ->where('unit_id', $unitId)
                     ->first();
-                $conversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
+                $conversion = $conversionRow ? (int)$conversionRow->conversion_value : 1;
 
                 $quantity = (int)$detail['quantity'];
                 $baseQuantity = $quantity * $conversion;
@@ -160,7 +166,7 @@ class SalesController extends Controller
                         ->where('item_id', $itemId)
                         ->where('unit_id', $unitId)
                         ->first();
-                    $conversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
+                    $conversion = $conversionRow ? (int)$conversionRow->conversion_value : 1;
 
                     $quantity = (int)$detail['quantity'];
                     $baseQuantity = $quantity * $conversion;
@@ -203,8 +209,13 @@ class SalesController extends Controller
 
     public function edit($id)
     {
-        $salesOrder = SalesOrder::with(['customer', 'salesOrderItems.item', 'salesOrderItems.unit'])
-            ->findOrFail($id);
+        $salesOrder = SalesOrder::with([
+            'customer',
+            'salesOrderItems.item',
+            'salesOrderItems.unit',
+            'createdBy',
+            'updatedBy'
+        ])->findOrFail($id);
 
         $customers = Customer::where('status', 'active')->orderBy('name')->get();
         $items = Item::orderBy('item_name')->get();
@@ -266,7 +277,7 @@ class SalesController extends Controller
                 ->where('item_id', $itemId)
                 ->where('unit_id', $unitId)
                 ->first();
-            $newConversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
+            $newConversion = $conversionRow ? (int)$conversionRow->conversion_value : 1;
 
             $newQuantity = (int)$detail['quantity'];
             $newBaseQuantity = $newQuantity * $newConversion;
@@ -311,7 +322,7 @@ class SalesController extends Controller
                     ->where('item_id', $itemId)
                     ->where('unit_id', $unitId)
                     ->first();
-                $conversion = $conversionRow ? (int)$conversionRow->conversion_rate : 1;
+                $conversion = $conversionRow ? (int)$conversionRow->conversion_value : 1;
 
                 $quantity = (int)$detail['quantity'];
                 $baseQuantity = $quantity * $conversion;

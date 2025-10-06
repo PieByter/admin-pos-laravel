@@ -181,10 +181,10 @@
                                                             @foreach ($items as $item)
                                                                 <option value="{{ $item->id }}"
                                                                     data-stok="{{ $item->stock }}"
-                                                                    data-harga="{{ $item->selling_price }}"
+                                                                    data-harga="{{ $item->sell_price }}"
                                                                     data-id_satuan="{{ $item->unit_id }}"
                                                                     {{ $item->id == $detail->item_id ? 'selected' : '' }}>
-                                                                    {{ $item->name }}
+                                                                    {{ $item->item_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -287,12 +287,12 @@
                             </thead>
                             <tbody id="modal-barang-list">
                                 @foreach ($items as $item)
-                                    <tr data-id="{{ $item->id }}" data-nama="{{ $item->name }}"
-                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->selling_price }}"
+                                    <tr data-id="{{ $item->id }}" data-nama="{{ $item->item_name }}"
+                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->sell_price }}"
                                         data-id_satuan="{{ $item->unit_id }}">
-                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->item_name }}</td>
                                         <td class="text-center">{{ $item->stock }}</td>
-                                        <td class="text-center">{{ number_format($item->selling_price, 0, ',', '.') }}
+                                        <td class="text-center">{{ number_format($item->sell_price, 0, ',', '.') }}
                                         </td>
                                         <td class="text-center">
                                             <button type="button"
@@ -596,9 +596,9 @@
                         @foreach ($items as $item)
                             <option value="{{ $item->id }}"
                                 data-stok="{{ $item->stock }}"
-                                data-harga="{{ $item->selling_price }}"
+                                data-harga="{{ $item->sell_price }}"
                                 data-id_satuan="{{ $item->unit_id }}">
-                                {{ $item->name }}
+                                {{ $item->item_name }}
                             </option>
                         @endforeach
                     </select>

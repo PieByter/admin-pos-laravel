@@ -117,27 +117,17 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="authorized_by" class="col-md-3 col-form-label"><b>Otorisasi</b></label>
+                                <label class="col-md-3 col-form-label"><b>Dibuat Oleh</b></label>
                                 <div class="col-md-9">
-                                    @php
-                                        $authorizedUsers =
-                                            isset($authorized_by) && is_array($authorized_by)
-                                                ? array_map('intval', $authorized_by)
-                                                : [(int) session('user_id')];
-                                    @endphp
-                                    <input type="hidden" name="authorized_by"
-                                        value="{{ json_encode($authorizedUsers) }}">
-                                    <div class="form-control bg-light" readonly>
-                                        @php
-                                            $usernames = [];
-                                            foreach ($users as $user) {
-                                                if (in_array($user->id, $authorizedUsers)) {
-                                                    $usernames[] = $user->username;
-                                                }
-                                            }
-                                            echo implode(', ', $usernames);
-                                        @endphp
-                                    </div>
+                                    <input type="text" class="form-control bg-light" readonly
+                                        value="{{ auth()->user()->name ?? '-' }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3 align-items-center">
+                                <label class="col-md-3 col-form-label"><b>Diupdate Oleh</b></label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control bg-light" readonly
+                                        value="{{ auth()->user()->name ?? '-' }}">
                                 </div>
                             </div>
 
@@ -202,12 +192,12 @@
                                                             @foreach ($unitConversionMap[$detail['item_id']] as $konv)
                                                                 @php
                                                                     $label = $konv['unit_name'];
-                                                                    if ($konv['conversion_rate'] > 1) {
-                                                                        $label .= " ({$konv['conversion_rate']} pcs)";
+                                                                    if ($konv['conversion_value'] > 1) {
+                                                                        $label .= " ({$konv['conversion_value']} pcs)";
                                                                     }
                                                                 @endphp
                                                                 <option value="{{ $konv['unit_id'] }}"
-                                                                    data-konversi="{{ $konv['conversion_rate'] }}"
+                                                                    data-konversi="{{ $konv['conversion_value'] }}"
                                                                     {{ isset($detail['unit_id']) && $detail['unit_id'] == $konv['unit_id'] ? 'selected' : '' }}>
                                                                     {{ $label }}
                                                                 </option>
@@ -374,7 +364,7 @@
         </div>
     </div>
 
-    @if (session()->getFlashdata('error'))
+    @if (session('error'))
         :
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -389,7 +379,7 @@
 
     <script>
         let detailIndex = {{ count(old('detail') ?? [[]]) }};
-        const satuanKonversiMap = {{ json_encode($satuanKonversiMap) }};
+        const satuanKonversiMap = {{ json_encode($unitConversionMap) }};
 
         function formatRupiahInputValue(angka) {
             angka = Number(angka);
@@ -539,14 +529,14 @@
             row.innerHTML = `
         <td>
             <div class="input-group">
-                <select name="detail[${detailIndex}][id_barang]" class="form-select barang-select" required onchange="showStok(this)">
+                <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required onchange="showStok(this)">
                     <option value="">- Pilih Barang -</option>
-                    @foreach ($barangs as $b)
-                        <option value="{{ $b['id'] }}"
-                            data-stok="{{ $b['stok'] }}"
-                            data-harga="{{ $b['harga_beli'] }}"
-                            data-id_satuan="{{ $b['id_satuan'] }}">
-                            {{ $b['nama_barang'] }}
+                    @foreach ($items as $item)
+                        <option value="{{ $item->id }}"
+                            data-stok="{{ $item->stock }}"
+                            data-harga="{{ $item->purchase_price }}"
+                            data-id_satuan="{{ $item->unit_id }}">
+                            {{ $item->name }}
                         </option>
                     @endforeach
                 </select>
@@ -557,15 +547,15 @@
             <span class="text-success small stok-info" style="display:none;"></span>
         </td>
         <td>
-            <select name="detail[${detailIndex}][id_satuan]" class="form-select satuan-select" required>
+            <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
                 <option value="">- Pilih Satuan -</option>
             </select>
         </td>
         <td>
-            <input type="number" name="detail[${detailIndex}][qty]" class="form-control qty-input" required min="1">
+            <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
         </td>
         <td>
-            <input type="text" name="detail[${detailIndex}][harga_beli]" class="form-control harga-input" required>
+            <input type="text" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required>
         </td>
         <td>
             <input type="text" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
@@ -721,7 +711,7 @@
             const noFakturInput = document.getElementById('no_faktur');
             if (tanggalInput && noFakturInput) {
                 function fetchNoFaktur() {
-                    fetch('{{ route('pembelian.generateNoFakturAjax') }}?tanggal_terbit=' + encodeURIComponent(
+                    fetch('{{ route('sales.generate-invoice-number') }}?tanggal_terbit=' + encodeURIComponent(
                             tanggalInput
                             .value))
                         .then(response => response.json())
