@@ -11,7 +11,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-cart-check"></i> Form Tambah Penjualan</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('sales-orders.store') }}" method="post">
+                        <form action="{{ route('sales.store') }}" method="post">
                             @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="invoice_number" class="col-md-3 col-form-label"><b>No. Nota</b></label>
@@ -264,7 +264,7 @@
                                 <button type="submit" class="btn btn-success me-2">
                                     <i class="bi bi-save"></i> Simpan Penjualan
                                 </button>
-                                <a href="{{ route('sales-orders.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('sales.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>

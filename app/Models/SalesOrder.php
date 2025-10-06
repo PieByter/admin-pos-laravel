@@ -17,6 +17,9 @@ class SalesOrder extends Model
         'due_date',
         'payment_date',
         'total_amount',
+        'tax',
+        'discount',
+        'discount_type',
         'status',
         'payment_method',
         'created_by',
@@ -28,6 +31,8 @@ class SalesOrder extends Model
         'due_date' => 'date',
         'payment_date' => 'date',
         'total_amount' => 'decimal:2',
+        'tax' => 'decimal:2',
+        'discount' => 'decimal:2',
     ];
 
     // ✅ Relationships

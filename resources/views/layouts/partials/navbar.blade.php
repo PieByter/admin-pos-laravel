@@ -15,8 +15,8 @@
         </li>
 
         <!-- Dropdown Transaksi -->
-        @canany(['pre_purchase_orders_view', 'purchase_orders_view', 'sales_orders_view', 'purchase_returns_view',
-            'sales_returns_view', 'transactions_view'])
+        @canany(['purchase_orders_view', 'sales_orders_view', 'purchase_returns_view', 'sales_returns_view',
+            'transactions_view'])
             <li class="nav-item d-none d-md-block dropdown">
                 <a class="nav-link dropdown-toggle{{ request()->is(['purchase-orders*', 'purchases*', 'sales*', 'purchase-returns*', 'sales-returns*', 'transactions*']) ? ' active' : '' }} text-gray-900 dark:text-white"
                     href="#" id="transaksiDropdown" role="button" data-bs-toggle="dropdown">
@@ -32,21 +32,21 @@
                         </li>
                     @endcan
 
-                    @can('pre_purchase_orders_view')
+                    {{-- @can('pre_purchase_orders_view')
                         <li><a class="dropdown-item" href="{{ route('purchase-orders.index') }}">
                                 <i class="bi bi-file-earmark-plus me-2"></i>Purchase Order
                             </a></li>
-                    @endcan
+                    @endcan --}}
 
                     @can('purchase_orders_view')
                         <li><a class="dropdown-item" href="{{ route('purchases.index') }}">
-                                <i class="bi bi-cart-plus me-2"></i>Pembelian
+                                <i class="bi bi-cart-plus me-2"></i>Purchase Order
                             </a></li>
                     @endcan
 
                     @can('sales_orders_view')
                         <li><a class="dropdown-item" href="{{ route('sales.index') }}">
-                                <i class="bi bi-bag-check me-2"></i>Penjualan
+                                <i class="bi bi-bag-check me-2"></i>Sales Order
                             </a></li>
                     @endcan
 

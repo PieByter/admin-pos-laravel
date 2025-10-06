@@ -1,11 +1,11 @@
 <x-app-layout>
 
     <x-content-header title="Manajemen Penjualan (Sales Order)" breadcrumb-parent="Transaksi"
-        breadcrumb-url="{{ route('sales-orders.index') }}" />
+        breadcrumb-url="{{ route('sales.index') }}" />
 
 
     <div id="custom-buttons" class="ms-3 mb-2">
-        <a href="{{ route('sales-orders.create') }}" class="btn btn-primary" id="btn-create-penjualan">
+        <a href="{{ route('sales.create') }}" class="btn btn-primary" id="btn-create-penjualan">
             <i class="bi bi-plus-lg"></i> Tambah Penjualan
         </a>
     </div>
@@ -15,24 +15,22 @@
         <div class="container-fluid mb-3">
             <div class="table-responsive" id="penjualan-table-container">
                 <table class="table table-striped table-hover table-bordered align-middle table-sm small"
-                    id="penjualanTable" style="width:100%; table-layout: fixed;">
+                    id="penjualanTable">
                     <thead>
                         <tr class="text-center">
-                            <th style="width:4%;">No</th>
-                            <th style="width:13%;">Nomor Faktur</th>
-                            <th style="width:11%;">Tanggal Terbit</th>
-                            <th style="width:10%;">Customer</th>
-                            <th style="width:14%;">Total Harga</th>
-                            <th style="width:10%;">Status</th>
-                            <th style="width:10%;">Payment</th>
-                            <th style="width:19%;">Detail Barang</th>
-
-                            <th style="width:10%;">Aksi</th>
-
+                            <th>No</th>
+                            <th>Nomor Faktur</th>
+                            <th>Tanggal Terbit</th>
+                            <th>Customer</th>
+                            <th>Total Harga</th>
+                            <th>Status</th>
+                            <th>Payment</th>
+                            <th>Detail Barang</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if ($salesOrders->isEmpty())
+                        @if ($sales->isEmpty())
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '9' : '8' }}" class="text-center py-4">
                                     <div class="text-muted">
@@ -45,7 +43,7 @@
                                             @endif
                                         </p>
 
-                                        <a href="{{ route('sales-orders.create') }}" class="btn btn-primary">
+                                        <a href="{{ route('sales.create') }}" class="btn btn-primary">
                                             <i class="bi bi-cart-plus"></i> Tambah Penjualan Pertama
                                         </a>
 
@@ -53,9 +51,9 @@
                                 </td>
                             </tr>
                         @else
-                            @foreach ($salesOrders as $index => $salesOrder)
+                            @foreach ($sales as $index => $salesOrder)
                                 <tr style="cursor:pointer;"
-                                    onclick="window.location='{{ route('sales-orders.show', $salesOrder->id) }}'">
+                                    onclick="window.location='{{ route('sales.show', $salesOrder->id) }}'">
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td class="text-center">{{ $salesOrder->invoice_number }}</td>
                                     <td class="text-center">
@@ -101,16 +99,16 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @if ($salesOrder->details->count() > 0)
+                                        @if (!empty($salesOrder->details) && count($salesOrder->details) > 0)
                                             @foreach ($salesOrder->details as $index => $detail)
                                                 <div>
-                                                    {{ $detail->item->name ?? '-' }},
+                                                    {{ $detail->item_name ?? '-' }},
                                                     Qty: {{ number_format($detail->quantity, 0) }}
-                                                    {{ $detail->unit->name ?? '-' }},
-                                                    Harga: Rp. {{ number_format($detail->unit_price, 0, ',', '.') }}
+                                                    {{ $detail->unit_name ?? '-' }},
+                                                    Harga: Rp. {{ number_format($detail->sell_price, 0, ',', '.') }}
                                                     Subtotal: Rp. {{ number_format($detail->subtotal, 0, ',', '.') }}
                                                 </div>
-                                                @if ($index < $salesOrder->details->count() - 1)
+                                                @if ($index < count($salesOrder->details) - 1)
                                                     <hr class="my-1">
                                                 @endif
                                             @endforeach
@@ -121,18 +119,18 @@
 
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('sales-orders.show', $salesOrder->id) }}"
+                                            <a href="{{ route('sales.show', $salesOrder->id) }}"
                                                 class="btn btn-info btn-sm" title="Detail"
                                                 onclick="event.stopPropagation();">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <a href="{{ route('sales-orders.edit', $salesOrder->id) }}"
+                                            <a href="{{ route('sales.edit', $salesOrder->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit"
                                                 onclick="event.stopPropagation();">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form action="{{ route('sales-orders.destroy', $salesOrder->id) }}"
-                                                method="POST" class="d-inline delete-form">
+                                            <form action="{{ route('sales.destroy', $salesOrder->id) }}" method="POST"
+                                                class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm btn-hapus-penjualan"
@@ -152,8 +150,7 @@
 
             <div class="card mt-3">
                 <div class="card-body d-flex justify-content-end">
-                    <form class="row align-items-center g-2" method="get"
-                        action="{{ route('sales-orders.export') }}">
+                    <form class="row align-items-center g-2" method="get" action="{{ route('sales.export') }}">
                         <div class="col-auto fw-bold">
                             <label for="jenis-export" class="form-label mb-0">Export Penjualan</label>
                         </div>

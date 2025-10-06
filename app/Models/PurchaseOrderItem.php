@@ -19,6 +19,8 @@ class PurchaseOrderItem extends Model
         'base_quantity',
         'buy_price',
         'subtotal',
+        'discount',
+        'discount_type',
         'status',
         'returned_quantity',
         'returned_base_quantity',
@@ -30,6 +32,7 @@ class PurchaseOrderItem extends Model
         'base_quantity' => 'integer',
         'buy_price' => 'decimal:2',
         'subtotal' => 'decimal:2',
+        'discount' => 'decimal:2',
         'returned_quantity' => 'integer',
         'returned_base_quantity' => 'integer',
     ];

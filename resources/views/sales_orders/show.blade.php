@@ -80,7 +80,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($salesOrder->details as $index => $detail)
+                                    @forelse ($salesOrder->salesOrderItems as $index => $detail)
                                         <tr class="barang-row" data-barang='@json($detail)'
                                             style="cursor: pointer;">
                                             <td>{{ $index + 1 }}</td>
@@ -101,7 +101,7 @@
                                         </tr>
                                     @endforelse
                                 </tbody>
-                                @if ($salesOrder->details->count() > 0)
+                                @if ($salesOrder->salesOrderItems->count() > 0)
                                     <tfoot>
                                         <tr>
                                             <td colspan="5" class="text-end"><b>Total Harga</b></td>
@@ -117,10 +117,10 @@
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
 
-                            <a href="{{ route('sales-orders.edit', $salesOrder->id) }}" class="btn btn-warning">
+                            <a href="{{ route('sales.edit', $salesOrder->id) }}" class="btn btn-warning">
                                 <i class="bi bi-pencil"></i> Edit
                             </a>
-                            <a href="{{ route('sales-orders.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('sales.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>
                         </div>

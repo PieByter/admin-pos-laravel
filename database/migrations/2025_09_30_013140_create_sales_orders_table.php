@@ -20,6 +20,9 @@ return new class extends Migration
             $table->date('due_date')->nullable();
             $table->date('payment_date')->nullable();
             $table->decimal('total_amount', 15, 2)->default(0);
+            $table->decimal('tax', 15, 2)->default(0);
+            $table->decimal('discount', 15, 2)->default(0);
+            $table->enum('discount_type', ['nominal', 'percent'])->default('nominal');
             $table->enum('status', ['draft', 'processing', 'completed', 'debt', 'returned', 'cancelled'])->default('draft');
             $table->enum('payment_method', ['cash', 'credit', 'transfer', 'debit', 'e_wallet'])->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
@@ -36,6 +39,8 @@ return new class extends Migration
             $table->integer('base_quantity');
             $table->decimal('sell_price', 15, 2);
             $table->decimal('subtotal', 15, 2);
+            $table->decimal('discount', 15, 2)->default(0);
+            $table->enum('discount_type', ['nominal', 'percent'])->default('nominal');
             $table->enum('status', ['normal', 'returned', 'exchanged', 'cancelled'])->default('normal');
             $table->integer('returned_quantity')->nullable()->default(0);
             $table->integer('returned_base_quantity')->nullable()->default(0);

@@ -7,7 +7,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-cart-check"></i> Form Edit Penjualan</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('sales-orders.update', $salesOrder->id) }}" method="POST">
+                        <form action="{{ route('sales.update', $salesOrder->id) }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -121,22 +121,36 @@
                                 </div>
                             </div>
 
+                            {{-- Ganti bagian Otorisasi dengan info Created/Updated By --}}
                             <div class="row mb-3 align-items-center">
-                                <label class="col-md-3 col-form-label"><b>Otorisasi</b></label>
+                                <label class="col-md-3 col-form-label"><b>Dibuat Oleh</b></label>
                                 <div class="col-md-9">
-                                    <input type="hidden" name="authorized_by"
-                                        value="{{ json_encode($authorizedUsers) }}">
                                     <div class="form-control bg-light" readonly>
-                                        {{ implode(', ', $authorizedUsernames) }}
+                                        {{ $salesOrder->createdBy->username ?? 'Unknown' }}
+                                        <small class="text-muted">
+                                            ({{ $salesOrder->created_at ? $salesOrder->created_at->format('d/m/Y H:i') : '-' }})
+                                        </small>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="description" class="col-md-3 col-form-label"><b>Keterangan</b></label>
+                                <label class="col-md-3 col-form-label"><b>Terakhir Diubah</b></label>
                                 <div class="col-md-9">
-                                    <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror">{{ old('description', $salesOrder->description) }}</textarea>
-                                    @error('description')
+                                    <div class="form-control bg-light" readonly>
+                                        {{ $salesOrder->updatedBy->username ?? 'Unknown' }}
+                                        <small class="text-muted">
+                                            ({{ $salesOrder->updated_at ? $salesOrder->updated_at->format('d/m/Y H:i') : '-' }})
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 align-items-center">
+                                <label for="notes" class="col-md-3 col-form-label"><b>Keterangan</b></label>
+                                <div class="col-md-9">
+                                    <textarea name="notes" id="notes" class="form-control @error('notes') is-invalid @enderror">{{ old('notes', $salesOrder->notes) }}</textarea>
+                                    @error('notes')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -160,7 +174,7 @@
                                             <tr>
                                                 <td>
                                                     <div class="input-group">
-                                                        <select name="detail[{{ $index }}][item_id]"
+                                                        <select name="details[{{ $index }}][item_id]"
                                                             class="form-select barang-select" required
                                                             onchange="showStok(this)">
                                                             <option value="">- Pilih Barang -</option>
@@ -183,7 +197,7 @@
                                                         style="display:none;"></span>
                                                 </td>
                                                 <td>
-                                                    <select name="detail[{{ $index }}][unit_id]"
+                                                    <select name="details[{{ $index }}][unit_id]"
                                                         class="form-select satuan-select" required
                                                         data-satuan-awal="{{ $detail->unit_id }}">
                                                         <option value="">- Pilih Satuan -</option>
@@ -191,19 +205,19 @@
                                                 </td>
                                                 <td>
                                                     <input type="number"
-                                                        name="detail[{{ $index }}][quantity]"
+                                                        name="details[{{ $index }}][quantity]"
                                                         class="form-control qty-input" required min="1"
                                                         value="{{ $detail->quantity }}">
                                                 </td>
                                                 <td>
                                                     <input type="text"
-                                                        name="detail[{{ $index }}][unit_price]"
+                                                        name="details[{{ $index }}][sell_price]"
                                                         class="form-control harga-input" required
-                                                        value="{{ number_format($detail->unit_price, 0, ',', '.') }}">
+                                                        value="{{ number_format($detail->sell_price, 0, ',', '.') }}">
                                                 </td>
                                                 <td>
                                                     <input type="text"
-                                                        name="detail[{{ $index }}][subtotal]"
+                                                        name="details[{{ $index }}][subtotal]"
                                                         class="form-control subtotal-input" readonly
                                                         value="{{ number_format($detail->subtotal, 0, ',', '.') }}">
                                                 </td>
@@ -239,7 +253,7 @@
                                 <button type="submit" class="btn btn-warning me-2">
                                     <i class="bi bi-save"></i> Update Penjualan
                                 </button>
-                                <a href="{{ route('sales-orders.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('sales.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -349,13 +363,13 @@
         </div>
     </div>
 
-    @if (session()->getFlashdata('error'))
+    @if (session('error'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal Simpan!',
-                    text: '{{ session()->getFlashdata('error') }}'
+                    text: '{{ session('error') }}'
                 });
             });
         </script>
@@ -363,7 +377,7 @@
 
     <script>
         let detailIndex = {{ count($details) }};
-        const satuanKonversiMap = {{ json_encode($satuanKonversiMap) }};
+        const unit_conversion_map = {!! json_encode($unit_conversion_map) !!};
 
         function formatRupiahInputValue(angka) {
             angka = Number(angka);
@@ -575,44 +589,47 @@
             const row = document.createElement('tr');
 
             row.innerHTML = `
-<td>
-    <div class="input-group">
-        <select name="detail[{{ '${detailIndex}' }}][id_barang]" class="form-select barang-select" required>
-            <option value="">- Pilih Barang -</option>
-            @foreach ($barangs as $b)
-                <option value="{{ $b->id }}"
-                    data-stok="{{ $b->stok }}"
-                    data-harga="{{ $b->harga_beli }}"
-                    data-id_satuan="{{ $b->id_satuan }}">
-                    {{ $b->nama_barang }}
-                </option>
-            @endforeach
-        </select>
-        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
-            <i class="bi bi-search"></i> Cari
-        </button>
-    </div>
-    <span class="text-success small stok-info" style="display:none;"></span>
-</td>
-<td>
-    <select name="detail[{{ '${detailIndex}' }}][id_satuan]" class="form-select satuan-select" required>
-        <option value="">- Pilih Satuan -</option>
-    </select>
-</td>
-<td>
-    <input type="number" name="detail[{{ '${detailIndex}' }}][qty]" class="form-control qty-input" required min="1">
-</td>
-<td>
-    <input type="text" name="detail[{{ '${detailIndex}' }}][harga_beli]" class="form-control harga-input" required>
-</td>
-<td>
-    <input type="text" name="detail[{{ '${detailIndex}' }}][subtotal]" class="form-control subtotal-input" readonly>
-</td>
-<td>
-    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
-        <i class="bi bi-trash"></i>
-    </button>
-</td>
+            <td>
+                <div class="input-group">
+                    <select name="details[${detailIndex}][item_id]" class="form-select barang-select" required>
+                        <option value="">- Pilih Barang -</option>
+                        @foreach ($items as $item)
+                            <option value="{{ $item->id }}"
+                                data-stok="{{ $item->stock }}"
+                                data-harga="{{ $item->selling_price }}"
+                                data-id_satuan="{{ $item->unit_id }}">
+                                {{ $item->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
+                        <i class="bi bi-search"></i> Cari
+                    </button>
+                </div>
+                <span class="text-success small stok-info" style="display:none;"></span>
+            </td>
+            <td>
+                <select name="details[${detailIndex}][unit_id]" class="form-select satuan-select" required>
+                    <option value="">- Pilih Satuan -</option>
+                    @foreach ($units as $unit)
+                        <option value="{{ $unit->id }}">{{ $unit->unit_name }}</option>
+                    @endforeach
+                </select>
+            </td>
+            <td>
+                <input type="number" name="details[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
+            </td>
+            <td>
+                <input type="text" name="details[${detailIndex}][sell_price]" class="form-control harga-input" required>
+            </td>
+            <td>
+                <input type="text" name="details[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
         `;
 
             tbody.appendChild(row);

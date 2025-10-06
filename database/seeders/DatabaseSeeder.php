@@ -28,14 +28,18 @@ class DatabaseSeeder extends Seeder
             ItemsSeeder::class,
             CustomersSeeder::class,
             SuppliersSeeder::class,
-            PrePurchaseOrdersSeeder::class,
-            PrePurchaseOrderItemsSeeder::class,
+            // PrePurchaseOrdersSeeder::class,
+            // PrePurchaseOrderItemsSeeder::class,
             PurchaseOrdersSeeder::class,
             PurchaseOrderItemsSeeder::class,
             SalesOrdersSeeder::class,
             SalesOrderItemsSeeder::class,
             UnitConversionsSeeder::class,
             RolePermissionSeeder::class,
+            SalesReturnsSeeder::class,
+            SalesReturnItemsSeeder::class,
+            PurchaseReturnsSeeder::class,
+            PurchaseReturnItemsSeeder::class,
         ]);
     }
 }

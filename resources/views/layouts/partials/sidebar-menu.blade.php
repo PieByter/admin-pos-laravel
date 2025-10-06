@@ -9,8 +9,8 @@
 </li>
 
 <!-- Transaksi Group -->
-@canany(['pre_purchase_orders_view', 'purchase_orders_view', 'sales_orders_view', 'purchase_returns_view',
-    'sales_returns_view', 'transactions_view'])
+@canany(['purchase_orders_view', 'sales_orders_view', 'purchase_returns_view', 'sales_returns_view',
+    'transactions_view'])
     <li
         class="nav-item{{ request()->is(['purchase-orders*', 'purchases*', 'sales*', 'purchase-returns*', 'sales-returns*', 'transactions*']) ? ' menu-open' : '' }}">
         <a href="#"
@@ -31,7 +31,7 @@
                     </a>
                 </li>
             @endcan
-            @can('pre_purchase_orders_view')
+            {{-- @can('pre_purchase_orders_view')
                 <li class="nav-item">
                     <a href="{{ route('purchase-orders.index') }}"
                         class="nav-link{{ request()->is('purchase-orders*') ? ' active' : '' }}">
@@ -39,7 +39,7 @@
                         <p>Purchase Order</p>
                     </a>
                 </li>
-            @endcan
+            @endcan --}}
             @can('purchase_orders_view')
                 <li class="nav-item">
                     <a href="{{ route('purchases.index') }}" class="nav-link{{ request()->is('purchases*') ? ' active' : '' }}">
