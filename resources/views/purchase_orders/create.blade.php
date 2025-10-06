@@ -12,7 +12,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-bag-plus"></i> Form Tambah Pembelian</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('purchase-orders.store') }}" method="post">
+                        <form action="{{ route('purchases.store') }}" method="post">
                             @csrf
                             <div class="row mb-3 align-items-center">
                                 <label for="invoice_number" class="col-md-3 col-form-label"><b>No. Faktur</b></label>
@@ -169,10 +169,10 @@
                                                             @foreach ($items as $item)
                                                                 <option value="{{ $item->id }}"
                                                                     data-stok="{{ $item->stock }}"
-                                                                    data-harga="{{ $item->purchase_price }}"
+                                                                    data-harga="{{ $item->buy_price }}"
                                                                     data-id_satuan="{{ $item->unit_id }}"
                                                                     {{ isset($detail['item_id']) && $detail['item_id'] == $item->id ? 'selected' : '' }}>
-                                                                    {{ $item->name }}
+                                                                    {{ $item->item_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -254,7 +254,7 @@
                                 <button type="submit" class="btn btn-success me-2">
                                     <i class="bi bi-save"></i> Simpan Pembelian
                                 </button>
-                                <a href="{{ route('purchase-orders.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('purchases.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
@@ -534,9 +534,9 @@
                     @foreach ($items as $item)
                         <option value="{{ $item->id }}"
                             data-stok="{{ $item->stock }}"
-                            data-harga="{{ $item->purchase_price }}"
+                            data-harga="{{ $item->buy_price }}"
                             data-id_satuan="{{ $item->unit_id }}">
-                            {{ $item->name }}
+                            {{ $item->item_name }}
                         </option>
                     @endforeach
                 </select>

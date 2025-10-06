@@ -12,7 +12,7 @@
                         <h5 class="card-title mb-0"><i class="bi bi-bag-plus"></i> Form Edit Pembelian</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('purchase-orders.update', $purchaseOrder->id) }}" method="post">
+                        <form action="{{ route('purchases.update', $purchaseOrder->id) }}" method="post">
                             @csrf
                             @method('PUT')
 
@@ -226,7 +226,7 @@
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="submit" class="btn btn-warning me-2"><i class="bi bi-save"></i>
                                     Update Pembelian</button>
-                                <a href="{{ route('purchase-orders.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('purchases.index') }}" class="btn btn-secondary">
                                     <i class="bi bi-x-lg"></i> Batal
                                 </a>
                             </div>
