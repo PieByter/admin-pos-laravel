@@ -59,11 +59,24 @@
                                 </span>
                             </dd>
 
-                            <dt class="col-sm-5">Otorisasi</dt>
-                            <dd class="col-sm-7">{{ $salesOrder->authorized_by ?? '-' }}</dd>
+                            <dt class="col-sm-5">Dibuat Oleh</dt>
+                            <dd class="col-sm-7">
+                                {{ $salesOrder->createdBy->username ?? '-' }}
+                                <small class="text-muted">
+                                    ({{ $salesOrder->created_at ? \Carbon\Carbon::parse($salesOrder->created_at)->format('d/m/Y H:i') : '-' }})
+                                </small>
+                            </dd>
+
+                            <dt class="col-sm-5">Diupdate Oleh</dt>
+                            <dd class="col-sm-7">
+                                {{ $salesOrder->updatedBy->username ?? '-' }}
+                                <small class="text-muted">
+                                    ({{ $salesOrder->updated_at ? \Carbon\Carbon::parse($salesOrder->updated_at)->format('d/m/Y H:i') : '-' }})
+                                </small>
+                            </dd>
 
                             <dt class="col-sm-5">Keterangan</dt>
-                            <dd class="col-sm-7">{{ $salesOrder->description ?? '-' }}</dd>
+                            <dd class="col-sm-7">{{ $salesOrder->notes ?? '-' }}</dd>
                         </dl>
 
                         <h5 class="mb-3">Detail Barang</h5>
@@ -84,10 +97,10 @@
                                         <tr class="barang-row" data-barang='@json($detail)'
                                             style="cursor: pointer;">
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $detail->item->name ?? '-' }}</td>
-                                            <td>{{ $detail->unit->name ?? '-' }}</td>
+                                            <td>{{ $detail->item->item_name ?? '-' }}</td>
+                                            <td>{{ $detail->unit->unit_name ?? '-' }}</td>
                                             <td>{{ number_format($detail->quantity, 0, ',', '.') }}</td>
-                                            <td>Rp. {{ number_format($detail->unit_price, 0, ',', '.') }}</td>
+                                            <td>Rp. {{ number_format($detail->sell_price, 0, ',', '.') }}</td>
                                             <td>Rp. {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                                         </tr>
                                     @empty
@@ -176,7 +189,7 @@
                 row.addEventListener('click', function() {
                     const data = JSON.parse(this.dataset.barang);
                     const itemName = this.children[1].textContent;
-                    const unitName = data.unit ? data.unit.name : '-';
+                    const unitName = this.children[2].textContent;
 
                     let html = `
                         <dl class="row">
@@ -187,7 +200,7 @@
                             <dt class="col-sm-5">Qty</dt>
                             <dd class="col-sm-7">${parseInt(data.quantity).toLocaleString('id-ID')}</dd>
                             <dt class="col-sm-5">Harga Jual</dt>
-                            <dd class="col-sm-7">Rp. ${parseInt(data.unit_price).toLocaleString('id-ID')}</dd>
+                            <dd class="col-sm-7">Rp. ${parseInt(data.sell_price).toLocaleString('id-ID')}</dd>
                             <dt class="col-sm-5">Subtotal</dt>
                             <dd class="col-sm-7">Rp. ${parseInt(data.subtotal).toLocaleString('id-ID')}</dd>
                         </dl>

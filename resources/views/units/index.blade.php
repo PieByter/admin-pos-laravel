@@ -1,5 +1,4 @@
-{{-- filepath: c:\laragon\www\admin-pos\resources\views\units\index.blade.php --}}
-<x-app-layout>
+<x-app-layout title="Manajemen Satuan">
 
     <x-content-header title="Manajemen Satuan" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('units.index') }}" />

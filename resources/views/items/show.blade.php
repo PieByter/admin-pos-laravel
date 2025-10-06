@@ -1,4 +1,3 @@
-{{-- filepath: c:\laragon\www\admin-pos\resources\views\items\show.blade.php --}}
 <x-app-layout>
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
@@ -10,20 +9,19 @@
                     <div class="card-body">
                         <dl class="row mb-4">
                             <dt class="col-sm-5">Kode Barang</dt>
-                            <dd class="col-sm-7">{{ $item->item_code }}</dd> {{-- ✅ Ganti code dengan items_code --}}
+                            <dd class="col-sm-7">{{ $item->item_code }}</dd> 
 
                             <dt class="col-sm-5">Nama Barang</dt>
-                            <dd class="col-sm-7">{{ $item->item_name }}</dd> {{-- ✅ Ganti name dengan items_name --}}
+                            <dd class="col-sm-7">{{ $item->item_name }}</dd> 
 
                             <dt class="col-sm-5">Jenis Barang</dt>
-                            <dd class="col-sm-7">{{ $item->itemCategory->category_name ?? '-' }}</dd> {{-- ✅ Ganti itemType->name dengan itemCategory->category_name --}}
+                            <dd class="col-sm-7">{{ $item->itemCategory->category_name ?? '-' }}</dd>
 
                             <dt class="col-sm-5">Group Barang</dt>
-                            <dd class="col-sm-7">{{ $item->itemGroup->group_name ?? '-' }}</dd> {{-- ✅ Ganti name dengan group_name --}}
+                            <dd class="col-sm-7">{{ $item->itemGroup->group_name ?? '-' }}</dd>
 
                             <dt class="col-sm-5">Satuan Utama</dt>
-                            <dd class="col-sm-7">{{ $item->unit->unit_name ?? '-' }}</dd> {{-- ✅ Ganti name dengan unit_name --}}
-
+                            <dd class="col-sm-7">{{ $item->unit->unit_name ?? '-' }}</dd>
                             <dt class="col-sm-5">Harga Beli</dt>
                             <dd class="col-sm-7">
                                 Rp.
@@ -41,10 +39,10 @@
                             </dd>
 
                             <dt class="col-sm-5">Stok</dt>
-                            <dd class="col-sm-7">{{ number_format($item->stock, 0, ',', '.') }}</dd> {{-- ✅ Sudah benar --}}
+                            <dd class="col-sm-7">{{ number_format($item->stock, 0, ',', '.') }}</dd>
 
                             <dt class="col-sm-5">Keterangan</dt>
-                            <dd class="col-sm-7">{{ $item->item_description ?? '-' }}</dd> {{-- ✅ Atau items_description jika ada --}}
+                            <dd class="col-sm-7">{{ $item->item_description ?? '-' }}</dd>
                         </dl>
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
@@ -85,11 +83,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($item->unitConversions as $conversion) {{-- ✅ Hilangkan huruf 's' yang dobel --}}
+                                @forelse ($item->unitConversions as $conversion)
                                     <tr>
-                                        <td>{{ $conversion->fromUnit->unit_name ?? '-' }} →
-                                            {{ $conversion->toUnit->unit_name ?? '-' }}</td>
-                                        <td>{{ number_format($conversion->conversion_value, 0, ',', '.') }}</td> {{-- ✅ Ganti conversion_rate dengan conversion_value --}}
+                                        <td>{{ $conversion->unit->unit_name ?? '-' }} → pcs</td>
+                                        <td>{{ number_format($conversion->conversion_value, 0, ',', '.') }}</td>
                                         <td>{{ $conversion->description ?? '-' }}</td>
                                     </tr>
                                 @empty

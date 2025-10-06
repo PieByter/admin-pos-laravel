@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="Manajemen User">
     <x-content-header title="Manajemen User" breadcrumb-parent="SuperAdmin"
         breadcrumb-url="{{ route('superadmin.users.index') }}" />
 

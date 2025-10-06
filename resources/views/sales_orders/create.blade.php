@@ -1,7 +1,7 @@
 <x-app-layout>
-    @if (session('error'))
+    {{-- @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+    @endif --}}
 
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">

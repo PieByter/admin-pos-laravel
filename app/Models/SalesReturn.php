@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PurchaseReturn extends Model
+class SalesReturn extends Model
 {
     use HasFactory;
 
-    protected $table = 'purchase_returns';
+    protected $table = 'sales_returns';
 
     protected $fillable = [
         'return_number',
         'return_date',
-        'purchase_order_id',
-        'supplier_id',
+        'sales_order_id',
+        'customer_id',
         'total_return_amount',
         'status',
         'return_reason',
@@ -34,22 +34,22 @@ class PurchaseReturn extends Model
         'total_return_amount' => 'decimal:2'
     ];
 
-    // Relasi ke purchase return items
+    // Relasi ke sales return items
     public function items()
     {
-        return $this->hasMany(PurchaseReturnItem::class, 'purchase_return_id');
+        return $this->hasMany(SalesReturnItem::class, 'sales_return_id');
     }
 
-    // Relasi ke purchase order
-    public function purchaseOrder()
+    // Relasi ke sales order
+    public function salesOrder()
     {
-        return $this->belongsTo(PurchaseOrder::class, 'purchase_order_id');
+        return $this->belongsTo(SalesOrder::class, 'sales_order_id');
     }
 
-    // Relasi ke supplier
-    public function supplier()
+    // Relasi ke customer
+    public function customer()
     {
-        return $this->belongsTo(Supplier::class);
+        return $this->belongsTo(Customer::class);
     }
 
     // Relasi ke user yang approve
@@ -87,7 +87,7 @@ class PurchaseReturn extends Model
     // Static method untuk generate return number
     public static function generateReturnNumber()
     {
-        $prefix = 'RPB';
+        $prefix = 'RJL';
         $date = now()->format('Ymd');
 
         $lastReturn = static::whereDate('created_at', now())

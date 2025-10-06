@@ -26,14 +26,18 @@ class UnitConversion extends Model
         return $this->belongsTo(Item::class);
     }
 
-    public function fromUnit()
-    {
-        return $this->belongsTo(Unit::class, 'from_unit_id');
-    }
+    // public function fromUnit()
+    // {
+    //     return $this->belongsTo(Unit::class, 'from_unit_id');
+    // }
 
-    public function toUnit()
+    // public function toUnit()
+    // {
+    //     return $this->belongsTo(Unit::class, 'to_unit_id');
+    // }
+    public function unit()
     {
-        return $this->belongsTo(Unit::class, 'to_unit_id');
+        return $this->belongsTo(Unit::class, 'unit_id');
     }
 
     // ✅ Scopes
@@ -42,15 +46,15 @@ class UnitConversion extends Model
         return $query->where('item_id', $itemId);
     }
 
-    public function scopeFromUnit($query, $unitId)
-    {
-        return $query->where('from_unit_id', $unitId);
-    }
+    // public function scopeFromUnit($query, $unitId)
+    // {
+    //     return $query->where('from_unit_id', $unitId);
+    // }
 
-    public function scopeToUnit($query, $unitId)
-    {
-        return $query->where('to_unit_id', $unitId);
-    }
+    // public function scopeToUnit($query, $unitId)
+    // {
+    //     return $query->where('to_unit_id', $unitId);
+    // }
 
     // ✅ Helper Methods
     public function convert($quantity)

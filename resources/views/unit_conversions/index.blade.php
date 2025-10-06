@@ -1,5 +1,4 @@
-{{-- filepath: c:\laragon\www\admin-pos\resources\views\unit_conversions\index.blade.php --}}
-<x-app-layout>
+<x-app-layout title="Manajemen Satuan Konversi">
 
     <x-content-header title="Manajemen Satuan Konversi" breadcrumb-parent="Master Data"
         breadcrumb-url="{{ route('unit-conversions.index') }}" />

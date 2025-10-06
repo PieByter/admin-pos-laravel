@@ -1,6 +1,6 @@
-<x-app-layout>
+<x-app-layout title="Sales Orders">
 
-    <x-content-header title="Manajemen Penjualan (Sales Order)" breadcrumb-parent="Transaksi"
+    <x-content-header title="Manajemen Penjualan" breadcrumb-parent="Transaksi"
         breadcrumb-url="{{ route('sales.index') }}" />
 
 
@@ -99,16 +99,16 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @if (!empty($salesOrder->details) && count($salesOrder->details) > 0)
-                                            @foreach ($salesOrder->details as $index => $detail)
+                                        @if (!empty($salesOrder->salesOrderItems) && count($salesOrder->salesOrderItems) > 0)
+                                            @foreach ($salesOrder->salesOrderItems as $index => $detail)
                                                 <div>
-                                                    {{ $detail->item_name ?? '-' }},
+                                                    {{ $detail->item->item_name ?? '-' }},
                                                     Qty: {{ number_format($detail->quantity, 0) }}
-                                                    {{ $detail->unit_name ?? '-' }},
+                                                    {{ $detail->unit->unit_name ?? '-' }},
                                                     Harga: Rp. {{ number_format($detail->sell_price, 0, ',', '.') }}
                                                     Subtotal: Rp. {{ number_format($detail->subtotal, 0, ',', '.') }}
                                                 </div>
-                                                @if ($index < count($salesOrder->details) - 1)
+                                                @if ($index < count($salesOrder->salesOrderItems) - 1)
                                                     <hr class="my-1">
                                                 @endif
                                             @endforeach
@@ -129,24 +129,24 @@
                                                 onclick="event.stopPropagation();">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form action="{{ route('sales.destroy', $salesOrder->id) }}" method="POST"
-                                                class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-penjualan"
-                                                    onclick="event.stopPropagation();" title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                            <a href="#" class="btn btn-danger btn-sm btn-hapus-penjualan"
+                                                data-id="{{ $salesOrder->id }}" title="Hapus"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
                                         </div>
                                     </td>
-
                                 </tr>
                             @endforeach
                         @endif
                     </tbody>
                 </table>
             </div>
+
+            <form id="form-delete-penjualan" method="POST" style="display:none;">
+                @csrf
+                @method('DELETE')
+            </form>
 
             <div class="card mt-3">
                 <div class="card-body d-flex justify-content-end">
@@ -243,8 +243,7 @@
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    const form = btn.closest('.delete-form');
-
+                    const salesId = btn.getAttribute('data-id');
                     Swal.fire({
                         title: 'Yakin ingin menghapus data ini?',
                         text: 'Data yang dihapus tidak bisa dikembalikan!',
@@ -256,6 +255,8 @@
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            const form = document.getElementById('form-delete-penjualan');
+                            form.setAttribute('action', '/sales/' + salesId);
                             form.submit();
                         }
                     });

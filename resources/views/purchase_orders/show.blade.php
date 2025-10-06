@@ -9,18 +9,18 @@
                     <div class="card-body">
                         <dl class="row mb-4">
                             <dt class="col-sm-5">Nomor Faktur</dt>
-                            <dd class="col-sm-7">{{ $purchase->invoice_number }}</dd>
+                            <dd class="col-sm-7">{{ $purchaseOrder->invoice_number }}</dd>
 
                             <dt class="col-sm-5">Tanggal Terbit</dt>
                             <dd class="col-sm-7">
-                                {{ \Carbon\Carbon::parse($purchase->issue_date)->translatedFormat('l, d F Y') }}
+                                {{ \Carbon\Carbon::parse($purchaseOrder->issue_date)->translatedFormat('l, d F Y') }}
                             </dd>
 
                             <dt class="col-sm-5">Supplier</dt>
-                            <dd class="col-sm-7">{{ $purchase->supplier->name ?? '-' }}</dd>
+                            <dd class="col-sm-7">{{ $purchaseOrder->supplier->name ?? '-' }}</dd>
 
                             <dt class="col-sm-5">Total Harga</dt>
-                            <dd class="col-sm-7">Rp. {{ number_format($purchase->total_amount, 0, ',', '.') }}</dd>
+                            <dd class="col-sm-7">Rp. {{ number_format($purchaseOrder->total_amount, 0, ',', '.') }}</dd>
 
                             <dt class="col-sm-5">Status</dt>
                             <dd class="col-sm-7">
@@ -33,9 +33,9 @@
                                         'return' => ['badge' => 'orange', 'text' => 'Retur'],
                                         'cancelled' => ['badge' => 'danger', 'text' => 'Batal'],
                                     ];
-                                    $status = $statusConfig[$purchase->status] ?? [
+                                    $status = $statusConfig[$purchaseOrder->status] ?? [
                                         'badge' => 'secondary',
-                                        'text' => ucfirst($purchase->status),
+                                        'text' => ucfirst($purchaseOrder->status),
                                     ];
                                 @endphp
                                 <span class="badge bg-{{ $status['badge'] }}">
@@ -53,9 +53,9 @@
                                         'debit' => ['badge' => 'primary', 'text' => 'Debit'],
                                         'e-wallet' => ['badge' => 'secondary', 'text' => 'E-Wallet'],
                                     ];
-                                    $payment = $paymentConfig[$purchase->payment_method] ?? [
+                                    $payment = $paymentConfig[$purchaseOrder->payment_method] ?? [
                                         'badge' => 'dark',
-                                        'text' => ucfirst($purchase->payment_method ?? '-'),
+                                        'text' => ucfirst($purchaseOrder->payment_method ?? '-'),
                                     ];
                                 @endphp
                                 <span class="badge bg-{{ $payment['badge'] }}">
@@ -63,20 +63,33 @@
                                 </span>
                             </dd>
 
-                            <dt class="col-sm-5">Otorisasi</dt>
-                            <dd class="col-sm-7">{{ $authorizedUsernames ?? '-' }}</dd>
+                            <dt class="col-sm-5">Dibuat Oleh</dt>
+                            <dd class="col-sm-7">
+                                {{ $purchaseOrder->createdBy->username ?? '-' }}
+                                <small class="text-muted">
+                                    ({{ $purchaseOrder->created_at ? \Carbon\Carbon::parse($purchaseOrder->created_at)->format('d/m/Y H:i') : '-' }})
+                                </small>
+                            </dd>
+
+                            <dt class="col-sm-5">Diupdate Oleh</dt>
+                            <dd class="col-sm-7">
+                                {{ $purchaseOrder->updatedBy->username ?? '-' }}
+                                <small class="text-muted">
+                                    ({{ $purchaseOrder->updated_at ? \Carbon\Carbon::parse($purchaseOrder->updated_at)->format('d/m/Y H:i') : '-' }})
+                                </small>
+                            </dd>
 
                             <dt class="col-sm-5">Keterangan</dt>
-                            <dd class="col-sm-7">{{ $purchase->description ?? '-' }}</dd>
+                            <dd class="col-sm-7">{{ $purchaseOrder->notes ?? '-' }}</dd>
                         </dl>
 
-                        <h5 class="mb-3">Item</h5>
+                        <h5 class="mb-3">Detail Barang</h5>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover align-middle small" id="table-barang">
                                 <thead class="table-light">
                                     <tr>
                                         <th>No</th>
-                                        <th>Item</th> {{-- Ganti "Barang" jadi "Item" --}}
+                                        <th>Item</th>
                                         <th>Satuan</th>
                                         <th>Qty</th>
                                         <th>Harga Beli</th>
@@ -88,8 +101,8 @@
                                         <tr class="barang-row" data-barang='@json($item)'
                                             style="cursor: pointer;">
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $item->item->name ?? '-' }}</td>
-                                            <td>{{ $item->unit->name ?? '-' }}</td>
+                                            <td>{{ $item->item->item_name ?? '-' }}</td>
+                                            <td>{{ $item->unit->unit_name ?? '-' }}</td>
                                             <td>{{ number_format($item->quantity, 0, ',', '.') }}</td>
                                             <td>Rp. {{ number_format($item->buy_price, 0, ',', '.') }}</td>
                                             <td>Rp. {{ number_format($item->subtotal, 0, ',', '.') }}</td>
@@ -111,7 +124,7 @@
                                             <td colspan="5" class="text-end"><b>Total Harga</b></td>
                                             <td class="fw-bold text-success">
                                                 Rp. <span
-                                                    id="total-harga-label">{{ number_format($purchase->total_amount, 0, ',', '.') }}</span>
+                                                    id="total-harga-label">{{ number_format($purchaseOrder->total_amount, 0, ',', '.') }}</span>
                                             </td>
                                         </tr>
                                     </tfoot>
@@ -121,11 +134,11 @@
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
 
-                            <a href="{{ route('purchase-orders.edit', $purchase->id) }}" class="btn btn-warning">
+                            <a href="{{ route('purchases.edit', $purchaseOrder->id) }}" class="btn btn-warning">
                                 <i class="bi bi-pencil"></i> Edit
                             </a>
 
-                            <a href="{{ route('purchase-orders.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('purchases.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>
                         </div>
@@ -187,7 +200,7 @@
                 row.addEventListener('click', function() {
                     const data = JSON.parse(this.dataset.barang);
                     const itemName = this.children[1].textContent;
-                    const unitName = data.unit ? data.unit.name : '-';
+                    const unitName = this.children[2].textContent;
 
                     let html = `
                         <dl class="row">
@@ -198,7 +211,7 @@
                             <dt class="col-sm-5">Qty</dt>
                             <dd class="col-sm-7">${parseInt(data.quantity).toLocaleString('id-ID')}</dd>
                             <dt class="col-sm-5">Harga Beli</dt>
-                            <dd class="col-sm-7">Rp. ${parseInt(data.unit_price).toLocaleString('id-ID')}</dd>
+                            <dd class="col-sm-7">Rp. ${parseInt(data.buy_price).toLocaleString('id-ID')}</dd>
                             <dt class="col-sm-5">Subtotal</dt>
                             <dd class="col-sm-7">Rp. ${parseInt(data.subtotal).toLocaleString('id-ID')}</dd>
                         </dl>

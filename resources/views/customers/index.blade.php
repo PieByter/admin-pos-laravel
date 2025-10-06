@@ -11,7 +11,7 @@
 
     <div class="content">
         <div class="container-fluid mb-3">
-            <div class="table-responsive"id="customer-table-container">
+            <div class="table-responsive" id="customer-table-container">
                 <table class="table table-striped table-hover table-bordered align-middle table-sm small"
                     id="customerTable">
                     <thead>
@@ -177,6 +177,8 @@
                     }
                 }
             });
+
+            $('#custom-buttons').appendTo('#custom-buttons-container');
 
         });
     </script>

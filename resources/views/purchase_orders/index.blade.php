@@ -1,9 +1,9 @@
-<x-app-layout>
-    <x-content-header title="Manajemen Pembelian (Purchase Order)" breadcrumb-parent="Transaksi"
-        breadcrumb-url="{{ route('purchase-orders.index') }}" />
+<x-app-layout title="Purchase Orders">
+    <x-content-header title="Manajemen Pembelian" breadcrumb-parent="Transaksi"
+        breadcrumb-url="{{ route('purchases.index') }}" />
 
     <div id="custom-buttons" class="ms-3 mb-2">
-        <a href="{{ route('purchase-orders.create') }}" class="btn btn-primary" id="btn-create-pembelian">
+        <a href="{{ route('purchases.create') }}" class="btn btn-primary" id="btn-create-pembelian">
             <i class="bi bi-plus-lg"></i> Tambah Pembelian
         </a>
     </div>
@@ -40,7 +40,7 @@
                                             @endif
                                         </p>
 
-                                        <a href="{{ route('purchase-orders.create') }}" class="btn btn-primary">
+                                        <a href="{{ route('purchases.create') }}" class="btn btn-primary">
                                             <i class="bi bi-cart-plus"></i> Tambah Pembelian Pertama
                                         </a>
 
@@ -96,16 +96,16 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @if (!empty($purchaseOrder->details) && count($purchaseOrder->details) > 0)
-                                            @foreach ($purchaseOrder->details as $index => $detail)
+                                        @if (!empty($purchaseOrder->purchaseOrderItems) && count($purchaseOrder->purchaseOrderItems) > 0)
+                                            @foreach ($purchaseOrder->purchaseOrderItems as $index => $detail)
                                                 <div>
-                                                    {{ $detail->item->name ?? '-' }},
+                                                    {{ $detail->item->item_name ?? '-' }},
                                                     Qty: {{ number_format($detail->quantity, 0) }}
-                                                    {{ $detail->unit->name ?? '-' }},
+                                                    {{ $detail->unit->unit_name ?? '-' }},
                                                     Harga: Rp. {{ number_format($detail->buy_price, 0, ',', '.') }}
                                                     Subtotal: Rp. {{ number_format($detail->subtotal, 0, ',', '.') }}
                                                 </div>
-                                                @if ($index < count($purchaseOrder->details) - 1)
+                                                @if ($index < count($purchaseOrder->purchaseOrderItems) - 1)
                                                     <hr class="my-1">
                                                 @endif
                                             @endforeach
@@ -116,28 +116,23 @@
 
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('purchase-orders.show', $purchaseOrder->id) }}"
+                                            <a href="{{ route('purchases.show', $purchaseOrder->id) }}"
                                                 class="btn btn-info btn-sm" title="Detail"
                                                 onclick="event.stopPropagation();">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <a href="{{ route('purchase-orders.edit', $purchaseOrder->id) }}"
+                                            <a href="{{ route('purchases.edit', $purchaseOrder->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit"
                                                 onclick="event.stopPropagation();">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <form action="{{ route('purchase-orders.destroy', $purchaseOrder->id) }}"
-                                                method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm btn-hapus-pembelian"
-                                                    onclick="event.stopPropagation();" title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                            <a href="#" class="btn btn-danger btn-sm btn-hapus-pembelian"
+                                                data-id="{{ $purchaseOrder->id }}" title="Hapus"
+                                                onclick="event.stopPropagation();">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
                                         </div>
                                     </td>
-
                                 </tr>
                             @endforeach
                         @endif
@@ -145,10 +140,14 @@
                 </table>
             </div>
 
+            <form id="form-delete-pembelian" method="POST" style="display:none;">
+                @csrf
+                @method('DELETE')
+            </form>
+
             <div class="card mt-3">
                 <div class="card-body d-flex justify-content-end">
-                    <form class="row align-items-center g-2" method="get"
-                        action="{{ route('purchase-orders.export') }}">
+                    <form class="row align-items-center g-2" method="get" action="{{ route('purchases.export') }}">
                         <div class="col-auto fw-bold">
                             <label for="jenis-export" class="form-label mb-0">Export Pembelian</label>
                         </div>
@@ -241,8 +240,7 @@
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    const form = btn.closest('.delete-form');
-
+                    const purchaseId = btn.getAttribute('data-id');
                     Swal.fire({
                         title: 'Yakin ingin menghapus data ini?',
                         text: 'Data yang dihapus tidak bisa dikembalikan!',
@@ -254,6 +252,9 @@
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            // Set action form dan submit
+                            const form = document.getElementById('form-delete-pembelian');
+                            form.setAttribute('action', '/purchases/' + purchaseId);
                             form.submit();
                         }
                     });

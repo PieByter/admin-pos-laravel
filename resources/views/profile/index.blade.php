@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="Profile Page">
     <x-content-header title="Pengaturan Akun" breadcrumb-parent="Profile" breadcrumb-url="{{ route('profile.index') }}" />
 
     <div class="content">

@@ -131,7 +131,7 @@ class ItemController extends Controller
 
     public function show($id)
     {
-        $item = Item::with(['itemCategory', 'itemGroup', 'unit', 'unitConversions.fromUnit', 'unitConversions.toUnit'])
+        $item = Item::with(['itemCategory', 'itemGroup', 'unit', 'unitConversions.unit'])
             ->findOrFail($id);
 
         $data = [

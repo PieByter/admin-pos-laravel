@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PurchaseReturnItem extends Model
+class SalesReturnItem extends Model
 {
     use HasFactory;
 
-    protected $table = 'purchase_return_items';
+    protected $table = 'sales_return_items';
 
     protected $fillable = [
-        'purchase_return_id',
-        'purchase_order_item_id',
+        'sales_return_id',
+        'sales_order_item_id',
         'item_id',
         'unit_id',
         'return_quantity',
@@ -35,16 +35,16 @@ class PurchaseReturnItem extends Model
         'updated_at' => 'datetime'
     ];
 
-    // Relasi ke purchase return
-    public function purchaseReturn()
+    // Relasi ke sales return
+    public function salesReturn()
     {
-        return $this->belongsTo(PurchaseReturn::class, 'purchase_return_id');
+        return $this->belongsTo(SalesReturn::class, 'sales_return_id');
     }
 
-    // Relasi ke purchase order item
-    public function purchaseOrderItem()
+    // Relasi ke sales order item
+    public function salesOrderItem()
     {
-        return $this->belongsTo(PurchaseOrderItem::class, 'purchase_order_item_id');
+        return $this->belongsTo(SalesOrderItem::class, 'sales_order_item_id');
     }
 
     // Relasi ke item
