@@ -593,7 +593,7 @@ class PrePurchaseController extends Controller
                     'unit_id' => $unitId,
                     'quantity' => $quantity,
                     'base_quantity' => $baseQuantity,
-                    'purchase_price' => $detail->price,
+                    'buy_price' => $detail->price,
                     'subtotal' => $detail->subtotal
                 ]);
 

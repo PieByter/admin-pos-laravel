@@ -28,7 +28,7 @@
                                 <div class="col-md-9">
                                     <input type="date" name="issue_date" id="issue_date"
                                         class="form-control @error('issue_date') is-invalid @enderror" required
-                                        value="{{ old('issue_date', $salesOrder->issue_date) }}">
+                                        value="{{ old('issue_date', $salesOrder->issue_date) ? \Carbon\Carbon::parse($salesOrder->issue_date)->format('Y-m-d') : '' }}">
                                     @error('issue_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -197,10 +197,30 @@
                                                         style="display:none;"></span>
                                                 </td>
                                                 <td>
-                                                    <select name="details[{{ $index }}][unit_id]"
+                                                    <select name="detail[{{ $index }}][unit_id]"
                                                         class="form-select satuan-select" required
-                                                        data-satuan-awal="{{ $detail->unit_id }}">
+                                                        value="{{ $detail->unit_id }}">
                                                         <option value="">- Pilih Satuan -</option>
+                                                        @if (!empty($detail['item_id']) && isset($unitConversionMap[$detail['item_id']]))
+                                                            @foreach ($unitConversionMap[$detail['item_id']] as $conv)
+                                                                @php
+                                                                    $label = $conv->unit_name;
+                                                                    if ($conv->conversion_value > 1) {
+                                                                        $label .= "({$conv->conversion_value} pcs)";
+                                                                    }
+                                                                    $selected =
+                                                                        isset($detail['unit_id']) &&
+                                                                        $detail['unit_id'] == $conv->unit_id
+                                                                            ? 'selected'
+                                                                            : '';
+                                                                @endphp
+                                                                <option value="{{ $conv->unit_id }}"
+                                                                    data-conversion="{{ $conv->conversion_value }}"
+                                                                    {{ isset($detail['unit_id']) && $detail['unit_id'] == $conv->unit_id ? 'selected' : '' }}>
+                                                                    {{ $label }}
+                                                                </option>
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </td>
                                                 <td>
@@ -377,7 +397,7 @@
 
     <script>
         let detailIndex = {{ count($details) }};
-        const unit_conversion_map = {!! json_encode($unit_conversion_map) !!};
+        const unitConversionMap = {!! json_encode($unit_conversion_map) !!};
 
         function formatRupiahInputValue(angka) {
             angka = Number(angka);
@@ -405,26 +425,27 @@
         function updateSatuanOptions(barangSelect, satuanSelect) {
             const idBarang = barangSelect.value;
             const stok = parseInt(barangSelect.selectedOptions[0]?.getAttribute('data-stok')) || 0;
-
             satuanSelect.innerHTML = '<option value="">- Pilih Satuan -</option>';
+            let defaultUnitId = null;
 
-            let defaultSatuanId = null;
-
-            if (satuanKonversiMap[idBarang]) {
-                satuanKonversiMap[idBarang].forEach(function(konv) {
-                    const konversi = parseInt(konv.konversi) || 1;
-                    let labelSatuan = `${konv.nama_satuan}`;
-                    if (konversi > 1) {
-                        labelSatuan += ` (${konversi} pcs)`;
-                    }
-
+            if (unitConversionMap[idBarang]) {
+                unitConversionMap[idBarang].forEach(function(conv) {
+                    const conversion = parseInt(conv.conversion_value) || 1;
+                    let label = conv.unit_name;
+                    if (conversion > 1) label += ` (${conversion} pcs)`;
                     satuanSelect.innerHTML +=
-                        `<option value="${konv.id_satuan}" data-konversi="${konversi}">${labelSatuan}</option>`;
-
-                    if (konversi === 1 || konv.nama_satuan.toLowerCase() === 'pcs') {
-                        defaultSatuanId = konv.id_satuan;
+                        `<option value="${conv.unit.id}" data-konversi="${conv.conversion_value}">${label}</option>`;
+                    if (conversion === 1 || conv.unit_name.toLowerCase() === 'pcs') {
+                        defaultUnitId = conv.unit.id;
                     }
                 });
+
+                if (selectedId) {
+                    satuanSelect.value = selectedId;
+                } else if (defaultUnitId) {
+                    satuanSelect.value = defaultUnitId;
+                }
+                satuanSelect.dispatchEvent(new Event('change'));
             }
 
             const satuanAwal = satuanSelect.getAttribute('data-satuan-awal');
@@ -432,8 +453,8 @@
                 satuanSelect.value = satuanAwal;
                 satuanSelect.dispatchEvent(new Event('change'));
                 satuanSelect.removeAttribute('data-satuan-awal');
-            } else if (defaultSatuanId) {
-                satuanSelect.value = defaultSatuanId;
+            } else if (defaultUnitId) {
+                satuanSelect.value = defaultUnitId;
                 satuanSelect.dispatchEvent(new Event('change'));
 
                 const row = satuanSelect.closest('tr');
@@ -462,8 +483,8 @@
             let konversiLama = 1;
 
             const idBarang = barangSelect.value;
-            if (satuanKonversiMap[idBarang]) {
-                const satuanLamaData = satuanKonversiMap[idBarang].find(k => k.id_satuan == satuanLama);
+            if (unitConversionMap[idBarang]) {
+                const satuanLamaData = unitConversionMap[idBarang].find(k => k.id_satuan == satuanLama);
                 konversiLama = satuanLamaData ? parseInt(satuanLamaData.konversi) : 1;
             }
 
@@ -888,14 +909,14 @@
             let oldKonversi = 1;
             let newKonversi = 1;
 
-            if (satuanKonversiMap[idBarang]) {
+            if (unitConversionMap[idBarang]) {
                 if (oldSatuanId) {
-                    const oldSatuanData = satuanKonversiMap[idBarang].find(k => k.id_satuan == oldSatuanId);
+                    const oldSatuanData = unitConversionMap[idBarang].find(k => k.id_satuan == oldSatuanId);
                     if (oldSatuanData) oldKonversi = parseInt(oldSatuanData.konversi) || 1;
                 }
 
                 if (newSatuanId) {
-                    const newSatuanData = satuanKonversiMap[idBarang].find(k => k.id_satuan == newSatuanId);
+                    const newSatuanData = unitConversionMap[idBarang].find(k => k.id_satuan == newSatuanId);
                     if (newSatuanData) newKonversi = parseInt(newSatuanData.konversi) || 1;
                 }
             }

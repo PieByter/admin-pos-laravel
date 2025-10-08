@@ -44,7 +44,7 @@
                 <li class="nav-item">
                     <a href="{{ route('purchases.index') }}" class="nav-link{{ request()->is('purchases*') ? ' active' : '' }}">
                         <i class="nav-icon bi bi-cart-plus"></i>
-                        <p>Pembelian</p>
+                        <p>Purchase Order</p>
                     </a>
                 </li>
             @endcan
@@ -52,7 +52,7 @@
                 <li class="nav-item">
                     <a href="{{ route('sales.index') }}" class="nav-link{{ request()->is('sales*') ? ' active' : '' }}">
                         <i class="nav-icon bi bi-bag-check"></i>
-                        <p>Penjualan</p>
+                        <p>Sales Order</p>
                     </a>
                 </li>
             @endcan

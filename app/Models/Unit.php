@@ -20,14 +20,19 @@ class Unit extends Model
         return $this->hasMany(Item::class);
     }
 
-    public function unitConversionsFrom()
-    {
-        return $this->hasMany(UnitConversion::class, 'from_unit_id');
-    }
+    // public function unitConversionsFrom()
+    // {
+    //     return $this->hasMany(UnitConversion::class, 'from_unit_id');
+    // }
 
-    public function unitConversionsTo()
+    // public function unitConversionsTo()
+    // {
+    //     return $this->hasMany(UnitConversion::class, 'to_unit_id');
+    // }
+
+    public function unitConversions()
     {
-        return $this->hasMany(UnitConversion::class, 'to_unit_id');
+        return $this->hasMany(UnitConversion::class, 'unit_id');
     }
 
     public function salesOrderItems()
@@ -40,14 +45,23 @@ class Unit extends Model
         return $this->hasMany(PurchaseOrderItem::class);
     }
 
-    public function prePurchaseOrderItems()
-    {
-        return $this->hasMany(PrePurchaseOrderItem::class);
-    }
+    // public function prePurchaseOrderItems()
+    // {
+    //     return $this->hasMany(PrePurchaseOrderItem::class);
+    // }
 
-    public function returnItems()
+    // public function returnItems()
+    // {
+    //     return $this->hasMany(ReturnOrderItem::class);
+    // }
+
+    public function purchaseReturnItems()
     {
-        return $this->hasMany(ReturnOrderItem::class);
+        return $this->hasMany(PurchaseReturnItem::class);
+    }
+    public function salesReturnItems()
+    {
+        return $this->hasMany(SalesReturnItem::class);
     }
 
     // ✅ Scopes

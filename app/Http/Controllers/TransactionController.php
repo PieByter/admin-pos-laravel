@@ -32,25 +32,25 @@ class TransactionController extends Controller
             ->get();
 
         // Detail piutang (Sales yang belum lunas)
-        $receivableList = DB::table('sales')
-            ->leftJoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->select('sales.*', 'customers.name as customer_name')
-            ->whereIn('sales.status', ['debt', 'process'])
-            ->orderBy('sales.issue_date', 'DESC')
+        $receivableList = DB::table('sales_orders')
+            ->leftJoin('customers', 'customers.id', '=', 'sales_orders.customer_id')
+            ->select('sales_orders.*', 'customers.name as customer_name')
+            ->whereIn('sales_orders.status', ['debt', 'process'])
+            ->orderBy('sales_orders.issue_date', 'DESC')
             ->get();
 
         // Data transaksi terbaru (untuk dashboard)
-        $recentPurchases = DB::table('purchases')
-            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchases.supplier_id')
-            ->select('purchases.*', 'suppliers.name as supplier_name')
-            ->orderBy('purchases.issue_date', 'DESC')
+        $recentPurchases = DB::table('purchase_orders')
+            ->leftJoin('suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id')
+            ->select('purchase_orders.*', 'suppliers.name as supplier_name')
+            ->orderBy('purchase_orders.issue_date', 'DESC')
             ->limit(5)
             ->get();
 
-        $recentSales = DB::table('sales')
-            ->leftJoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->select('sales.*', 'customers.name as customer_name')
-            ->orderBy('sales.issue_date', 'DESC')
+        $recentSales = DB::table('sales_orders')
+            ->leftJoin('customers', 'customers.id', '=', 'sales_orders.customer_id')
+            ->select('sales_orders.*', 'customers.name as customer_name')
+            ->orderBy('sales_orders.issue_date', 'DESC')
             ->limit(5)
             ->get();
 
@@ -81,7 +81,7 @@ class TransactionController extends Controller
      */
     private function getTotalRevenue(): float
     {
-        return (float) DB::table('sales')
+        return (float) DB::table('sales_orders')
             ->where('status', 'paid')
             ->sum('total_amount') ?? 0;
     }
@@ -91,7 +91,7 @@ class TransactionController extends Controller
      */
     private function getTotalExpense(): float
     {
-        return (float) DB::table('purchases')
+        return (float) DB::table('purchase_orders')
             ->where('status', 'paid')
             ->sum('total_amount') ?? 0;
     }
@@ -121,7 +121,7 @@ class TransactionController extends Controller
      */
     private function getTotalReceivableUnpaid(): float
     {
-        return (float) DB::table('sales')
+        return (float) DB::table('sales_orders')
             ->whereIn('status', ['debt', 'process'])
             ->sum('total_amount') ?? 0;
     }
@@ -131,7 +131,7 @@ class TransactionController extends Controller
      */
     private function getTotalReceivablePaid(): float
     {
-        return (float) DB::table('sales')
+        return (float) DB::table('sales_orders')
             ->where('status', 'paid')
             ->sum('total_amount') ?? 0;
     }
@@ -145,13 +145,13 @@ class TransactionController extends Controller
         $months = [];
 
         for ($i = 1; $i <= 12; $i++) {
-            $monthRevenue = (float) DB::table('sales')
+            $monthRevenue = (float) DB::table('sales_orders')
                 ->whereYear('issue_date', $currentYear)
                 ->whereMonth('issue_date', $i)
                 ->where('status', 'paid')
                 ->sum('total_amount') ?? 0;
 
-            $monthExpense = (float) DB::table('purchases')
+            $monthExpense = (float) DB::table('purchase_orders')
                 ->whereYear('issue_date', $currentYear)
                 ->whereMonth('issue_date', $i)
                 ->where('status', 'paid')
@@ -177,12 +177,12 @@ class TransactionController extends Controller
         $startDate = $request->get('start_date', date('Y-m-01'));
         $endDate = $request->get('end_date', date('Y-m-t'));
 
-        $revenue = (float) DB::table('sales')
+        $revenue = (float) DB::table('sales_orders')
             ->whereBetween('issue_date', [$startDate, $endDate])
             ->where('status', 'paid')
             ->sum('total_amount') ?? 0;
 
-        $expense = (float) DB::table('purchases')
+        $expense = (float) DB::table('purchase_orders')
             ->whereBetween('issue_date', [$startDate, $endDate])
             ->where('status', 'paid')
             ->sum('total_amount') ?? 0;

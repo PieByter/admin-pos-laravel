@@ -9,10 +9,10 @@
                     <div class="card-body">
                         <dl class="row mb-4">
                             <dt class="col-sm-5">Kode Barang</dt>
-                            <dd class="col-sm-7">{{ $item->item_code }}</dd> 
+                            <dd class="col-sm-7">{{ $item->item_code }}</dd>
 
                             <dt class="col-sm-5">Nama Barang</dt>
-                            <dd class="col-sm-7">{{ $item->item_name }}</dd> 
+                            <dd class="col-sm-7">{{ $item->item_name }}</dd>
 
                             <dt class="col-sm-5">Jenis Barang</dt>
                             <dd class="col-sm-7">{{ $item->itemCategory->category_name ?? '-' }}</dd>
@@ -25,7 +25,7 @@
                             <dt class="col-sm-5">Harga Beli</dt>
                             <dd class="col-sm-7">
                                 Rp.
-                                {{ $item->buy_price == intval($item->buy_price) {{-- ✅ Ganti purchase_price dengan buy_price --}}
+                                {{ $item->buy_price == intval($item->buy_price)
                                     ? number_format($item->buy_price, 0, ',', '.')
                                     : number_format($item->buy_price, 2, ',', '.') }}
                             </dd>
@@ -33,7 +33,7 @@
                             <dt class="col-sm-5">Harga Jual</dt>
                             <dd class="col-sm-7">
                                 Rp.
-                                {{ $item->sell_price == intval($item->sell_price) {{-- ✅ Ganti selling_price dengan sell_price --}}
+                                {{ $item->sell_price == intval($item->sell_price)
                                     ? number_format($item->sell_price, 0, ',', '.')
                                     : number_format($item->sell_price, 2, ',', '.') }}
                             </dd>
@@ -50,11 +50,11 @@
                                 data-bs-target="#modalKonversi">
                                 <i class="bi bi-arrows-expand"></i> Konversi Satuan
                             </button>
-           
-                                <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-           
+
+                            <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+
                             <a href="{{ route('items.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Kembali
                             </a>

@@ -1,10 +1,10 @@
 <x-app-layout title="Detail User">
-    <x-content-header title="Detail User" breadcrumb-parent="Master Data"
-        breadcrumb-url="{{ route('superadmin.users.index') }}" />
+    {{-- <x-content-header title="Detail User" breadcrumb-parent="Master Data"
+        breadcrumb-url="{{ route('superadmin.users.index') }}" /> --}}
 
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
-            <div class="col-md-7">
+            <div class="col-md-10">
                 <div class="card shadow-sm mt-4">
                     <div class="card-header bg-info text-white">
                         <h5 class="mb-0"><i class="bi bi-person"></i> Detail User</h5>
@@ -83,7 +83,7 @@
                                 @endif
                             </dd>
 
-                            <dt class="col-sm-4">Permissions</dt>
+                            {{-- <dt class="col-sm-4">Permissions</dt>
                             <dd class="col-sm-8">
                                 @if ($user->permissions->count() > 0)
                                     @foreach ($user->permissions as $permission)
@@ -113,10 +113,47 @@
                                 @else
                                     <span class="text-muted">Tidak ada permission langsung</span>
                                 @endif
-                            </dd>
+                            </dd> --}}
 
-                            <dt class="col-sm-4">Permissions dari Role</dt>
-                            <dd class="col-sm-8">
+                            <dt class = "mb-2">Permissions</dt>
+                            <dd class = "">
+                                @php $rolePermissions = $user->getPermissionsViaRoles(); @endphp
+                                @if ($rolePermissions->count() > 0)
+                                    @foreach ($rolePermissions->chunk(4) as $chunk)
+                                        <div class="d-flex justify-content-around mb-2">
+                                            @foreach ($chunk as $permission)
+                                                @php
+                                                    $badgeClass = 'bg-light text-dark';
+                                                    $icon = 'bi-shield-check';
+
+                                                    if (str_contains($permission->name, 'create')) {
+                                                        $badgeClass = 'bg-success';
+                                                        $icon = 'bi-plus-circle';
+                                                    } elseif (str_contains($permission->name, 'edit')) {
+                                                        $badgeClass = 'bg-warning';
+                                                        $icon = 'bi-pencil';
+                                                    } elseif (str_contains($permission->name, 'delete')) {
+                                                        $badgeClass = 'bg-danger';
+                                                        $icon = 'bi-trash';
+                                                    } elseif (str_contains($permission->name, 'view')) {
+                                                        $badgeClass = 'bg-info';
+                                                        $icon = 'bi-eye';
+                                                    }
+                                                @endphp
+                                                <span class="badge {{ $badgeClass }} text-dark me-1 mb-1"><i
+                                                        class="{{ $icon }}"></i>
+                                                    {{ str_replace('.', ' ', ucwords(str_replace('_', ' ', $permission->name))) }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted"> Tidak ada permission dari role</span>
+                                @endif
+                            </dd>
+                            {{-- 
+                            <dt class="col-sm-4">Permissions dari Role</dt> --}}
+                            {{-- <dd class="col-sm-8">
                                 @php
                                     $rolePermissions = $user->getPermissionsViaRoles();
                                 @endphp
@@ -126,15 +163,33 @@
                                             $badgeClass = 'bg-light text-dark';
                                             $icon = 'bi-shield-check';
                                         @endphp
+                                        @php
+                                            $badgeClass = 'bg-secondary';
+                                            $icon = 'bi-eye';
+
+                                            if (str_contains($permission->name, 'create')) {
+                                                $badgeClass = 'bg-success';
+                                                $icon = 'bi-plus-circle';
+                                            } elseif (str_contains($permission->name, 'edit')) {
+                                                $badgeClass = 'bg-warning';
+                                                $icon = 'bi-pencil';
+                                            } elseif (str_contains($permission->name, 'delete')) {
+                                                $badgeClass = 'bg-danger';
+                                                $icon = 'bi-trash';
+                                            } elseif (str_contains($permission->name, 'view')) {
+                                                $badgeClass = 'bg-info';
+                                                $icon = 'bi-eye';
+                                            }
+                                        @endphp
                                         <span class="badge {{ $badgeClass }} me-1 mb-1">
                                             <i class="{{ $icon }}"></i>
-                                            {{ str_replace('.', ' ', ucfirst($permission->name)) }}
+                                            {{ str_replace('.', ' ', ucwords(str_replace('_', ' ', $permission->name))) }}
                                         </span>
                                     @endforeach
                                 @else
                                     <span class="text-muted">Tidak ada permission dari role</span>
                                 @endif
-                            </dd>
+                            </dd> --}}
                             {{-- 
                             <dt class="col-sm-4">Dibuat</dt>
                             <dd class="col-sm-8">

@@ -190,7 +190,7 @@
                                                             <option value="">- Pilih Barang -</option>
                                                             @foreach ($items as $item)
                                                                 <option value="{{ $item->id }}"
-                                                                    data-harga="{{ $item->purchase_price }}"
+                                                                    data-harga="{{ $item->buy_price }}"
                                                                     data-id_satuan="{{ $item->unit_id }}"
                                                                     data-stok="{{ $item->stock }}"
                                                                     {{ $item->id == $detail->item_id ? 'selected' : '' }}>
@@ -327,12 +327,12 @@
                             <tbody id="modal-barang-list">
                                 @foreach ($items as $item)
                                     <tr data-id="{{ $item->id }}" data-nama="{{ $item->name }}"
-                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->purchase_price }}"
+                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->buy_price }}"
                                         data-id_satuan="{{ $item->unit_id }}">
                                         <td>{{ $item->name }}</td>
                                         <td class="text-center">{{ $item->stock }}</td>
                                         <td class="text-center">
-                                            {{ number_format($item->purchase_price, 0, ',', '.') }}</td>
+                                            {{ number_format($item->buy_price, 0, ',', '.') }}</td>
                                         <td class="text-center">
                                             <button type="button"
                                                 class="btn btn-success btn-sm pilih-barang-btn">Pilih</button>
@@ -528,7 +528,7 @@
                     @foreach ($items as $item)
                         <option value="{{ $item->id }}"
                             data-stok="{{ $item->stock }}"
-                            data-harga="{{ $item->purchase_price }}"
+                            data-harga="{{ $item->buy_price }}"
                             data-id_satuan="{{ $item->unit_id }}">
                             {{ $item->name }}
                         </option>

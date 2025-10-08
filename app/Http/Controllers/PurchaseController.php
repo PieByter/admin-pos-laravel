@@ -55,9 +55,14 @@ class PurchaseController extends Controller
         foreach ($items as $item) {
             $conversions = DB::table('unit_conversions')
                 ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
-                ->select('unit_conversions.*', 'units.unit_name as unit_name')
+                ->select(
+                    'unit_conversions.unit_id as unit_id',
+                    'units.unit_name as unit_name',
+                    'unit_conversions.conversion_value as conversion_value'
+                )
                 ->where('unit_conversions.item_id', $item->id)
-                ->get();
+                ->get()
+                ->toArray();
             $unitConversionMap[$item->id] = $conversions;
         }
 
@@ -190,9 +195,14 @@ class PurchaseController extends Controller
         foreach ($items as $item) {
             $conversions = DB::table('unit_conversions')
                 ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
-                ->select('unit_conversions.*', 'units.unit_name as unit_name')
+                ->select(
+                    'unit_conversions.unit_id as unit_id',
+                    'units.unit_name as unit_name',
+                    'unit_conversions.conversion_value as conversion_value'
+                )
                 ->where('unit_conversions.item_id', $item->id)
-                ->get();
+                ->get()
+                ->toArray();
             $unitConversionMap[$item->id] = $conversions;
         }
 

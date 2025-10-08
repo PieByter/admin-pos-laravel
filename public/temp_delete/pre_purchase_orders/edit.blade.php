@@ -191,11 +191,11 @@
                                                             <option value="">- Pilih Barang -</option>
                                                             @foreach ($items as $item)
                                                                 <option value="{{ $item->id }}"
-                                                                    data-harga="{{ $item->purchase_price }}"
+                                                                    data-harga="{{ $item->buy_price }}"
                                                                     data-id_satuan="{{ $item->unit_id }}"
                                                                     data-stok="{{ $item->stock }}"
                                                                     {{ $item->id == $detail->item_id ? 'selected' : '' }}>
-                                                                    {{ $item->name }}
+                                                                    {{ $item->item_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -328,12 +328,12 @@
                             <tbody id="modal-barang-list">
                                 @foreach ($items as $item)
                                     <tr data-id="{{ $item->id }}" data-nama="{{ $item->name }}"
-                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->purchase_price }}"
+                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->buy_price }}"
                                         data-id_satuan="{{ $item->unit_id }}">
                                         <td>{{ $item->name }}</td>
                                         <td class="text-center">{{ $item->stock }}</td>
                                         <td class="text-center">
-                                            {{ number_format($item->purchase_price, 0, ',', '.') }}</td>
+                                            {{ number_format($item->buy_price, 0, ',', '.') }}</td>
                                         <td class="text-center">
                                             <button type="button"
                                                 class="btn btn-success btn-sm pilih-barang-btn">Pilih</button>
@@ -588,47 +588,47 @@
             const tbody = document.getElementById('detail-barang-body');
             const row = document.createElement('tr');
             row.innerHTML = `
-<td>
-    <div class="input-group">
-        <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required>
-            <option value="">- Pilih Barang -</option>
-            @foreach ($items as $item)
-                <option value="{{ $item->id }}"
-                    data-harga="{{ $item->purchase_price }}"
-                    data-id_satuan="{{ $item->unit_id }}"
-                    data-stok="{{ $item->stock }}">
-                    {{ $item->name }}
-                </option>
-            @endforeach
-        </select>
-        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
-            <i class="bi bi-search"></i> Cari
-        </button>
-    </div>
-    <span class="stok-info text-success small" style="display:none;"></span>
-</td>
-<td>
-    <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
-        <option value="">- Pilih Satuan -</option>
-    </select>
-</td>
-<td>
-    <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
-</td>
-<td>
-    <input type="number" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required style="display:none;">
-    <input type="text" class="form-control harga-format">
-</td>
-<td>
-    <input type="number" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly style="display:none;">
-    <span class="subtotal-format form-control bg-light"></span>
-</td>
-<td>
-    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
-        <i class="bi bi-trash"></i>
-    </button>
-</td>
-    `;
+            <td>
+                <div class="input-group">
+                    <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required>
+                        <option value="">- Pilih Barang -</option>
+                        @foreach ($items as $item)
+                            <option value="{{ $item->id }}"
+                                data-harga="{{ $item->buy_price }}"
+                                data-id_satuan="{{ $item->unit_id }}"
+                                data-stok="{{ $item->stock }}">
+                                {{ $item->item_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
+                        <i class="bi bi-search"></i> Cari
+                    </button>
+                </div>
+                <span class="stok-info text-success small" style="display:none;"></span>
+            </td>
+            <td>
+                <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
+                    <option value="">- Pilih Satuan -</option>
+                </select>
+            </td>
+            <td>
+                <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
+            </td>
+            <td>
+                <input type="number" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required style="display:none;">
+                <input type="text" class="form-control harga-format">
+            </td>
+            <td>
+                <input type="number" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly style="display:none;">
+                <span class="subtotal-format form-control bg-light"></span>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+                `;
             tbody.appendChild(row);
             detailIndex++;
 

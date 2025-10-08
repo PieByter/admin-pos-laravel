@@ -16,14 +16,25 @@ class UnitConversionsSeeder extends Seeder
         $units = DB::table('units')->pluck('unit_name', 'id')->toArray();
 
         // Cari id base unit (pcs)
-        $baseUnitId = array_search('pcs', array_map('strtolower', $units));
-        if (!$baseUnitId) {
-            $this->command->error('Base unit "pcs" tidak ditemukan di tabel units!');
-            return;
+        // $baseUnitId = array_search('pcs', array_map('strtolower', $units));
+        // if (!$baseUnitId) {
+        //     $this->command->error('Base unit "pcs" tidak ditemukan di tabel units!');
+        //     return;
+        // }
+
+        $unitNameToId = [];
+        foreach ($units as $id => $name) {
+            $unitNameToId[strtolower($name)] = $id;
+        }
+        foreach (['pcs', 'pack', 'karton', 'container'] as $u) {
+            if (!isset($unitNameToId[$u])) {
+                $this->command->error('Unit "' . $u . '"tidak ditemukan di tabel units!');
+            }
         }
 
         // Mapping satuan lain ke nilai konversi ke pcs
         $conversionMap = [
+            'pcs'       => 1,
             'pack'      => 10,
             'karton'    => 50,
             'container' => 1000,
@@ -31,20 +42,35 @@ class UnitConversionsSeeder extends Seeder
 
         $conversions = [];
 
+        // foreach ($items as $itemId) {
+        //     foreach ($conversionMap as $unitName => $value) {
+        //         // Cari id unit (selain pcs)
+        //         $unitId = array_search($unitName, array_map('strtolower', $units));
+        //         if ($unitId && $unitId != $baseUnitId) {
+        //             $conversions[] = [
+        //                 'item_id'         => $itemId,
+        //                 'unit_id'         => $unitId,
+        //                 'conversion_value' => $value,
+        //                 'description'     => "1 $unitName = $value pcs",
+        //                 'created_at'      => now(),
+        //                 'updated_at'      => now(),
+        //             ];
+        //         }
+        //     }
+        // }
+
         foreach ($items as $itemId) {
             foreach ($conversionMap as $unitName => $value) {
                 // Cari id unit (selain pcs)
-                $unitId = array_search($unitName, array_map('strtolower', $units));
-                if ($unitId && $unitId != $baseUnitId) {
-                    $conversions[] = [
-                        'item_id'         => $itemId,
-                        'unit_id'         => $unitId,
-                        'conversion_value' => $value,
-                        'description'     => "1 $unitName = $value pcs",
-                        'created_at'      => now(),
-                        'updated_at'      => now(),
-                    ];
-                }
+                $unitId = $unitNameToId[$unitName];
+                $conversions[] = [
+                    'item_id'         => $itemId,
+                    'unit_id'         => $unitId,
+                    'conversion_value' => $value,
+                    'description'     => "1 $unitName = $value pcs",
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
+                ];
             }
         }
 

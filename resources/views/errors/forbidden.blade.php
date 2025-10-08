@@ -1,4 +1,4 @@
-<x-guest-layout title="Admin POS | Forbidden Page">
+<x-guest-layout title="Forbidden Page">
     <main class="grid min-h-full place-items-center bg-gray-900 px-6 py-24 sm:py-32 lg:px-8">
         <div class="text-center">
             <p class="text-base font-semibold text-red-400">403</p>

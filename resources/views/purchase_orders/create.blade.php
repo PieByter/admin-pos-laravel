@@ -119,17 +119,27 @@
                             <div class="row mb-3 align-items-center">
                                 <label class="col-md-3 col-form-label"><b>Dibuat Oleh</b></label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control bg-light" readonly
-                                        value="{{ auth()->user()->name ?? '-' }}">
+                                    <div class="form-control bg-light" readonly>
+                                        {{ auth()->user()->username ?? 'Unknown' }}
+                                        <small class="text-muted">
+                                            ({{ now()->format('d/m/Y H:i') }})
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="row mb-3 align-items-center">
-                                <label class="col-md-3 col-form-label"><b>Diupdate Oleh</b></label>
+                                <label class="col-md-3 col-form-label"><b>Terakhir Diubah</b></label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control bg-light" readonly
-                                        value="{{ auth()->user()->name ?? '-' }}">
+                                    <div class="form-control bg-light" readonly>
+                                        {{ auth()->user()->username ?? 'Unknown' }}
+                                        <small class="text-muted">
+                                            ({{ now()->format('d/m/Y H:i') }})
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
+
 
                             <div class="row mb-3 align-items-center">
                                 <label for="description" class="col-md-3 col-form-label"><b>Keterangan</b></label>
@@ -189,16 +199,16 @@
                                                         class="form-select satuan-select" required>
                                                         <option value="">- Pilih Satuan -</option>
                                                         @if (!empty($detail['item_id']) && isset($unitConversionMap[$detail['item_id']]))
-                                                            @foreach ($unitConversionMap[$detail['item_id']] as $konv)
+                                                            @foreach ($unitConversionMap[$detail['item_id']] as $conv)
                                                                 @php
-                                                                    $label = $konv['unit_name'];
-                                                                    if ($konv['conversion_value'] > 1) {
-                                                                        $label .= " ({$konv['conversion_value']} pcs)";
+                                                                    $label = $conv['unit_name'];
+                                                                    if ($conv['conversion_value'] > 1) {
+                                                                        $label .= " ({$conv['conversion_value']} pcs)";
                                                                     }
                                                                 @endphp
-                                                                <option value="{{ $konv['unit_id'] }}"
-                                                                    data-konversi="{{ $konv['conversion_value'] }}"
-                                                                    {{ isset($detail['unit_id']) && $detail['unit_id'] == $konv['unit_id'] ? 'selected' : '' }}>
+                                                                <option value="{{ $conv['unit_id'] }}"
+                                                                    data-konversi="{{ $conv['conversion_value'] }}"
+                                                                    {{ isset($detail['unit_id']) && $detail['unit_id'] == $conv['unit_id'] ? 'selected' : '' }}>
                                                                     {{ $label }}
                                                                 </option>
                                                             @endforeach
@@ -289,12 +299,12 @@
                             <tbody id="modal-barang-list">
                                 @foreach ($items as $item)
                                     <tr data-id="{{ $item->id }}" data-nama="{{ $item->name }}"
-                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->purchase_price }}"
+                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->buy_price }}"
                                         data-id_satuan="{{ $item->unit_id }}">
                                         <td>{{ $item->name }}</td>
                                         <td class="text-center">{{ $item->stock }}</td>
                                         <td class="text-center">
-                                            {{ number_format($item->purchase_price, 0, ',', '.') }}</td>
+                                            {{ number_format($item->buy_price, 0, ',', '.') }}</td>
                                         <td class="text-center">
                                             <button type="button"
                                                 class="btn btn-success btn-sm pilih-barang-btn">Pilih</button>
@@ -379,7 +389,7 @@
 
     <script>
         let detailIndex = {{ count(old('detail') ?? [[]]) }};
-        const satuanKonversiMap = {{ json_encode($unitConversionMap) }};
+        const unitConversionMap = {{ json_encode($unitConversionMap) }};
 
         function formatRupiahInputValue(angka) {
             angka = Number(angka);
@@ -410,19 +420,19 @@
 
             let defaultSatuanId = null;
 
-            if (satuanKonversiMap[idBarang]) {
-                satuanKonversiMap[idBarang].forEach(function(konv) {
-                    const konversi = parseInt(konv.konversi) || 1;
-                    let labelSatuan = `${konv.nama_satuan}`;
+            if (unitConversionMap[idBarang]) {
+                unitConversionMap[idBarang].forEach(function(conv) {
+                    const konversi = parseInt(conv.konversi) || 1;
+                    let labelSatuan = `${conv.nama_satuan}`;
                     if (konversi > 1) {
                         labelSatuan += ` (${konversi} pcs)`;
                     }
 
                     satuanSelect.innerHTML +=
-                        `<option value="${konv.id_satuan}" data-konversi="${konversi}">${labelSatuan}</option>`;
+                        `<option value="${conv.id_satuan}" data-konversi="${konversi}">${labelSatuan}</option>`;
 
-                    if (konversi === 1 || konv.nama_satuan.toLowerCase() === 'pcs') {
-                        defaultSatuanId = konv.id_satuan;
+                    if (konversi === 1 || conv.nama_satuan.toLowerCase() === 'pcs') {
+                        defaultSatuanId = conv.id_satuan;
                     }
                 });
 
@@ -526,6 +536,17 @@
         function addDetailRow() {
             const tbody = document.getElementById('detail-barang-body');
             const row = document.createElement('tr');
+
+            let barangOptions = '<option value="">- Pilih Barang -</option>';
+            @foreach ($items as $item)
+                barangOptions += `<option value="{{ $item->id }}" 
+            data-stok="{{ $item->stock }}" 
+            data-harga="{{ $item->sell_price }}" 
+            data-id_satuan="{{ $item->unit_id }}">
+                {{ $item->item_name }}
+            </option>`;
+            @endforeach
+
             row.innerHTML = `
         <td>
             <div class="input-group">

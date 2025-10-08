@@ -23,10 +23,10 @@ class RolePermissionSeeder extends Seeder
             'item_categories',     // jenis_barang
             'item_groups',         // group_barang
             'unit_conversions',    // satuan_konversi
-            'pre_purchase_orders', // po
             'purchase_orders',     // pembelian
             'sales_orders',        // penjualan
-            'returns',             // retur
+            'purchase_returns',    // retur pembelian
+            'sales_returns',       // retur penjualan
             'users',               // user
             'activity_logs',       // logs
             'transactions',        // transaksi
@@ -62,10 +62,10 @@ class RolePermissionSeeder extends Seeder
                 'item_categories' => 'full',
                 'item_groups' => 'full',
                 'unit_conversions' => 'full',
-                'pre_purchase_orders' => 'full',
                 'purchase_orders' => 'full',
                 'sales_orders' => 'full',
-                'returns' => 'full',
+                'purchase_returns' => 'full',
+                'sales_returns' => 'full',
                 'users' => 'full',
                 'activity_logs' => 'full',
                 'transactions' => 'full',
@@ -78,10 +78,10 @@ class RolePermissionSeeder extends Seeder
                 'item_categories' => 'view_only',
                 'item_groups' => 'view_only',
                 'unit_conversions' => 'view_only',
-                'pre_purchase_orders' => 'view_only',
                 'purchase_orders' => 'view_only',
                 'sales_orders' => 'view_only',
-                'returns' => 'view_only',
+                'purchase_returns' => 'view_only',
+                'sales_returns' => 'view_only',
                 'users' => 'view_only',
                 'activity_logs' => 'view_only',
                 'transactions' => 'view_only',
@@ -94,10 +94,10 @@ class RolePermissionSeeder extends Seeder
                 'item_categories' => 'none',
                 'item_groups' => 'none',
                 'unit_conversions' => 'none',
-                'pre_purchase_orders' => 'none',
                 'purchase_orders' => 'none',
                 'sales_orders' => 'full',
-                'returns' => 'full',
+                'purchase_returns' => 'full',
+                'sales_returns' => 'full',
                 'users' => 'none',
                 'activity_logs' => 'none',
                 'transactions' => 'full',
@@ -110,10 +110,10 @@ class RolePermissionSeeder extends Seeder
                 'item_categories' => 'full',
                 'item_groups' => 'full',
                 'unit_conversions' => 'full',
-                'pre_purchase_orders' => 'full',
                 'purchase_orders' => 'full',
                 'sales_orders' => 'view_only',
-                'returns' => 'view_only',
+                'purchase_returns' => 'view_only',
+                'sales_returns' => 'view_only',
                 'users' => 'none',
                 'activity_logs' => 'none',
                 'transactions' => 'none',
@@ -126,10 +126,10 @@ class RolePermissionSeeder extends Seeder
                 'item_categories' => 'view_only',
                 'item_groups' => 'view_only',
                 'unit_conversions' => 'view_only',
-                'pre_purchase_orders' => 'view_only',
                 'purchase_orders' => 'view_only',
                 'sales_orders' => 'view_only',
-                'returns' => 'view_only',
+                'purchase_returns' => 'view_only',
+                'sales_returns' => 'view_only',
                 'users' => 'view_only',
                 'activity_logs' => 'view_only',
                 'transactions' => 'view_only',

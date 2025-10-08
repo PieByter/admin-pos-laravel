@@ -1,8 +1,4 @@
 <x-app-layout>
-    {{-- 
-        @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif --}}
 
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
@@ -30,7 +26,8 @@
                                         Terbit</b></label>
                                 <div class="col-md-9">
                                     <input type="date" name="issue_date" id="issue_date" class="form-control"
-                                        required value="{{ old('issue_date', $purchaseOrder->issue_date) }}">
+                                        required
+                                        value="{{ old('issue_date', $purchaseOrder->issue_date) ? \Carbon\Carbon::parse($purchaseOrder->issue_date)->format('Y-m-d') : '' }}">
                                 </div>
                             </div>
 
@@ -83,18 +80,26 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="created_by" class="col-md-3 col-form-label"><b>Dibuat Oleh</b></label>
+                                <label class="col-md-3 col-form-label"><b>Dibuat Oleh</b></label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control bg-light" readonly
-                                        value="{{ $purchaseOrder->createdBy->name ?? '-' }}">
+                                    <div class="form-control bg-light" readonly>
+                                        {{ $purchaseOrder->createdBy->username ?? 'Unknown' }}
+                                        <small class="text-muted">
+                                            ({{ $purchaseOrder->created_at ? $purchaseOrder->created_at->format('d/m/Y H:i') : '-' }})
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <label for="updated_by" class="col-md-3 col-form-label"><b>Diupdate Oleh</b></label>
+                                <label class="col-md-3 col-form-label"><b>Terakhir Diubah</b></label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control bg-light" readonly
-                                        value="{{ $purchaseOrder->updatedBy->name ?? '-' }}">
+                                    <div class="form-control bg-light" readonly>
+                                        {{ $purchaseOrder->updatedBy->username ?? 'Unknown' }}
+                                        <small class="text-muted">
+                                            ({{ $purchaseOrder->updated_at ? $purchaseOrder->updated_at->format('d/m/Y H:i') : '-' }})
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
 
@@ -146,21 +151,21 @@
                                         </tr>
                                     </thead>
                                     <tbody id="detail-barang-body">
-                                        @foreach ($details as $i => $detail)
+                                        @foreach ($details as $index => $detail)
                                             <tr>
                                                 <td>
                                                     <div class="input-group">
-                                                        <select name="detail[{{ $i }}][item_id]"
+                                                        <select name="detail[{{ $index }}][item_id]"
                                                             class="form-select barang-select" required
                                                             onchange="showStok(this)">
                                                             <option value="">- Pilih Barang -</option>
                                                             @foreach ($items as $item)
                                                                 <option value="{{ $item->id }}"
                                                                     data-stok="{{ $item->stock }}"
-                                                                    data-harga="{{ $item->purchase_price }}"
+                                                                    data-harga="{{ $item->buy_price }}"
                                                                     data-id_satuan="{{ $item->unit_id }}"
                                                                     {{ $item->id == $detail->item_id ? 'selected' : '' }}>
-                                                                    {{ $item->name }}
+                                                                    {{ $item->item_name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -173,27 +178,47 @@
                                                         style="display:none;"></span>
                                                 </td>
                                                 <td>
-                                                    <select name="detail[{{ $i }}][unit_id]"
+                                                    <select name="detail[{{ $index }}][unit_id]"
                                                         class="form-select satuan-select" required
                                                         value="{{ $detail->unit_id }}">
                                                         <option value="">- Pilih Satuan -</option>
+                                                        @if (!empty($detail['item_id']) && isset($unitConversionMap[$detail['item_id']]))
+                                                            @foreach ($unitConversionMap[$detail['item_id']] as $conv)
+                                                                @php
+                                                                    $label = $conv->unit_name;
+                                                                    if ($conv->conversion_value > 1) {
+                                                                        $label .= "({$conv->conversion_value} pcs)";
+                                                                    }
+                                                                    $selected =
+                                                                        isset($detail['unit_id']) &&
+                                                                        $detail['unit_id'] == $conv->unit_id
+                                                                            ? 'selected'
+                                                                            : '';
+                                                                @endphp
+                                                                <option value="{{ $conv->unit_id }}"
+                                                                    data-conversion="{{ $conv->conversion_value }}"
+                                                                    {{ isset($detail['unit_id']) && $detail['unit_id'] == $conv->unit_id ? 'selected' : '' }}>
+                                                                    {{ $label }}
+                                                                </option>
+                                                            @endforeach
+                                                        @endif
                                                     </select>
                                                 </td>
                                                 <td>
                                                     <input type="number"
-                                                        name="detail[{{ $i }}][quantity]"
+                                                        name="detail[{{ $index }}][quantity]"
                                                         class="form-control qty-input" required min="1"
                                                         value="{{ $detail->quantity }}">
                                                 </td>
                                                 <td>
                                                     <input type="text"
-                                                        name="detail[{{ $i }}][unit_price]"
+                                                        name="detail[{{ $index }}][unit_price]"
                                                         class="form-control harga-input" required
-                                                        value="{{ number_format($detail->unit_price, 0, ',', '.') }}">
+                                                        value="{{ number_format($detail->buy_price, 0, ',', '.') }}">
                                                 </td>
                                                 <td>
                                                     <input type="text"
-                                                        name="detail[{{ $i }}][subtotal]"
+                                                        name="detail[{{ $index }}][subtotal]"
                                                         class="form-control subtotal-input" readonly
                                                         value="{{ number_format($detail->subtotal, 0, ',', '.') }}">
                                                 </td>
@@ -261,12 +286,12 @@
                             <tbody id="modal-barang-list">
                                 @foreach ($items as $item)
                                     <tr data-id="{{ $item->id }}" data-nama="{{ $item->name }}"
-                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->purchase_price }}"
+                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->buy_price }}"
                                         data-id_satuan="{{ $item->unit_id }}">
                                         <td>{{ $item->name }}</td>
                                         <td class="text-center">{{ $item->stock }}</td>
                                         <td class="text-center">
-                                            {{ number_format($item->purchase_price, 0, ',', '.') }}</td>
+                                            {{ number_format($item->buy_price, 0, ',', '.') }}</td>
                                         <td class="text-center">
                                             <button type="button"
                                                 class="btn btn-success btn-sm pilih-barang-btn">Pilih</button>
@@ -349,7 +374,7 @@
 
     <script>
         let detailIndex = {{ count($details) }};
-        const satuanKonversiMap = {{ json_encode($unitConversionMap) }};
+        const unitConversionMap = {{ json_encode($unitConversionMap) }};
 
         function formatRupiahInputValue(angka) {
             angka = Number(angka);
@@ -377,24 +402,24 @@
         function updateSatuanOptions(barangSelect, satuanSelect, selectedId = null) {
             const idBarang = barangSelect.value;
             satuanSelect.innerHTML = '<option value="">- Pilih Satuan -</option>';
-            let defaultSatuanId = null;
+            let defaultUnitId = null;
 
-            if (satuanKonversiMap[idBarang]) {
-                satuanKonversiMap[idBarang].forEach(function(konv) {
-                    const konversi = parseInt(konv.konversi) || 1;
-                    let labelSatuan = konv.nama_satuan;
-                    if (konversi > 1) labelSatuan += ` (${konversi} pcs)`;
+            if (unitConversionMap[idBarang]) {
+                unitConversionMap[idBarang].forEach(function(conv) {
+                    const conversion = parseInt(conv.conversion_value) || 1;
+                    let label = conv.unit_name;
+                    if (conversion > 1) label += ` (${conversion} pcs)`;
                     satuanSelect.innerHTML +=
-                        `<option value="${konv.id_satuan}" data-konversi="${konv.konversi}">${labelSatuan}</option>`;
-                    if (konversi === 1 || konv.nama_satuan.toLowerCase() === 'pcs') {
-                        defaultSatuanId = konv.id_satuan;
+                        `<option value="${conv.unit.id}" data-konversi="${conv.conversion_value}">${label}</option>`;
+                    if (conversion === 1 || conv.unit_name.toLowerCase() === 'pcs') {
+                        defaultUnitId = conv.unit.id;
                     }
                 });
 
                 if (selectedId) {
                     satuanSelect.value = selectedId;
-                } else if (defaultSatuanId) {
-                    satuanSelect.value = defaultSatuanId;
+                } else if (defaultUnitId) {
+                    satuanSelect.value = defaultUnitId;
                 }
                 satuanSelect.dispatchEvent(new Event('change'));
             }
@@ -490,46 +515,47 @@
         function addDetailRow() {
             const tbody = document.getElementById('detail-barang-body');
             const row = document.createElement('tr');
+
             row.innerHTML = `
-        <td>
-            <div class="input-group">
-                <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required>
-                    <option value="">- Pilih Barang -</option>
-                    @foreach ($items as $item)
-                        <option value="{{ $item->id }}"
-                            data-stok="{{ $item->stock }}"
-                            data-harga="{{ $item->purchase_price }}"
-                            data-id_satuan="{{ $item->unit_id }}">
-                            {{ $item->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
-                    <i class="bi bi-search"></i> Cari
-                </button>
-            </div>
-            <span class="text-success small stok-info" style="display:none;"></span>
-        </td>
-        <td>
-            <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
-                <option value="">- Pilih Satuan -</option>
-            </select>
-        </td>
-        <td>
-            <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
-        </td>
-        <td>
-            <input type="text" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required>
-        </td>
-        <td>
-            <input type="text" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
-        </td>
-        <td>
-            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
-                <i class="bi bi-trash"></i>
-            </button>
-        </td>
-    `;
+                <td>
+                    <div class="input-group">
+                        <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required>
+                            <option value="">- Pilih Barang -</option>
+                            @foreach ($items as $item)
+                                <option value="{{ $item->id }}"
+                                    data-stok="{{ $item->stock }}"
+                                    data-harga="{{ $item->buy_price }}"
+                                    data-id_satuan="{{ $item->unit_id }}">
+                                    {{ $item->item_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
+                            <i class="bi bi-search"></i> Cari
+                        </button>
+                    </div>
+                    <span class="text-success small stok-info" style="display:none;"></span>
+                </td>
+                <td>
+                    <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
+                        <option value="">- Pilih Satuan -</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
+                </td>
+                <td>
+                    <input type="text" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required>
+                </td>
+                <td>
+                    <input type="text" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            `;
             tbody.appendChild(row);
             detailIndex++;
 

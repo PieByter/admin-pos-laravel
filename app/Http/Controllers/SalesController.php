@@ -66,7 +66,6 @@ class SalesController extends Controller
             $unitConversionMap[$item->id] = $conversions;
         }
 
-
         $issueDate = date('Y-m-d');
         $invoiceNumber = $this->generateInvoiceNumber($issueDate);
 
@@ -222,15 +221,32 @@ class SalesController extends Controller
         $units = Unit::orderBy('unit_name')->get();
 
         // Unit conversion mapping
+        // $unitConversionMap = [];
+        // foreach ($items as $item) {
+        //     $conversions = DB::table('unit_conversions')
+        //         ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
+        //         ->select('unit_conversions.*', 'units.unit_name as unit_name')
+        //         ->where('unit_conversions.item_id', $item->id)
+        //         ->get();
+        //     $unitConversionMap[$item->id] = $conversions;
+        // }
+
+        // Unit conversion mapping
         $unitConversionMap = [];
         foreach ($items as $item) {
             $conversions = DB::table('unit_conversions')
                 ->leftJoin('units', 'units.id', '=', 'unit_conversions.unit_id')
-                ->select('unit_conversions.*', 'units.unit_name as unit_name')
+                ->select(
+                    'unit_conversions.unit_id as id_satuan',
+                    'units.unit_name as nama_satuan',
+                    'unit_conversions.conversion_value as konversi'
+                )
                 ->where('unit_conversions.item_id', $item->id)
-                ->get();
+                ->get()
+                ->toArray();
             $unitConversionMap[$item->id] = $conversions;
         }
+
 
         return view('sales_orders.edit', [
             'id' => $id,
