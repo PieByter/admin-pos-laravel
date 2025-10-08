@@ -18,8 +18,7 @@ class PurchaseReturnController extends Controller
 {
     public function index()
     {
-        $purchaseReturns = PurchaseReturn::purchaseReturns()
-            ->with(['supplier', 'originalPurchase', 'creator'])
+        $purchaseReturns = PurchaseReturn::with(['supplier', 'purchaseOrder', 'creator'])
             ->orderBy('return_date', 'desc')
             ->get();
 

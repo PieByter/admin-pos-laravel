@@ -1,7 +1,4 @@
 <x-app-layout>
-    {{-- @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif --}}
 
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
@@ -165,13 +162,13 @@
                                     </thead>
                                     <tbody id="detail-barang-body">
                                         @php
-                                            $details = old('detail') ?? [[]];
+                                            $details = old('details') ?? [[]];
                                         @endphp
                                         @foreach ($details as $i => $detail)
                                             <tr>
                                                 <td>
                                                     <div class="input-group">
-                                                        <select name="detail[{{ $i }}][item_id]"
+                                                        <select name="details[{{ $i }}][item_id]"
                                                             class="form-select barang-select" required
                                                             onchange="showStok(this)">
                                                             <option value="">- Pilih Barang -</option>
@@ -194,7 +191,7 @@
                                                         style="display:none;"></span>
                                                 </td>
                                                 <td>
-                                                    <select name="detail[{{ $i }}][unit_id]"
+                                                    <select name="details[{{ $i }}][unit_id]"
                                                         class="form-select satuan-select" required>
                                                         <option value="">- Pilih Satuan -</option>
                                                         @if (!empty($detail['item_id']) && isset($unitConversionMap[$detail['item_id']]))
@@ -216,20 +213,20 @@
                                                 </td>
                                                 <td>
                                                     <input type="number"
-                                                        name="detail[{{ $i }}][quantity]"
+                                                        name="details[{{ $i }}][quantity]"
                                                         class="form-control qty-input"
                                                         value="{{ $detail['quantity'] ?? '' }}" required
                                                         min="1">
                                                 </td>
                                                 <td>
                                                     <input type="text"
-                                                        name="detail[{{ $i }}][unit_price]"
+                                                        name="details[{{ $i }}][unit_price]"
                                                         class="form-control harga-input"
                                                         value="{{ $detail['unit_price'] ?? '' }}" required>
                                                 </td>
                                                 <td>
                                                     <input type="text"
-                                                        name="detail[{{ $i }}][subtotal]"
+                                                        name="details[{{ $i }}][subtotal]"
                                                         class="form-control subtotal-input"
                                                         value="{{ $detail['subtotal'] ?? '' }}" readonly>
                                                 </td>
@@ -297,12 +294,12 @@
                             </thead>
                             <tbody id="modal-barang-list">
                                 @foreach ($items as $item)
-                                    <tr data-id="{{ $item->id }}" data-nama="{{ $item->name }}"
-                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->selling_price }}"
+                                    <tr data-id="{{ $item->id }}" data-nama="{{ $item->item_name }}"
+                                        data-stok="{{ $item->stock }}" data-harga="{{ $item->sell_price }}"
                                         data-id_satuan="{{ $item->unit_id }}">
-                                        <td>{{ $item->name }}</td>
+                                        <td>{{ $item->item_name }}</td>
                                         <td class="text-center">{{ $item->stock }}</td>
-                                        <td class="text-center">{{ number_format($item->selling_price, 0, ',', '.') }}
+                                        <td class="text-center">{{ number_format($item->sell_price, 0, ',', '.') }}
                                         </td>
                                         <td class="text-center">
                                             <button type="button"
@@ -373,7 +370,7 @@
         </div>
     </div>
 
-    @if (session('error'))
+    {{-- @if (session('error'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
@@ -383,11 +380,109 @@
                 });
             });
         </script>
-    @endif
+    @endif --}}
 
     <script>
-        let detailIndex = {{ count(old('detail') ?? [[]]) }};
-        const satuanKonversiMap = {{ json_encode($unitConversionMap) }};
+        let detailIndex = {{ count(old('details') ?? [[]]) }};
+        const unitConversionMap = {{ json_encode($unitConversionMap) }};
+        const itemsData = @json($items);
+
+        console.log('detailIndex:', detailIndex);
+        console.log('unitConversionMap:', unitConversionMap);
+        console.log('itemsData:', itemsData);
+        console.log('addDetailRow function:', typeof addDetailRow);
+
+        function addDetailRow() {
+            console.log('addDetailRow called successfully!');
+            const tbody = document.getElementById('detail-barang-body');
+            const row = document.createElement('tr');
+
+            // Generate item options using JavaScript data
+            let itemOptions = '<option value="">- Pilih Barang -</option>';
+            itemsData.forEach(function(item) {
+                itemOptions += `<option value="${item.id}"
+                data-stok="${item.stock || 0}"
+                data-harga="${item.sell_price || 0}"
+                data-id_satuan="${item.unit_id || ''}">
+                ${item.item_name}
+            </option>`;
+            });
+
+            row.innerHTML = `
+        <td>
+            <div class="input-group">
+                <select name="details[${detailIndex}][item_id]" class="form-select barang-select" required onchange="showStok(this)">
+                    ${itemOptions}
+                </select>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
+                    <i class="bi bi-search"></i> Cari
+                </button>
+            </div>
+            <span class="text-success small stok-info" style="display:none;"></span>
+        </td>
+        <td>
+            <select name="details[${detailIndex}][unit_id]" class="form-select satuan-select" required>
+                <option value="">- Pilih Satuan -</option>
+            </select>
+        </td>
+        <td>
+            <input type="number" name="details[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
+        </td>
+        <td>
+            <input type="text" name="details[${detailIndex}][unit_price]" class="form-control harga-input" required>
+        </td>
+        <td>
+            <input type="text" name="details[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
+        `;
+
+            tbody.appendChild(row);
+            detailIndex++;
+
+            // Setup event listeners for new row
+            const itemSelect = row.querySelector('.barang-select');
+            const unitSelect = row.querySelector('.satuan-select');
+            const qtyInput = row.querySelector('.qty-input');
+
+            if (itemSelect && unitSelect) {
+                itemSelect.addEventListener('change', function() {
+                    updateUnitOptions(itemSelect, unitSelect);
+                    showStock(itemSelect);
+                    setTimeout(() => {
+                        updateMaxQty(row);
+                        updateSellPrice(row);
+                        updateSubtotal(row);
+                        updateTotalAmount();
+                    }, 100);
+                });
+            }
+
+            if (unitSelect) {
+                unitSelect.addEventListener('change', function() {
+                    updateMaxQty(row);
+                    updateSellPrice(row);
+                    updateSubtotal(row);
+                    updateTotalAmount();
+                });
+            }
+
+            if (qtyInput) {
+                qtyInput.addEventListener('input', function() {
+                    updateMaxQty(row);
+                    updateSubtotal(row);
+                    updateTotalAmount();
+                });
+            }
+
+            addSubtotalListener(row);
+            addAntiDuplicateItemListener(itemSelect);
+            showStock(itemSelect);
+        }
 
         function formatRupiahInputValue(angka) {
             angka = Number(angka);
@@ -420,8 +515,9 @@
 
             let defaultSatuanId = null;
 
-            if (satuanKonversiMap[idBarang]) {
-                satuanKonversiMap[idBarang].forEach(function(konv) {
+            if (unitConversionMap[idBarang]) {
+                unitConversionMap[idBarang].forEach(function(konv) {
+                    // PERBAIKI NAMA FIELD SESUAI CONTROLLER
                     const konversi = parseInt(konv.konversi) || 1;
                     const maxQtyUntukSatuan = konversi > 0 ? Math.floor(stok / konversi) : stok;
 
@@ -549,99 +645,7 @@
                     info.style.display = 'none';
                 }
             }
-        }
-
-        function addDetailRow() {
-            const tbody = document.getElementById('detail-barang-body');
-            const row = document.createElement('tr');
-
-            // Buat options untuk select barang
-            let barangOptions = '<option value="">- Pilih Barang -</option>';
-            @foreach ($items as $item)
-                barangOptions += `<option value="{{ $item->id }}" 
-            data-stok="{{ $item->stock }}" 
-            data-harga="{{ $item->sell_price }}" 
-            data-id_satuan="{{ $item->unit_id }}">
-                {{ $item->item_name }}
-            </option>`;
-            @endforeach
-
-            row.innerHTML = `
-        <td>
-            <div class="input-group">
-                <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required onchange="showStok(this)">
-                    ${barangOptions}
-                </select>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
-                    <i class="bi bi-search"></i> Cari
-                </button>
-            </div>
-            <span class="text-success small stok-info" style="display:none;"></span>
-        </td>
-        <td>
-            <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
-                <option value="">- Pilih Satuan -</option>
-            </select>
-        </td>
-        <td>
-            <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
-        </td>
-        <td>
-            <input type="text" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required>
-        </td>
-        <td>
-            <input type="text" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
-        </td>
-        <td>
-            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
-                <i class="bi bi-trash"></i>
-            </button>
-        </td>
-    `;
-
-            tbody.appendChild(row);
-            detailIndex++;
-
-            // Setup event listeners untuk row baru
-            const barangSelect = row.querySelector('.barang-select');
-            const satuanSelect = row.querySelector('.satuan-select');
-            const qtyInput = row.querySelector('.qty-input');
-
-            if (barangSelect && satuanSelect) {
-                barangSelect.addEventListener('change', function() {
-                    updateSatuanOptions(barangSelect, satuanSelect);
-                    showStok(barangSelect);
-                    setTimeout(() => {
-                        updateMaxQty(row);
-                        updateHargaJual(row);
-                        updateSubtotal(row);
-                        updateTotalHarga();
-                    }, 100);
-                });
-            }
-
-            if (satuanSelect) {
-                satuanSelect.addEventListener('change', function() {
-                    updateMaxQty(row);
-                    updateHargaJual(row);
-                    updateSubtotal(row);
-                    updateTotalHarga();
-                });
-            }
-
-            if (qtyInput) {
-                qtyInput.addEventListener('input', function() {
-                    updateMaxQty(row);
-                    updateSubtotal(row);
-                    updateTotalHarga();
-                });
-            }
-
-            addSubtotalListener(row);
-            addAntiDuplikatBarangListener(barangSelect);
-            showStok(barangSelect);
-        }
-
+        };
         let currentSelectBarang = null;
 
         function openBarangModal(btn) {
@@ -747,17 +751,17 @@
                 }
             });
 
-            const tanggalInput = document.getElementById('tanggal_terbit');
-            const noNotaInput = document.getElementById('no_nota');
+            const tanggalInput = document.getElementById('issue_date');
+            const noNotaInput = document.getElementById('invoice_number');
             if (tanggalInput && noNotaInput) {
                 function fetchNoNota() {
-                    fetch('{{ route('sales.generate-invoice-number') }}?tanggal_terbit=' + encodeURIComponent(
+                    fetch('{{ route('sales.generate-invoice-number') }}?issue_date=' + encodeURIComponent(
                             tanggalInput
                             .value))
                         .then(response => response.json())
                         .then(data => {
-                            if (data && data.no_nota) {
-                                noNotaInput.value = data.no_nota;
+                            if (data && data.invoice_number) {
+                                noNotaInput.value = data.invoice_number;
                             } else {
                                 const d = new Date(tanggalInput.value || Date.now());
                                 const tahun = d.getFullYear();
@@ -781,44 +785,30 @@
                 filterModalBarang(this.value);
             });
 
-            document.getElementById('modal-barang-list').addEventListener('click', function(e) {
-                if (e.target.classList.contains('pilih-barang-btn')) {
-                    const row = e.target.closest('tr');
-                    if (currentSelectBarang) {
-                        currentSelectBarang.value = row.getAttribute('data-id');
-                        currentSelectBarang.dispatchEvent(new Event('change'));
-                        showStok(currentSelectBarang);
-                    }
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('modalBarang'));
-                    modal.hide();
-                }
-            });
+            // document.getElementById('modal-barang-list').addEventListener('click', function(e) {
+            //     if (e.target.classList.contains('pilih-barang-btn')) {
+            //         const row = e.target.closest('tr');
+            //         if (currentSelectBarang) {
+            //             currentSelectBarang.value = row.getAttribute('data-id');
+            //             currentSelectBarang.dispatchEvent(new Event('change'));
+            //             showStok(currentSelectBarang);
+            //         }
+            //         var modal = bootstrap.Modal.getInstance(document.getElementById('modalBarang'));
+            //         modal.hide();
+            //     }
+            // });
 
-            // Tambahkan listener anti duplikat pada semua barang-select yang sudah ada
             document.querySelectorAll('.barang-select').forEach(function(select) {
                 addAntiDuplikatBarangListener(select);
             });
 
-            // Modifikasi addDetailRow agar listener anti duplikat otomatis ditambahkan pada row baru
-            const oldAddDetailRow = window.addDetailRow;
-            window.addDetailRow = function() {
-                oldAddDetailRow();
-                // Ambil row terakhir yang baru ditambahkan
-                const rows = document.querySelectorAll('#detail-barang-body tr');
-                if (rows.length > 0) {
-                    const lastRow = rows[rows.length - 1];
-                    const barangSelect = lastRow.querySelector('.barang-select');
-                    if (barangSelect) {
-                        addAntiDuplikatBarangListener(barangSelect);
-                    }
-                }
-            };
-
-            // Validasi juga saat pilih barang dari modal
+            // HANYA GUNAKAN EVENT LISTENER INI (gabungan logika dari keduanya):
             document.getElementById('modal-barang-list').addEventListener('click', function(e) {
                 if (e.target.classList.contains('pilih-barang-btn')) {
                     const row = e.target.closest('tr');
                     const idBarang = row.getAttribute('data-id');
+
+                    // Cek duplikasi terlebih dahulu
                     if (isBarangSudahDipilih(idBarang, currentSelectBarang)) {
                         Swal.fire({
                             icon: 'warning',
@@ -829,6 +819,8 @@
                         modal.hide();
                         return;
                     }
+
+                    // Jika tidak duplikat, set value
                     if (currentSelectBarang) {
                         currentSelectBarang.value = idBarang;
                         currentSelectBarang.dispatchEvent(new Event('change'));
@@ -837,13 +829,22 @@
                     var modal = bootstrap.Modal.getInstance(document.getElementById('modalBarang'));
                     modal.hide();
                 }
+
             });
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Simpan!',
+                    text: '{{ session('error') }}'
+                });
+            @endif
         });
 
-        let currentSelectCustomer = document.getElementById('id_customer');
+        let currentSelectCustomer = document.getElementById('customer_id');
 
         function openCustomerModal(btn) {
-            currentSelectCustomer = btn.closest('.input-group').querySelector('select[name="id_customer"]');
+            currentSelectCustomer = btn.closest('.input-group').querySelector('select[name="customer_id"]');
             document.getElementById('modal-customer-search').value = '';
             filterModalCustomer('');
             var modal = new bootstrap.Modal(document.getElementById('modalCustomer'));

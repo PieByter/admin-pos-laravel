@@ -707,17 +707,17 @@
                 }
             });
 
-            const tanggalInput = document.getElementById('tanggal_terbit');
-            const noFakturInput = document.getElementById('no_faktur');
+            const tanggalInput = document.getElementById('issue_date');
+            const noFakturInput = document.getElementById('invoice_number');
             if (tanggalInput && noFakturInput) {
                 function fetchNoFaktur() {
-                    fetch('{{ route('sales.generate-invoice-number') }}?tanggal_terbit=' + encodeURIComponent(
+                    fetch('{{ route('sales.generate-invoice-number') }}?issue_date=' + encodeURIComponent(
                             tanggalInput
                             .value))
                         .then(response => response.json())
                         .then(data => {
-                            if (data && data.no_faktur) {
-                                noFakturInput.value = data.no_faktur;
+                            if (data && data.invoice_number) {
+                                noFakturInput.value = data.invoice_number;
                             } else {
                                 const d = new Date(tanggalInput.value || Date.now());
                                 const tahun = d.getFullYear();

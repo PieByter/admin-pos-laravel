@@ -794,11 +794,11 @@
             document.getElementById('detail-barang-body').addEventListener('input', updateTotalHarga);
             document.getElementById('detail-barang-body').addEventListener('change', updateTotalHarga);
 
-            const tanggalInput = document.getElementById('tanggal_terbit');
+            const tanggalInput = document.getElementById('issue_date');
             const noPoInput = document.getElementById('no_po');
             if (tanggalInput && noPoInput) {
                 tanggalInput.addEventListener('change', function() {
-                    fetch('{{ route('po.generateNoPO') }}?tanggal_terbit=' + encodeURIComponent(this
+                    fetch('{{ route('po.generateNoPO') }}?issue_date=' + encodeURIComponent(this
                             .value))
                         .then(response => response.json())
                         .then(data => {

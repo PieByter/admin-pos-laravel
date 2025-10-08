@@ -47,7 +47,8 @@ class SalesController extends Controller
     public function create()
     {
         $customers = Customer::where('status', 'active')->orderBy('name')->get();
-        $items = Item::orderBy('item_name')->get();
+        $items = Item::select('id', 'item_name', 'stock', 'sell_price', 'unit_id')
+            ->orderBy('item_name')->get();
         $units = Unit::orderBy('unit_name')->get();
 
         // Unit conversion mapping
@@ -65,8 +66,6 @@ class SalesController extends Controller
                 ->toArray();
             $unitConversionMap[$item->id] = $conversions;
         }
-
-
         $issueDate = date('Y-m-d');
         $invoiceNumber = $this->generateInvoiceNumber($issueDate);
 
