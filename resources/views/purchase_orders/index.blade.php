@@ -4,7 +4,7 @@
 
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('purchases.create') }}" class="btn btn-primary" id="btn-create-pembelian">
-            <i class="bi bi-plus-lg"></i> Tambah Pembelian
+            <i class="fas fa-plus"></i> Tambah Pembelian
         </a>
     </div>
 
@@ -31,7 +31,7 @@
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '9' : '8' }}" class="text-center py-4">
                                     <div class="text-muted">
-                                        <i class="bi bi-inbox display-1"></i>
+                                        <i class="fas fa-inboxdisplay-1"></i>
                                         <p class="mt-2">
                                             @if (!empty($search))
                                                 Tidak ada pembelian yang sesuai dengan pencarian "{{ $search }}"
@@ -41,7 +41,7 @@
                                         </p>
 
                                         <a href="{{ route('purchases.create') }}" class="btn btn-primary">
-                                            <i class="bi bi-cart-plus"></i> Tambah Pembelian Pertama
+                                            <i class="fas fa-cart-plus"></i> Tambah Pembelian Pertama
                                         </a>
 
                                     </div>
@@ -119,17 +119,17 @@
                                             <a href="{{ route('purchases.show', $purchaseOrder->id) }}"
                                                 class="btn btn-info btn-sm" title="Detail"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('purchases.edit', $purchaseOrder->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             <a href="#" class="btn btn-danger btn-sm btn-hapus-pembelian"
                                                 data-id="{{ $purchaseOrder->id }}" title="Hapus"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="fas fa-trash"></i>
                                             </a>
                                         </div>
                                     </td>
@@ -181,7 +181,7 @@
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-file-earmark-excel"></i> Export Excel
+                                <i class="fas fa-file-excel"></i> Export Excel
                             </button>
                         </div>
                     </form>

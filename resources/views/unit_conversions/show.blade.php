@@ -4,7 +4,7 @@
             <div class="col-md-7">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-currency-exchange"></i> Detail Satuan Konversi</h5>
+                        <h5 class="mb-0"><i class="fas fa-money-check-alt"></i> Detail Satuan Konversi</h5>
                     </div>
                     <div class="card-body">
                         <dl class="row mb-4 text-justify">
@@ -24,11 +24,11 @@
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
                             <a href="{{ route('unit-conversions.edit', $conversion->id) }}" class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
+                                <i class="fas fa-pen"></i> Edit
                             </a>
                             <a href="{{ route('unit-conversions.index') }}" class="btn btn-secondary ms-2"
                                 id="btn-back-konversi">
-                                <i class="bi bi-arrow-left"></i> Kembali
+                                <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                         </div>
                     </div>

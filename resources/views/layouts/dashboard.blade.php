@@ -86,7 +86,7 @@
                 <div class="col-md-12">
                     <div class="card h-100">
                         <div class="card-header">
-                            <i class="bi bi-info-circle me-1"></i>
+                            <i class="fas fa-info-circle me-1"></i>
                             Informasi Sistem
                         </div>
                         <div class="card-body">
@@ -97,7 +97,7 @@
                                 Role:
                                 <span
                                     class="badge
-                                @switch($user->role ?? 'user')
+                                @switch($user->role ?? 'useradmin')
                                     @case('superadmin')
                                         bg-primary
                                         @break
@@ -116,7 +116,7 @@
                                     @default
                                         bg-secondary
                                 @endswitch">
-                                    {{ ucfirst($user->role ?? 'User') }}
+                                    {{ ucfirst($user->role ?? 'Useradmin') }}
                                 </span>
                             </p>
                             <p>Login terakhir: <strong>{{ now()->format('d-m-Y H:i:s') }}</strong></p>

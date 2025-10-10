@@ -5,7 +5,7 @@
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0"><i class="bi bi-journal-text fs-5"></i> Form Edit Log Aktivitas</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-plus fs-5"></i> Form Edit Log Aktivitas</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('activity-logs.update', $activityLog->id) }}" method="post">
@@ -55,10 +55,10 @@
 
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-save"></i> Update
+                                    <i class="fas fa-save"></i> Update
                                 </button>
                                 <a href="{{ route('activity-logs.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>

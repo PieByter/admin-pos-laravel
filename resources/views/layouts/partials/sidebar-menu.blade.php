@@ -3,7 +3,7 @@
 {{-- @php(app()->make(\Spatie\Permission\PermissionRegistrar::class)->initializeCache()) --}}
 <li class="nav-item">
     <a href="{{ route('dashboard') }}" class="nav-link{{ request()->is('dashboard') ? ' active' : '' }}">
-        <i class="nav-icon bi bi-speedometer2"></i>
+        <i class="nav-icon fas fa-tachometer-alt"></i>
         <p>Dashboard</p>
     </a>
 </li>
@@ -15,7 +15,7 @@
         class="nav-item{{ request()->is(['purchase-orders*', 'purchases*', 'sales*', 'purchase-returns*', 'sales-returns*', 'transactions*']) ? ' menu-open' : '' }}">
         <a href="#"
             class="nav-link{{ request()->is(['purchase-orders*', 'purchases*', 'sales*', 'purchase-returns*', 'sales-returns*', 'transactions*']) ? ' active' : '' }}">
-            <i class="nav-icon bi bi-cash-coin"></i>
+            <i class="nav-icon fas fa-coins"></i>
             <p>
                 Transaksi
                 <i class="right fas fa-angle-left"></i>
@@ -26,7 +26,7 @@
                 <li class="nav-item">
                     <a href="{{ route('transactions.index') }}"
                         class="nav-link{{ request()->is('transactions*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-graph-up"></i>
+                        <i class="nav-icon fas fa-chart-line"></i>
                         <p>Akumulasi Transaksi</p>
                     </a>
                 </li>
@@ -35,7 +35,7 @@
                 <li class="nav-item">
                     <a href="{{ route('purchase-orders.index') }}"
                         class="nav-link{{ request()->is('purchase-orders*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-file-earmark-plus"></i>
+                        <asclass="nav-icon fas fa-file-medical"></i>
                         <p>Purchase Order</p>
                     </a>
                 </li>
@@ -43,7 +43,7 @@
             @can('purchase_orders_view')
                 <li class="nav-item">
                     <a href="{{ route('purchases.index') }}" class="nav-link{{ request()->is('purchases*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-cart-plus"></i>
+                        <i class="nav-icon fas fa-cart-plus"></i>
                         <p>Purchase Order</p>
                     </a>
                 </li>
@@ -51,7 +51,7 @@
             @can('sales_orders_view')
                 <li class="nav-item">
                     <a href="{{ route('sales.index') }}" class="nav-link{{ request()->is('sales*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-bag-check"></i>
+                        <i class="nav-icon fas fa-shopping-bag"></i>
                         <p>Sales Order</p>
                     </a>
                 </li>
@@ -60,7 +60,7 @@
                 <li class="nav-item">
                     <a href="{{ route('purchase-returns.index') }}"
                         class="nav-link{{ request()->is('purchase-returns*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-arrow-return-left text-warning"></i>
+                        <i class="nav-icon fas fa-undo fa-arrow-left text-warning"></i>
                         <p>Retur Pembelian</p>
                     </a>
                 </li>
@@ -69,7 +69,7 @@
                 <li class="nav-item">
                     <a href="{{ route('sales-returns.index') }}"
                         class="nav-link{{ request()->is('sales-returns*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-arrow-return-right text-info"></i>
+                        <i class="nav-icon fas fa-redo fa-arrow-right text-info"></i>
                         <p>Retur Penjualan</p>
                     </a>
                 </li>
@@ -85,7 +85,7 @@
         class="nav-item{{ request()->is(['items*', 'suppliers*', 'customers*', 'units*', 'item-categories*', 'item-groups*', 'unit-conversions*']) ? ' menu-open' : '' }}">
         <a href="#"
             class="nav-link{{ request()->is(['items*', 'suppliers*', 'customers*', 'units*', 'item-categories*', 'item-groups*', 'unit-conversions*']) ? ' active' : '' }}">
-            <i class="nav-icon bi bi-box-seam"></i>
+            <i class="nav-icon fas fa-box-open"></i>
             <p>
                 Master Data
                 <i class="right fas fa-angle-left"></i>
@@ -95,7 +95,7 @@
             @can('items_view')
                 <li class="nav-item">
                     <a href="{{ route('items.index') }}" class="nav-link{{ request()->is('items*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-box"></i>
+                        <i class="nav-icon fas fa-box"></i>
                         <p>Barang</p>
                     </a>
                 </li>
@@ -104,7 +104,7 @@
                 <li class="nav-item">
                     <a href="{{ route('suppliers.index') }}"
                         class="nav-link{{ request()->is('suppliers*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-truck"></i>
+                        <i class="nav-icon fas fa-truck"></i>
                         <p>Supplier</p>
                     </a>
                 </li>
@@ -113,7 +113,7 @@
                 <li class="nav-item">
                     <a href="{{ route('customers.index') }}"
                         class="nav-link{{ request()->is('customers*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-people"></i>
+                        <i class="nav-icon fas fa-users"></i>
                         <p>Customer</p>
                     </a>
                 </li>
@@ -122,7 +122,7 @@
                 <li class="nav-item">
                     <a href="{{ route('unit-conversions.index') }}"
                         class="nav-link{{ request()->is('unit-conversions*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-arrow-left-right"></i>
+                        <i class="nav-icon fas fa-exchange-alt"></i>
                         <p>Satuan Konversi</p>
                     </a>
                 </li>
@@ -131,7 +131,7 @@
                 <li class="nav-item">
                     <a href="{{ route('units.index') }}"
                         class="nav-link{{ request()->is('units*') && !request()->is('unit-conversions*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-rulers"></i>
+                        <i class="nav-icon fas fa-ruler-combined"></i>
                         <p>Satuan Barang</p>
                     </a>
                 </li>
@@ -140,7 +140,7 @@
                 <li class="nav-item">
                     <a href="{{ route('item-categories.index') }}"
                         class="nav-link{{ request()->is('item-categories*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-tags"></i>
+                        <i class="nav-icon fas fa-tags"></i>
                         <p>Kategori Barang</p>
                     </a>
                 </li>
@@ -149,7 +149,7 @@
                 <li class="nav-item">
                     <a href="{{ route('item-groups.index') }}"
                         class="nav-link{{ request()->is('item-groups*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-collection"></i>
+                        <i class="nav-icon fas fa-layer-group"></i>
                         <p>Group Barang</p>
                     </a>
                 </li>
@@ -162,7 +162,7 @@
 @canany(['users_view', 'activity_logs_view'])
     <li class="nav-item{{ request()->is('superadmin/*') ? ' menu-open' : '' }}">
         <a href="#" class="nav-link{{ request()->is('superadmin/*') ? ' active' : '' }}">
-            <i class="nav-icon bi bi-person-gear"></i>
+            <i class="nav-icon fas fa-user-cog"></i>
             <p>
                 Admin & Log
                 <i class="right fas fa-angle-left"></i>
@@ -173,7 +173,7 @@
                 <li class="nav-item">
                     <a href="{{ route('superadmin.users.index') }}"
                         class="nav-link{{ request()->is('superadmin/users*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-people"></i>
+                        <i class="nav-icon fas fa-users"></i>
                         <p>Manajemen User</p>
                     </a>
                 </li>
@@ -182,7 +182,7 @@
                 <li class="nav-item">
                     <a href="{{ route('superadmin.activity-logs.index') }}"
                         class="nav-link{{ request()->is('superadmin/activity-logs*') ? ' active' : '' }}">
-                        <i class="nav-icon bi bi-journal-text"></i>
+                        <i class="nav-icon fas fa-book"></i>
                         <p>Log Aktivitas</p>
                     </a>
                 </li>
@@ -194,7 +194,7 @@
 <!-- Profil -->
 <li class="nav-item">
     <a href="{{ route('profile.index') }}" class="nav-link{{ request()->is('profile*') ? ' active' : '' }}">
-        <i class="nav-icon bi bi-person-circle"></i>
+        <i class="nav-icon fas fa-user-circle"></i>
         <p>Profil Pengguna</p>
     </a>
 </li>

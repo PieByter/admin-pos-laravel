@@ -4,7 +4,7 @@
 
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('item-groups.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Tambah Group Barang
+            <i class="fas fa-plus"></i> Tambah Group Barang
         </a>
     </div>
 
@@ -25,10 +25,10 @@
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '4' : '3' }}" class="text-center py-4">
                                     <div class="text-muted">
-                                        <i class="bi bi-inbox display-1"></i>
+                                        <i class="fas fa-inboxdisplay-1"></i>
                                         <p class="mt-2">Belum ada data group barang</p>
                                         <a href="{{ route('item-groups.create') }}" class="btn btn-primary">
-                                            <i class="bi bi-plus"></i> Tambah Group Pertama
+                                            <i class="fas fa-plus"></i> Tambah Group Pertama
                                         </a>
                                     </div>
                                 </td>
@@ -43,16 +43,16 @@
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('item-groups.show', $group->id) }}"
                                                 class="btn btn-info btn-sm" title="Detail">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('item-groups.edit', $group->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             <a href="#" class="btn btn-danger btn-sm btn-hapus-group"
                                                 data-action="{{ route('item-groups.destroy', $group->id) }}"
                                                 title="Hapus">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="fas fa-trash"></i>
                                             </a>
                                             {{-- <form action="{{ route('item-groups.destroy', $group->id) }}" method="POST"
                                                 class="d-inline delete-form">
@@ -60,7 +60,7 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm btn-hapus-group"
                                                     title="Hapus">
-                                                    <i class="bi bi-trash"></i>
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form> --}}
                                         </div>

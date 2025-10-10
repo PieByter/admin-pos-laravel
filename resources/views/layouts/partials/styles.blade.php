@@ -42,3 +42,39 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" />
 
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+<!-- Scripts -->
+
+<script src="{{ asset('asset/vendor/jquery/jquery-3.7.1.min.js') }}"></script>
+<script src="{{ asset('asset/vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
+
+<script src="{{ asset('AdminLTE/dist/js/adminlte.min.js') }}"></script>
+
+<script type="module" src="{{ asset('asset/utils/custom-tooltip/js/custom-tooltip.js') }}"></script>
+<script type="module" src="{{ asset('asset/utils/custom-select2/js/custom-select2.js') }}"></script>
+<script type="module" src="{{ asset('asset/utils/custom-toast/js/custom-toast.js') }}"></script>
+<script type="module" src="{{ asset('asset/utils/custom-confirmation-modal/js/custom-confirmation-modal.js') }}">
+</script>
+<script type="module" src="{{ asset('asset/utils/custom-loader/js/custom-loader.js') }}"></script>
+<script type="module" src="{{ asset('asset/utils/js/custom-ajaxSetup.js') }}"></script>
+<script type="module" src="{{ asset('asset/utils/js/required-symbol.js') }}"></script>
+<script type="module" src="{{ asset('asset/utils/custom-jquery-validate/js/custom-jquery-validate.js') }}"></script>
+<script type="module" src="{{ asset('asset/utils/js/logout-broadcast.js') }}"></script>
+
+{{-- Optional CSS Injection --}}
+
+<link rel="stylesheet" type="text/css" href="{{ asset('AdminLTE/dist/css/adminlte.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('asset/utils/css/custom-app.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('asset/vendor/fontawesome-free/css/all.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('asset/utils/custom-select2/css/custom-select2.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('asset/utils/custom-tooltip/css/custom-tooltip.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('asset/utils/custom-toast/css/custom-toast.css') }}">
+<link rel="stylesheet" type="text/css"
+    href="{{ asset('asset/utils/custom-confirmation-modal/css/custom-confirmation-modal.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('asset/utils/custom-loader/css/custom-loader.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('asset/utils/css/required-symbol.css') }}">
+<link rel="stylesheet" type="text/css"
+    href="{{ asset('asset/utils/custom-jquery-validate/css/custom-jquery-validate.css') }}">
+
+@stack('css')
+@vite(['resources/css/app.css', 'resources/js/app.js'])

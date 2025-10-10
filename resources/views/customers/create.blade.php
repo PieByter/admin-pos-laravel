@@ -4,7 +4,7 @@
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-success text-white text-center">
-                        <h5 class="card-title mb-0"><i class="bi bi-person-plus"></i> Form Tambah Customer</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-user-plus"></i> Form Tambah Customer</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('customers.store') }}" method="post">
@@ -112,11 +112,11 @@
 
                             <div class="d-flex justify-content-end mb-3">
                                 <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-save"></i> Simpan
+                                    <i class="fas fa-save"></i> Simpan
                                 </button>
                                 <a href="{{ route('customers.index') }}" class="btn btn-secondary ms-2"
                                     id="btn-back-customer">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>

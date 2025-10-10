@@ -4,7 +4,7 @@
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-eye"></i> Detail Pembelian</h5>
+                        <h5 class="mb-0"><i class="fas fa-eye"></i> Detail Pembelian</h5>
                     </div>
                     <div class="card-body">
                         <dl class="row mb-4">
@@ -111,7 +111,7 @@
                                         <tr>
                                             <td colspan="6" class="text-center py-3">
                                                 <div class="text-muted">
-                                                    <i class="bi bi-inbox"></i>
+                                                    <i class="fas fa-inbox"></i>
                                                     <p class="mb-0 mt-2">Tidak ada item</p>
                                                 </div>
                                             </td>
@@ -135,11 +135,11 @@
                         <div class="mt-4 d-flex justify-content-end gap-2">
 
                             <a href="{{ route('purchases.edit', $purchaseOrder->id) }}" class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
+                                <i class="fas fa-pen"></i> Edit
                             </a>
 
                             <a href="{{ route('purchases.index') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Kembali
+                                <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                         </div>
                     </div>

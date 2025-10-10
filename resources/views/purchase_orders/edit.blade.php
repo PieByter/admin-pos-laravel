@@ -5,7 +5,7 @@
             <div class="col-md-9">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-warning text-dark text-center">
-                        <h5 class="card-title mb-0"><i class="bi bi-bag-plus"></i> Form Edit Pembelian</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-shopping-bag"></i> Form Edit Pembelian</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('purchases.update', $purchaseOrder->id) }}" method="post">
@@ -48,7 +48,7 @@
                                         </select>
                                         <button type="button" class="btn btn-outline-info btn-sm"
                                             onclick="openSupplierModal(this)">
-                                            <i class="bi bi-search"></i> Cari
+                                            <i class="fas fa-search"></i> Cari
                                         </button>
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@
                                                         </select>
                                                         <button type="button" class="btn btn-outline-primary btn-sm"
                                                             onclick="openBarangModal(this)">
-                                                            <i class="bi bi-search"></i> Cari
+                                                            <i class="fas fa-search"></i> Cari
                                                         </button>
                                                     </div>
                                                     <span class="text-success small stok-info"
@@ -225,7 +225,7 @@
                                                 <td>
                                                     <button type="button" class="btn btn-danger btn-sm"
                                                         onclick="this.closest('tr').remove(); updateTotalHarga();">
-                                                        <i class="bi bi-trash"></i>
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -246,13 +246,13 @@
                                 </table>
                             </div>
                             <button type="button" class="btn btn-success btn-sm mb-3" onclick="addDetailRow()">
-                                <i class="bi bi-plus"></i> Tambah Barang
+                                <i class="fas fa-plus"></i> Tambah Barang
                             </button>
                             <div class="d-flex justify-content-end mt-4">
-                                <button type="submit" class="btn btn-warning me-2"><i class="bi bi-save"></i>
+                                <button type="submit" class="btn btn-warning me-2"><i class="fas fa-save"></i>
                                     Update Pembelian</button>
                                 <a href="{{ route('purchases.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>
@@ -531,7 +531,7 @@
                             @endforeach
                         </select>
                         <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
-                            <i class="bi bi-search"></i> Cari
+                            <i class="fas fa-search"></i> Cari
                         </button>
                     </div>
                     <span class="text-success small stok-info" style="display:none;"></span>
@@ -552,7 +552,7 @@
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
-                        <i class="bi bi-trash"></i>
+                        <i class="fas fa-trash"></i>
                     </button>
                 </td>
             `;

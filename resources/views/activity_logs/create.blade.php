@@ -5,7 +5,7 @@
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-success text-white">
-                        <h5 class="card-title mb-0"><i class="bi bi-journal-plus fs-5"></i> Form Tambah Log Aktivitas</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-plus fs-5"></i> Form Tambah Log Aktivitas</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('superadmin.activity-logs.store') }}" method="post">
@@ -54,10 +54,10 @@
 
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-save"></i> Simpan
+                                    <i class="fas fa-save"></i> Simpan
                                 </button>
                                 <a href="{{ route('superadmin.activity-logs.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>

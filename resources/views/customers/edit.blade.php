@@ -5,7 +5,7 @@
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white text-center">
-                        <h5 class="card-title mb-0"><i class="bi bi-people fs-5"></i> Form Edit Customer</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-user-friends fs-5"></i> Form Edit Customer</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('customers.update', $customer->id) }}" method="post">
@@ -119,10 +119,10 @@
 
                             <div class="d-flex justify-content-end mb-3">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-save"></i> Update
+                                    <i class="fas fa-save"></i> Update
                                 </button>
                                 <a href="{{ route('customers.index') }}" class="btn btn-secondary ms-2">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>

@@ -4,7 +4,7 @@
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-eye"></i> Detail Purchase Order</h5>
+                        <h5 class="mb-0"><i class="fas fa-eye"></i> Detail Purchase Order</h5>
                     </div>
                     <div class="card-body">
                         <dl class="row mb-4">
@@ -111,7 +111,7 @@
                                         <tr>
                                             <td colspan="6" class="text-center py-3">
                                                 <div class="text-muted">
-                                                    <i class="bi bi-inbox"></i>
+                                                    <i class="fas fa-inbox"></i>
                                                     <p class="mb-0 mt-2">Tidak ada detail barang</p>
                                                 </div>
                                             </td>
@@ -135,16 +135,16 @@
                         <div class="mt-2 d-flex justify-content-end gap-2">
                             <a href="{{ route('pre-purchase-orders.print', $prePurchaseOrder->id) }}" target="_blank"
                                 class="btn btn-success">
-                                <i class="bi bi-printer"></i> Print PDF
+                                <i class="fas fa-print"></i> Print PDF
                             </a>
 
                             <a href="{{ route('pre-purchase-orders.edit', $prePurchaseOrder->id) }}"
                                 class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit PO
+                                <i class="fas fa-pen"></i> Edit PO
                             </a>
 
                             <a href="{{ route('pre-purchase-orders.index') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Kembali
+                                <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                                     @method('PATCH')
                                     <button type="submit" class="btn btn-success"
                                         onclick="return confirm('Tandai PO ini selesai dan otomatis masuk ke pembelian?\n\nPerhatian: Proses ini hanya bisa dilakukan sekali!')">
-                                        <i class="bi bi-check-circle"></i> Tandai Selesai & Masukkan ke Pembelian
+                                        <i class="fas fa-check-circle"></i> Tandai Selesai & Masukkan ke Pembelian
                                     </button>
                                 </form>
                             @elseif ($prePurchaseOrder->status === 'completed')

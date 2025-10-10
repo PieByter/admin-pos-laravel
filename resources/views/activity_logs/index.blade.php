@@ -5,7 +5,7 @@
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('superadmin.activity-logs.create') }}" class="btn btn-primary" id="btn-create-logs"
             title="Tambah Log Aktivitas Baru">
-            <i class="bi bi-journal-plus"></i> Tambah Log Aktivitas Baru
+            <i class="fas fa-plus"></i> Tambah Log Aktivitas Baru
         </a>
     </div>
 
@@ -27,14 +27,14 @@
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '5' : '4' }}" class="text-center py-4">
                                     <div class="text-muted">
-                                        <i class="bi bi-inbox display-1"></i>
+                                        <i class="fas fa-inboxdisplay-1"></i>
                                         <p class="mt-2">
                                             Belum ada data log aktivitas.
                                         </p>
 
                                         <a href="{{ route('superadmin.activity-logs.create') }}"
                                             class="btn btn-primary">
-                                            <i class="bi bi-plus"></i> Tambah Log Pertama
+                                            <i class="fas fa-plus"></i> Tambah Log Pertama
                                         </a>
 
                                     </div>
@@ -80,7 +80,7 @@
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('superadmin.activity-logs.edit', $log->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             <form action="{{ route('superadmin.activity-logs.destroy', $log->id) }}"
                                                 method="POST" class="d-inline delete-form">
@@ -88,7 +88,7 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm btn-hapus-log"
                                                     title="Hapus">
-                                                    <i class="bi bi-trash"></i>
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>

@@ -5,7 +5,7 @@
 
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('units.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Tambah Satuan Baru
+            <i class="fas fa-plus-lg"></i> Tambah Satuan Baru
         </a>
     </div>
 
@@ -26,12 +26,12 @@
                             <tr class="text-center">
                                 <td colspan="4" class="text-center py-4">
                                     <div class="text-muted">
-                                        <i class="bi bi-inbox display-1"></i>
+                                        <i class="fas fa-inboxdisplay-1"></i>
                                         <p class="mt-2">
                                             Belum ada data satuan
                                         </p>
                                         <a href="{{ route('units.create') }}" class="btn btn-primary">
-                                            <i class="bi bi-plus"></i> Tambah Satuan Pertama
+                                            <i class="fas fa-plus"></i> Tambah Satuan Pertama
                                         </a>
                                     </div>
                                 </td>
@@ -46,15 +46,15 @@
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('units.show', $unit->id) }}" class="btn btn-info btn-sm"
                                                 title="Detail">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('units.edit', $unit->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             <a href="#" class="btn btn-danger btn-sm btn-hapus-satuan"
                                                 data-action="{{ route('units.destroy', $unit->id) }}" title="Hapus">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="fas fa-trash"></i>
                                             </a>
                                         </div>
                                     </td>

@@ -6,7 +6,7 @@
             <div class="col-md-8">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white text-center">
-                        <h5 class="card-title mb-0"><i class="bi bi-person-lines-fill"></i> Form Edit Profil</h5>
+                        <h5 class="card-title mb-0"><i class="fas"></i> Form Edit Profil</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data">
@@ -38,7 +38,7 @@
                                     <input type="password" class="form-control @error('password') is-invalid @enderror"
                                         id="password" name="password" oninput="checkPasswordStrength()"
                                         placeholder="Masukkan password baru">
-                                    <i class="bi bi-eye-slash password-toggle" id="togglePassword"
+                                    <i class="fas fa-eye-slash password-toggle" id="togglePassword"
                                         onclick="togglePasswordVisibility('password', 'togglePassword')"
                                         title="Show/Hide Password"
                                         style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer;"></i>
@@ -65,7 +65,7 @@
                                         class="form-control @error('password_confirmation') is-invalid @enderror"
                                         id="confirm_password" name="password_confirmation"
                                         placeholder="Konfirmasi password baru">
-                                    <i class="bi bi-eye-slash password-toggle" id="toggleConfirmPassword"
+                                    <i class="fas fa-eye-slash password-toggle" id="toggleConfirmPassword"
                                         onclick="togglePasswordVisibility('confirm_password', 'toggleConfirmPassword')"
                                         title="Show/Hide Confirm Password"
                                         style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer;"></i>
@@ -90,7 +90,7 @@
                                     @else
                                         <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-2"
                                             style="width:100px; height:100px;" id="preview-placeholder">
-                                            <i class="bi bi-person-circle text-white" style="font-size:3rem;"></i>
+                                            <i class="fas user-circle text-white" style="font-size:3rem;"></i>
                                         </div>
                                     @endif
                                 </div>
@@ -104,10 +104,10 @@
 
                             <div class="mt-4 d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary me-2">
-                                    <i class="bi bi-save"></i> Simpan Perubahan
+                                    <i class="fas fa-save"></i> Simpan Perubahan
                                 </button>
                                 <a href="{{ route('profile.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>

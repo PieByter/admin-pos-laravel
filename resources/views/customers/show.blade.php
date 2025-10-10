@@ -4,7 +4,7 @@
             <div class="col-md-7">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-person"></i> Detail Customer</h5>
+                        <h5 class="mb-0"><i class="fas fa-user"></i> Detail Customer</h5>
                     </div>
                     <div class="card-body">
                         <dl class="row mb-4 text-justify">
@@ -42,12 +42,12 @@
                         <div class="mt-4 d-flex justify-content-end gap-2">
                             @if ($can_write ?? false)
                                 <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning">
-                                    <i class="bi bi-pencil"></i> Edit
+                                    <i class="fas fa-pen"></i> Edit
                                 </a>
                             @endif
                             <a href="{{ route('customers.index') }}" class="btn btn-secondary ms-2"
                                 id="btn-back-customer">
-                                <i class="bi bi-arrow-left"></i> Kembali
+                                <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                         </div>
                     </div>

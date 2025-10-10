@@ -1,14 +1,10 @@
 <x-app-layout>
-    {{-- @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif --}}
-
     <div class="container-fluid pt-4">
         <div class="row justify-content-center">
             <div class="col-md-9">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-success text-white text-center">
-                        <h5 class="card-title mb-0"><i class="bi bi-cart-check"></i> Form Tambah Penjualan</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-cart-arrow-down"></i> Form Tambah Penjualan</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('sales.store') }}" method="post">
@@ -55,7 +51,7 @@
                                         </select>
                                         <button type="button" class="btn btn-outline-info btn-sm"
                                             onclick="openCustomerModal(this)">
-                                            <i class="bi bi-search"></i> Cari
+                                            <i class="fas fa-search"></i> Cari
                                         </button>
                                     </div>
                                     @error('customer_id')
@@ -167,11 +163,11 @@
                                         @php
                                             $details = old('detail') ?? [[]];
                                         @endphp
-                                        @foreach ($details as $i => $detail)
+                                        @foreach ($details as $index => $detail)
                                             <tr>
                                                 <td>
                                                     <div class="input-group">
-                                                        <select name="detail[{{ $i }}][item_id]"
+                                                        <select name="details[{{ $index }}][item_id]"
                                                             class="form-select barang-select" required
                                                             onchange="showStok(this)">
                                                             <option value="">- Pilih Barang -</option>
@@ -187,14 +183,14 @@
                                                         </select>
                                                         <button type="button" class="btn btn-outline-primary btn-sm"
                                                             onclick="openBarangModal(this)">
-                                                            <i class="bi bi-search"></i> Cari
+                                                            <i class="fas fa-search"></i> Cari
                                                         </button>
                                                     </div>
                                                     <span class="text-success small stok-info"
                                                         style="display:none;"></span>
                                                 </td>
                                                 <td>
-                                                    <select name="detail[{{ $i }}][unit_id]"
+                                                    <select name="details[{{ $index }}][unit_id]"
                                                         class="form-select satuan-select" required>
                                                         <option value="">- Pilih Satuan -</option>
                                                         @if (!empty($detail['item_id']) && isset($unitConversionMap[$detail['item_id']]))
@@ -216,27 +212,27 @@
                                                 </td>
                                                 <td>
                                                     <input type="number"
-                                                        name="detail[{{ $i }}][quantity]"
+                                                        name="details[{{ $index }}][quantity]"
                                                         class="form-control qty-input"
                                                         value="{{ $detail['quantity'] ?? '' }}" required
                                                         min="1">
                                                 </td>
                                                 <td>
                                                     <input type="text"
-                                                        name="detail[{{ $i }}][unit_price]"
+                                                        name="details[{{ $index }}][unit_price]"
                                                         class="form-control harga-input"
-                                                        value="{{ $detail['unit_price'] ?? '' }}" required>
+                                                        value="{{ $detail['buy_price'] ?? '' }}" required>
                                                 </td>
                                                 <td>
                                                     <input type="text"
-                                                        name="detail[{{ $i }}][subtotal]"
+                                                        name="details[{{ $index }}][subtotal]"
                                                         class="form-control subtotal-input"
                                                         value="{{ $detail['subtotal'] ?? '' }}" readonly>
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-danger btn-sm"
                                                         onclick="this.closest('tr').remove(); updateTotalHarga();">
-                                                        <i class="bi bi-trash"></i>
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -255,16 +251,16 @@
                                 </table>
                             </div>
 
-                            <button type="button" class="btn btn-primary btn-sm mb-3" onclick="addDetailRow()">
-                                <i class="bi bi-plus"></i> Tambah Barang
+                            <button type="button" class="btn btn-primary btn-sm mb-3" onclick="addDetailRow();">
+                                <i class="fas fa-plus"></i> Tambah Barang
                             </button>
 
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="submit" class="btn btn-success me-2">
-                                    <i class="bi bi-save"></i> Simpan Penjualan
+                                    <i class="fas fa-save"></i> Simpan Penjualan
                                 </button>
                                 <a href="{{ route('sales.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>
@@ -386,8 +382,9 @@
     @endif
 
     <script>
-        let detailIndex = {{ count(old('detail') ?? [[]]) }};
-        const unitConversionMap = {{ json_encode($unitConversionMap) }};
+        // let detailIndex = {{ count(old('detail') ?? [[]]) }};
+        let detailIndex = {{ count($details) }};
+        const unitConversionMap = {{ json_encode($unit_conversion_map) }};
 
         function formatRupiahInputValue(angka) {
             angka = Number(angka);
@@ -415,9 +412,7 @@
         function updateSatuanOptions(barangSelect, satuanSelect) {
             const idBarang = barangSelect.value;
             const stok = parseInt(barangSelect.selectedOptions[0]?.getAttribute('data-stok')) || 0;
-
             satuanSelect.innerHTML = '<option value="">- Pilih Satuan -</option>';
-
             let defaultSatuanId = null;
 
             if (unitConversionMap[idBarang]) {
@@ -555,49 +550,49 @@
             const tbody = document.getElementById('detail-barang-body');
             const row = document.createElement('tr');
 
-            // Buat options untuk select barang
-            let barangOptions = '<option value="">- Pilih Barang -</option>';
-            @foreach ($items as $item)
-                barangOptions += `<option value="{{ $item->id }}" 
-            data-stok="{{ $item->stock }}" 
-            data-harga="{{ $item->sell_price }}" 
-            data-id_satuan="{{ $item->unit_id }}">
-                {{ $item->item_name }}
-            </option>`;
-            @endforeach
+            // // Buat options untuk select barang
+            // let barangOptions = '<option value="">- Pilih Barang -</option>';
+            // @foreach ($items as $item)
+            //     barangOptions += `<option value="{{ $item->id }}" 
+            // data-stok="{{ $item->stock }}" 
+            // data-harga="{{ $item->sell_price }}" 
+            // data-id_satuan="{{ $item->unit_id }}">
+            //     {{ $item->item_name }}
+            // </option>`;
+            // @endforeach
 
             row.innerHTML = `
-        <td>
-            <div class="input-group">
-                <select name="detail[${detailIndex}][item_id]" class="form-select barang-select" required onchange="showStok(this)">
-                    ${barangOptions}
-                </select>
-                <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
-                    <i class="bi bi-search"></i> Cari
-                </button>
-            </div>
-            <span class="text-success small stok-info" style="display:none;"></span>
-        </td>
-        <td>
-            <select name="detail[${detailIndex}][unit_id]" class="form-select satuan-select" required>
-                <option value="">- Pilih Satuan -</option>
-            </select>
-        </td>
-        <td>
-            <input type="number" name="detail[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
-        </td>
-        <td>
-            <input type="text" name="detail[${detailIndex}][unit_price]" class="form-control harga-input" required>
-        </td>
-        <td>
-            <input type="text" name="detail[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
-        </td>
-        <td>
-            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
-                <i class="bi bi-trash"></i>
-            </button>
-        </td>
-    `;
+                <td>
+                    <div class="input-group">
+                        <select name="details[${detailIndex}][item_id]" class="form-select barang-select" required onchange="showStok(this)">
+                            ${barangOptions}
+                        </select>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
+                            <i class="fas fa-search"></i> Cari
+                        </button>
+                    </div>
+                    <span class="text-success small stok-info" style="display:none;"></span>
+                </td>
+                <td>
+                    <select name="details[${detailIndex}][unit_id]" class="form-select satuan-select" required>
+                        <option value="">- Pilih Satuan -</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="details[${detailIndex}][quantity]" class="form-control qty-input" required min="1">
+                </td>
+                <td>
+                    <input type="text" name="details[${detailIndex}][sell_price]" class="form-control harga-input" required>
+                </td>
+                <td>
+                    <input type="text" name="details[${detailIndex}][subtotal]" class="form-control subtotal-input" readonly>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
 
             tbody.appendChild(row);
             detailIndex++;
@@ -642,6 +637,8 @@
             showStok(barangSelect);
         }
 
+        window.addDetailRow = addDetailRow();
+        
         let currentSelectBarang = null;
 
         function openBarangModal(btn) {
@@ -800,19 +797,20 @@
             });
 
             // Modifikasi addDetailRow agar listener anti duplikat otomatis ditambahkan pada row baru
-            const oldAddDetailRow = window.addDetailRow;
-            window.addDetailRow = function() {
-                oldAddDetailRow();
-                // Ambil row terakhir yang baru ditambahkan
-                const rows = document.querySelectorAll('#detail-barang-body tr');
-                if (rows.length > 0) {
-                    const lastRow = rows[rows.length - 1];
-                    const barangSelect = lastRow.querySelector('.barang-select');
-                    if (barangSelect) {
-                        addAntiDuplikatBarangListener(barangSelect);
-                    }
-                }
-            };
+            window.addDetailRow = addDetailRow();
+            // const oldAddDetailRow = window.addDetailRow;
+            // window.addDetailRow = function() {
+            //     oldAddDetailRow();
+            //     // Ambil row terakhir yang baru ditambahkan
+            //     const rows = document.querySelectorAll('#detail-barang-body tr');
+            //     if (rows.length > 0) {
+            //         const lastRow = rows[rows.length - 1];
+            //         const barangSelect = lastRow.querySelector('.barang-select');
+            //         if (barangSelect) {
+            //             addAntiDuplikatBarangListener(barangSelect);
+            //         }
+            //     }
+            // };
 
             // Validasi juga saat pilih barang dari modal
             document.getElementById('modal-barang-list').addEventListener('click', function(e) {

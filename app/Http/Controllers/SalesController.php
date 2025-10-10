@@ -47,7 +47,7 @@ class SalesController extends Controller
     public function create()
     {
         $customers = Customer::where('status', 'active')->orderBy('name')->get();
-        $items = Item::orderBy('item_name')->get();
+        $items = Item::orderBy('id')->get();
         $units = Unit::orderBy('unit_name')->get();
 
         // Unit conversion mapping
@@ -73,7 +73,7 @@ class SalesController extends Controller
             'customers' => $customers,
             'items' => $items,
             'units' => $units,
-            'unitConversionMap' => $unitConversionMap,
+            'unit_conversion_map' => $unitConversionMap,
             'issue_date' => $issueDate,
             'invoice_number' => $invoiceNumber,
             'title' => 'Tambah Data Penjualan'
@@ -217,7 +217,7 @@ class SalesController extends Controller
         ])->findOrFail($id);
 
         $customers = Customer::where('status', 'active')->orderBy('name')->get();
-        $items = Item::orderBy('item_name')->get();
+        $items = Item::orderBy('id')->get();
         $units = Unit::orderBy('unit_name')->get();
 
         // Unit conversion mapping
@@ -246,7 +246,6 @@ class SalesController extends Controller
                 ->toArray();
             $unitConversionMap[$item->id] = $conversions;
         }
-
 
         return view('sales_orders.edit', [
             'id' => $id,

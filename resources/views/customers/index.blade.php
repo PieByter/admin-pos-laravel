@@ -5,7 +5,7 @@
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('customers.create') }}" class="btn btn-primary" id="btn-create-customer"
             title="Tambah Customer Baru">
-            <i class="bi bi-person-plus"></i> Tambah Customer Baru
+            <i class="fas fa-user-plus"></i> Tambah Customer Baru
         </a>
     </div>
 
@@ -33,7 +33,7 @@
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '8' : '7' }}" class="text-center py-4">
                                     <div class="text-muted">
-                                        <i class="bi bi-inbox display-1"></i>
+                                        <i class="fas fa-inboxdisplay-1"></i>
                                         <p class="mt-2">
                                             @if (!empty($search))
                                                 Tidak ada customer yang sesuai dengan pencarian "{{ $search }}"
@@ -42,7 +42,7 @@
                                             @endif
                                         </p>
                                         <a href="{{ route('customers.create') }}" class="btn btn-primary">
-                                            <i class="bi bi-person-plus"></i> Tambah Customer Pertama
+                                            <i class="fas fa-user-plus"></i> Tambah Customer Pertama
                                         </a>
                                     </div>
                                 </td>
@@ -71,17 +71,17 @@
                                             <a href="{{ route('customers.show', $customer->id) }}"
                                                 class="btn btn-info btn-sm" title="Detail"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('customers.edit', $customer->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             <a href="#" class="btn btn-danger btn-sm btn-hapus-customer"
                                                 data-id="{{ $customer->id }}" title="Hapus"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="fas fa-trash"></i>
                                             </a>
                                         </div>
                                     </td>

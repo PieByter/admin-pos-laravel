@@ -10,7 +10,7 @@
         <!-- Dashboard -->
         <li class="nav-item d-none d-sm-inline-block">
             <a class="nav-link{{ request()->is('dashboard') ? ' active' : '' }}" href="{{ route('dashboard') }}">
-                <i class="bi bi-speedometer2"></i> Dashboard
+                <i class="fas fa-tachometer-alt"></i> Dashboard
             </a>
         </li>
 
@@ -20,12 +20,12 @@
             <li class="nav-item d-none d-md-block dropdown">
                 <a class="nav-link dropdown-toggle{{ request()->is(['purchase-orders*', 'purchases*', 'sales*', 'purchase-returns*', 'sales-returns*', 'transactions*']) ? ' active' : '' }} text-gray-900 dark:text-white"
                     href="#" id="transaksiDropdown" role="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-cash-coin"></i> Transaksi
+                    <i class="fas fa-coins"></i> Transaksi
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="transaksiDropdown">
                     @can('transactions_view')
                         <li><a class="dropdown-item" href="{{ route('transactions.index') }}">
-                                <i class="bi bi-graph-up me-2"></i>Akumulasi Transaksi
+                                <i class="fas fa-chart-line me-2"></i>Akumulasi Transaksi
                             </a></li>
                         <li>
                             <hr class="dropdown-divider">
@@ -34,19 +34,19 @@
 
                     {{-- @can('pre_purchase_orders_view')
                         <li><a class="dropdown-item" href="{{ route('purchase-orders.index') }}">
-                                <i class="bi bi-file-earmark-plus me-2"></i>Purchase Order
+                                <i class="fas fa-file-plus me-2"></i>Purchase Order
                             </a></li>
                     @endcan --}}
 
                     @can('purchase_orders_view')
                         <li><a class="dropdown-item" href="{{ route('purchases.index') }}">
-                                <i class="bi bi-cart-plus me-2"></i>Purchase Order
+                                <i class="fas fa-cart-plus me-2"></i>Purchase Order
                             </a></li>
                     @endcan
 
                     @can('sales_orders_view')
                         <li><a class="dropdown-item" href="{{ route('sales.index') }}">
-                                <i class="bi bi-bag-check me-2"></i>Sales Order
+                                <i class="fas fa-shopping-bag me-2"></i>Sales Order
                             </a></li>
                     @endcan
 
@@ -61,13 +61,13 @@
 
                     @can('purchase_returns_view')
                         <li><a class="dropdown-item" href="{{ route('purchase-returns.index') }}">
-                                <i class="bi bi-arrow-return-left me-2 text-warning"></i>Retur Pembelian
+                                <i class="fas fa-undo me-2 text-warning"></i>Retur Pembelian
                             </a></li>
                     @endcan
 
                     @can('sales_returns_view')
                         <li><a class="dropdown-item" href="{{ route('sales-returns.index') }}">
-                                <i class="bi bi-arrow-return-right me-2 text-info"></i>Retur Penjualan
+                                <i class="fas fa-redo me-2 text-info"></i>Retur Penjualan
                             </a></li>
                     @endcan
                 </ul>
@@ -80,22 +80,22 @@
             <li class="nav-item d-none d-sm-inline-block dropdown">
                 <a class="nav-link dropdown-toggle{{ request()->is(['items*', 'suppliers*', 'customers*', 'units*', 'item-categories*', 'item-groups*', 'unit-conversions*']) ? ' active' : '' }}"
                     href="#" id="masterDropdown" role="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-box-seam"></i> Master Data
+                    <i class="fas fa-box-open"></i> Master Data
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="masterDropdown">
                     @can('items_view')
                         <li><a class="dropdown-item" href="{{ route('items.index') }}">
-                                <i class="bi bi-box me-2"></i>Barang
+                                <i class="fas fa-box me-2"></i>Barang
                             </a></li>
                     @endcan
                     @can('suppliers_view')
                         <li><a class="dropdown-item" href="{{ route('suppliers.index') }}">
-                                <i class="bi bi-truck me-2"></i>Supplier
+                                <i class="fas fa-truck me-2"></i>Supplier
                             </a></li>
                     @endcan
                     @can('customers_view')
                         <li><a class="dropdown-item" href="{{ route('customers.index') }}">
-                                <i class="bi bi-people me-2"></i>Customer
+                                <i class="fas fa-user-friends me-2"></i>Customer
                             </a></li>
                     @endcan
                     <li>
@@ -103,22 +103,22 @@
                     </li>
                     @can('unit_conversions_view')
                         <li><a class="dropdown-item" href="{{ route('unit-conversions.index') }}">
-                                <i class="bi bi-arrow-left-right me-2"></i>Satuan Konversi
+                                <i class="fas fa-arrow-left-right me-2"></i>Satuan Konversi
                             </a></li>
                     @endcan
                     @can('units_view')
                         <li><a class="dropdown-item" href="{{ route('units.index') }}">
-                                <i class="bi bi-rulers me-2"></i>Satuan Barang
+                                <i class="fas fa-ruler me-2"></i>Satuan Barang
                             </a></li>
                     @endcan
                     @can('item_categories_view')
                         <li><a class="dropdown-item" href="{{ route('item-categories.index') }}">
-                                <i class="bi bi-tags me-2"></i>Kategori Barang
+                                <i class="fas fa-tags me-2"></i>Kategori Barang
                             </a></li>
                     @endcan
                     @can('item_groups_view')
                         <li><a class="dropdown-item" href="{{ route('item-groups.index') }}">
-                                <i class="bi bi-collection me-2"></i>Group Barang
+                                <i class="fas fa-layer-group me-2"></i>Group Barang
                             </a></li>
                     @endcan
                 </ul>
@@ -130,17 +130,17 @@
             <li class="nav-item d-none d-md-block dropdown">
                 <a class="nav-link dropdown-toggle{{ request()->is('superadmin/*') ? ' active' : '' }}" href="#"
                     id="adminDropdown" role="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-person-gear"></i> Admin
+                    <i class="fas fa-user-cog"></i> Admin
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                     @can('users_view')
                         <li><a class="dropdown-item" href="{{ route('superadmin.users.index') }}">
-                                <i class="bi bi-people me-2"></i>Manajemen User
+                                <i class="fas fa-user-friends me-2"></i>Manajemen User
                             </a></li>
                     @endcan
                     @can('activity_logs_view')
                         <li><a class="dropdown-item" href="{{ route('superadmin.activity-logs.index') }}">
-                                <i class="bi bi-journal-text me-2"></i>Log Aktivitas
+                                <i class="fas fa-address-book-text me-2"></i>Log Aktivitas
                             </a></li>
                     @endcan
                 </ul>

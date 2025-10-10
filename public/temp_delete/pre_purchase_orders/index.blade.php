@@ -6,7 +6,7 @@
 
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('pre-purchase-orders.create') }}" class="btn btn-primary" id="btn-create-po">
-            <i class="bi bi-plus-lg"></i> Tambah PO Baru
+            <i class="fas fa-plus-lg"></i> Tambah PO Baru
         </a>
     </div>
 
@@ -37,7 +37,7 @@
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '10' : '9' }}" class="text-center py-4">
                                     <div class="text-muted">
-                                        <i class="bi bi-inbox display-1"></i>
+                                        <i class="fas fa-inboxdisplay-1"></i>
                                         <p class="mt-2">
                                             @if (!empty($search))
                                                 Tidak ada Purchase Order yang sesuai dengan pencarian
@@ -48,7 +48,7 @@
                                         </p>
 
                                         <a href="{{ route('pre-purchase-orders.create') }}" class="btn btn-primary">
-                                            <i class="bi bi-file-earmark-plus"></i> Tambah PO Pertama
+                                            <i class="fas fa-file-plus"></i> Tambah PO Pertama
                                         </a>
 
                                     </div>
@@ -128,12 +128,12 @@
                                             <a href="{{ route('pre-purchase-orders.show', $po->id) }}"
                                                 class="btn btn-info btn-sm" title="Detail"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('pre-purchase-orders.edit', $po->id) }}"
                                                 class="btn btn-warning btn-sm" title="Edit"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             <form action="{{ route('pre-purchase-orders.destroy', $po->id) }}"
                                                 method="POST" class="d-inline delete-form">
@@ -141,7 +141,7 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm btn-hapus-po"
                                                     onclick="event.stopPropagation();" title="Hapus">
-                                                    <i class="bi bi-trash"></i>
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -191,7 +191,7 @@
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-file-earmark-excel"></i> Export Excel
+                                <i class="fas fa-file-excel"></i> Export Excel
                             </button>
                         </div>
                     </form>

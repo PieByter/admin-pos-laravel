@@ -4,7 +4,7 @@
             <div class="col-md-10">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white text-center">
-                        <h5 class="card-title mb-0"><i class="bi bi-person-gear"></i> Form Edit User</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-user-cog"></i> Form Edit User</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('superadmin.users.update', $user->id) }}" method="post">
@@ -244,10 +244,10 @@
 
                             <div class="d-flex justify-content-end gap-2">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-save"></i> Update
+                                    <i class="fas fa-save"></i> Update
                                 </button>
                                 <a href="{{ route('superadmin.users.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>

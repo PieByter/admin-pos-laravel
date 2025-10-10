@@ -5,7 +5,7 @@
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('suppliers.create') }}" class="btn btn-primary" id="btn-create-supplier"
             title="Tambah Supplier Baru">
-            <i class="bi bi-person-plus"></i> Tambah Supplier Baru
+            <i class="fas fa-user-plus"></i> Tambah Supplier Baru
         </a>
     </div>
 
@@ -33,7 +33,7 @@
                             <tr>
                                 <td colspan="{{ $can_write ?? false ? '8' : '7' }}" class="text-center py-4">
                                     <div class="text-muted">
-                                        <i class="bi bi-inbox display-1"></i>
+                                        <i class="fas fa-inboxdisplay-1"></i>
                                         <p class="mt-2">
                                             @if (!empty($search))
                                                 Tidak ada supplier yang sesuai dengan pencarian "{{ $search }}"
@@ -42,7 +42,7 @@
                                             @endif
                                         </p>
                                         <a href="{{ route('suppliers.create') }}" class="btn btn-success">
-                                            <i class="bi bi-person-plus"></i> Tambah Supplier Pertama
+                                            <i class="fas fa-user-plus"></i> Tambah Supplier Pertama
                                         </a>
                                     </div>
                                 </td>
@@ -71,17 +71,17 @@
                                             <a href="{{ route('suppliers.show', $supplier->id) }}"
                                                 class="btn btn-sm btn-info" title="Detail Supplier"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-eye"></i>
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('suppliers.edit', $supplier->id) }}"
                                                 class="btn btn-sm btn-warning" title="Edit Supplier"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             <a href="#" class="btn btn-danger btn-sm btn-hapus-supplier"
                                                 data-id="{{ $supplier->id }}" title="Hapus Supplier"
                                                 onclick="event.stopPropagation();">
-                                                <i class="bi bi-trash"></i>
+                                                <i class="fas fa-trash"></i>
                                             </a>
                                         </div>
                                     </td>

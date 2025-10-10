@@ -4,7 +4,7 @@
             <div class="col-md-10">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white text-center">
-                        <h5 class="card-title mb-0"><i class="bi bi-pencil-square"></i> Edit Purchase Order</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-pen"></i> Edit Purchase Order</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('pre-purchase-orders.update', $prePurchaseOrder->id) }}" method="post">
@@ -77,7 +77,7 @@
                                         </select>
                                         <button type="button" class="btn btn-outline-info btn-sm"
                                             onclick="openSupplierModal(this)">
-                                            <i class="bi bi-search"></i> Cari
+                                            <i class="fas fa-search"></i> Cari
                                         </button>
                                     </div>
                                     @error('supplier_id')
@@ -200,7 +200,7 @@
                                                         </select>
                                                         <button type="button" class="btn btn-outline-primary btn-sm"
                                                             onclick="openBarangModal(this)">
-                                                            <i class="bi bi-search"></i> Cari
+                                                            <i class="fas fa-search"></i> Cari
                                                         </button>
                                                     </div>
                                                     <span class="stok-info text-success small"></span>
@@ -238,7 +238,7 @@
                                                 <td>
                                                     <button type="button" class="btn btn-danger btn-sm"
                                                         onclick="this.closest('tr').remove(); updateTotalHarga();">
-                                                        <i class="bi bi-trash"></i>
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -261,15 +261,15 @@
                             </div>
 
                             <button type="button" class="btn btn-success btn-sm mb-3" onclick="addDetailRow()">
-                                <i class="bi bi-plus"></i> Tambah Barang
+                                <i class="fas fa-plus"></i> Tambah Barang
                             </button>
 
                             <div class="d-flex justify-content-end mt-4 gap-2">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-save"></i> Update Purchase Order
+                                    <i class="fas fa-save"></i> Update Purchase Order
                                 </button>
                                 <a href="{{ route('pre-purchase-orders.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>
@@ -286,7 +286,7 @@
                                     @method('PATCH')
                                     <button type="submit" class="btn btn-success"
                                         onclick="return confirm('Tandai PO ini selesai dan otomatis masuk ke pembelian?\n\nPerhatian: Proses ini hanya bisa dilakukan sekali!')">
-                                        <i class="bi bi-check-circle"></i> Tandai Selesai & Masukkan ke Pembelian
+                                        <i class="fas fa-check-circle"></i> Tandai Selesai & Masukkan ke Pembelian
                                     </button>
                                 </form>
                             @elseif ($prePurchaseOrder->status === 'completed')
@@ -535,7 +535,7 @@
                     @endforeach
                 </select>
                 <button type="button" class="btn btn-outline-primary btn-sm" onclick="openBarangModal(this)">
-                    <i class="bi bi-search"></i> Cari
+                    <i class="fas fa-search"></i> Cari
                 </button>
             </div>
             <span class="text-success small stok-info" style="display:none;"></span>
@@ -560,7 +560,7 @@
         </td>
         <td>
             <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHarga();">
-                <i class="bi bi-trash"></i>
+                <i class="fas fa-trash"></i>
             </button>
         </td>
     `;

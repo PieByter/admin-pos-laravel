@@ -4,7 +4,7 @@
             <div class="col-md-6">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-success text-white text-center">
-                        <h5 class="card-title mb-0"><i class="bi bi-rulers"></i> Form Tambah Satuan</h5>
+                        <h5 class="card-title mb-0"><i class="fas fa-ruler"></i> Form Tambah Satuan</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('units.store') }}" method="POST" autocomplete="off">
@@ -36,10 +36,10 @@
 
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success me-2">
-                                    <i class="bi bi-save"></i> Simpan
+                                    <i class="fas fa-save"></i> Simpan
                                 </button>
                                 <a href="{{ route('units.index') }}" class="btn btn-secondary">
-                                    <i class="bi bi-x-lg"></i> Batal
+                                    <i class="fas fa-times"></i> Batal
                                 </a>
                             </div>
                         </form>

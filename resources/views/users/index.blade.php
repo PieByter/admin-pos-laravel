@@ -6,7 +6,7 @@
     <div id="custom-buttons" class="ms-3 mb-2">
         <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary" id="btn-create-user"
             title="Tambah User Baru">
-            <i class="bi bi-person-plus"></i> Tambah User Baru
+            <i class="fas fa-user-plus"></i> Tambah User Baru
         </a>
     </div>
 
@@ -33,13 +33,13 @@
                             <tr>
                                 <td colspan="8" class="text-center py-4">
                                     <div class="text-muted">
-                                        <i class="bi bi-inbox display-1"></i>
+                                        <i class="fas fa-inboxdisplay-1"></i>
                                         <p class="mt-2">
                                             {{ $search ? 'Tidak ada user yang sesuai dengan pencarian "' . e($search) . '"' : 'Belum ada data user' }}
                                         </p>
 
                                         <a href="{{ route('superadmin.users.create') }}" class="btn btn-primary">
-                                            <i class="bi bi-person-plus"></i> Tambah User Pertama
+                                            <i class="fas fa-user-plus"></i> Tambah User Pertama
                                         </a>
                                     </div>
                                 </td>
@@ -170,13 +170,13 @@
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('superadmin.users.edit', $user['id']) }}"
                                                 class="btn btn-warning btn-sm" title="Edit User">
-                                                <i class="bi bi-pencil"></i>
+                                                <i class="fas fa-pen"></i>
                                             </a>
                                             @if ($user['id'] != session('user_id'))
                                                 <a href="{{ route('superadmin.users.destroy', $user['id']) }}"
                                                     class="btn btn-danger btn-sm btn-hapus-user"
                                                     onclick="event.stopPropagation();" title="Hapus User">
-                                                    <i class="bi bi-trash"></i>
+                                                    <i class="fas fa-trash"></i>
                                                 </a>
                                             @endif
                                         </div>

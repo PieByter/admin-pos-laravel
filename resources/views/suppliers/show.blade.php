@@ -4,7 +4,7 @@
             <div class="col-md-7">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-person"></i> Detail Supplier</h5>
+                        <h5 class="mb-0"><i class="fas fa-user"></i> Detail Supplier</h5>
                     </div>
                     <div class="card-body">
                         <dl class="row mb-4 text-justify">
@@ -42,12 +42,12 @@
                         <div class="mt-4 d-flex justify-content-end gap-2">
 
                             <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
+                                <i class="fas fa-pen"></i> Edit
                             </a>
 
                             <a href="{{ route('suppliers.index') }}" class="btn btn-secondary ms-2"
                                 id="btn-back-supplier">
-                                <i class="bi bi-arrow-left"></i> Kembali
+                                <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                         </div>
                     </div>

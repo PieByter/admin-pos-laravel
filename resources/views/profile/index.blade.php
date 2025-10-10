@@ -9,7 +9,7 @@
                         <div class="card-header d-flex align-items-center">
                             <h5 class="card-title mb-0">Pengaturan Profil</h5>
                             <a href="{{ route('profile.edit') }}" class="btn btn-primary btn-sm ms-auto">
-                                <i class="bi bi-pencil"></i> Edit Profil
+                                <i class="fas fa-pen"></i> Edit Profil
                             </a>
                         </div>
                         <div class="card-body">
@@ -150,7 +150,7 @@
                                                 class="rounded-circle"
                                                 style="width:60px; height:60px; object-fit:cover;">
                                         @else
-                                            <i class="bi bi-person-circle" style="font-size:3rem;"></i>
+                                            <i class="fas user-circle" style="font-size:3rem;"></i>
                                         @endif
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-danger btn-sm">
-                                    <i class="bi bi-box-arrow-right"></i> Sign Out
+                                    <i class="fas fa-sign-out-alt"></i> Sign Out
                                 </button>
                             </form>
                         </div>

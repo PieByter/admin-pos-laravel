@@ -59,7 +59,7 @@
                 <li class="nav-item d-none d-sm-inline-block">
                     <a class="nav-link{{ request()->is('dashboard') ? ' active' : '' }}"
                         href="{{ route('dashboard') }}">
-                        <i class="bi bi-speedometer2"></i> Dashboard
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </li>
 
@@ -71,7 +71,7 @@
                     <li class="nav-item d-none d-md-block dropdown">
                         <a class="nav-link dropdown-toggle{{ request()->is(['po*', 'pembelian*', 'penjualan*', 'transaksi*']) ? ' active' : '' }}"
                             href="#" id="transaksiDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-cash-coin"></i> Transaksi
+                            <i class="fas fa-coins"></i> Transaksi
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="transaksiDropdown">
                             @can('transactions_view')
@@ -98,7 +98,7 @@
                     <li class="nav-item d-none d-sm-inline-block dropdown">
                         <a class="nav-link dropdown-toggle{{ request()->is(['barang*', 'supplier*', 'customer*', 'satuan*', 'jenis-barang*', 'group-barang*']) ? ' active' : '' }}"
                             href="#" id="masterDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-box-seam"></i> Master Data
+                            <i class="fas fa-box-open"></i> Master Data
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="masterDropdown">
                             @can('items_view')
@@ -132,7 +132,7 @@
                     <li class="nav-item d-none d-md-block dropdown">
                         <a class="nav-link dropdown-toggle{{ request()->is('superadmin/*') ? ' active' : '' }}"
                             href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-gear"></i> Admin
+                            <i class="fas fa-user-cog"></i> Admin
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                             @can('users_view')
@@ -202,13 +202,13 @@
                             <div class="row">
                                 <div class="col-6">
                                     <a class="btn btn-block btn-outline-primary" href="{{ route('profile') }}">
-                                        <i class="bi bi-person-circle"></i> Profile
+                                        <i class="fas user-circle"></i> Profile
                                     </a>
                                 </div>
                                 <div class="col-6">
                                     <a class="btn btn-block btn-outline-danger float-end"
                                         href="{{ route('logout') }}">
-                                        <i class="bi bi-box-arrow-right"></i> Sign Out
+                                        <i class="fas fa-sign-out-alt"></i> Sign Out
                                     </a>
                                 </div>
                             </div>
@@ -248,7 +248,7 @@
                         <li class="nav-item">
                             <a href="{{ route('dashboard') }}"
                                 class="nav-link{{ request()->is('dashboard') ? ' active' : '' }}">
-                                <i class="nav-icon bi bi-speedometer2"></i>
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
@@ -262,7 +262,7 @@
                                 class="nav-item{{ request()->is(['po*', 'pembelian*', 'penjualan*', 'transaksi*']) ? ' menu-open' : '' }}">
                                 <a href="#"
                                     class="nav-link{{ request()->is(['po*', 'pembelian*', 'penjualan*', 'transaksi*']) ? ' active' : '' }}">
-                                    <i class="nav-icon bi bi-cash-coin"></i>
+                                    <i class="nav-icon fas fa-coins"></i>
                                     <p>
                                         Transaksi
                                         <i class="right fas fa-angle-left"></i>
@@ -273,7 +273,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('transaksi.index') }}"
                                                 class="nav-link{{ request()->is('transaksi*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-cash-stack"></i>
+                                                <i class="nav-icon fas fa-money-check"></i>
                                                 <p>Akumulasi Transaksi</p>
                                             </a>
                                         </li>
@@ -282,7 +282,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('po.index') }}"
                                                 class="nav-link{{ request()->is('po*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-file-earmark-text"></i>
+                                                <i class="nav-icon "></i>
                                                 <p>Purchase Order</p>
                                             </a>
                                         </li>
@@ -291,7 +291,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('pembelian.index') }}"
                                                 class="nav-link{{ request()->is('pembelian*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-cart-plus"></i>
+                                                <i class="nav-icon fas fa-cart-plus"></i>
                                                 <p>Pembelian</p>
                                             </a>
                                         </li>
@@ -300,7 +300,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('penjualan.index') }}"
                                                 class="nav-link{{ request()->is('penjualan*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-cash-coin"></i>
+                                                <i class="nav-icon fas fa-coins"></i>
                                                 <p>Penjualan</p>
                                             </a>
                                         </li>
@@ -317,7 +317,7 @@
                                 class="nav-item{{ request()->is(['barang*', 'supplier*', 'customer*', 'satuan*', 'jenis-barang*', 'group-barang*']) ? ' menu-open' : '' }}">
                                 <a href="#"
                                     class="nav-link{{ request()->is(['barang*', 'supplier*', 'customer*', 'satuan*', 'jenis-barang*', 'group-barang*']) ? ' active' : '' }}">
-                                    <i class="nav-icon bi bi-box-seam"></i>
+                                    <i class="nav-icon fas fa-box-open"></i>
                                     <p>
                                         Master Data
                                         <i class="right fas fa-angle-left"></i>
@@ -328,7 +328,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('barang.index') }}"
                                                 class="nav-link{{ request()->is('barang*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-box"></i>
+                                                <i class="nav-icon fas fa-box"></i>
                                                 <p>Barang</p>
                                             </a>
                                         </li>
@@ -337,7 +337,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('supplier.index') }}"
                                                 class="nav-link{{ request()->is('supplier*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-truck"></i>
+                                                <i class="nav-icon fas fa-truck"></i>
                                                 <p>Supplier</p>
                                             </a>
                                         </li>
@@ -346,7 +346,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('customer.index') }}"
                                                 class="nav-link{{ request()->is('customer*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-people"></i>
+                                                <i class="nav-icon fas fa-user-friends"></i>
                                                 <p>Customer</p>
                                             </a>
                                         </li>
@@ -355,7 +355,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('satuan-konversi.index') }}"
                                                 class="nav-link{{ request()->is('satuan-konversi*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-currency-exchange"></i>
+                                                <i class="nav-icon fas fa-money-check-alt"></i>
                                                 <p>Satuan Konversi</p>
                                             </a>
                                         </li>
@@ -364,7 +364,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('satuan.index') }}"
                                                 class="nav-link{{ request()->is('satuan*') && !request()->is('satuan-konversi*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-grid"></i>
+                                                <i class="nav-icon fa-ruler-combined"></i>
                                                 <p>Satuan Barang</p>
                                             </a>
                                         </li>
@@ -373,7 +373,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('jenis-barang.index') }}"
                                                 class="nav-link{{ request()->is('jenis-barang*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-diagram-2"></i>
+                                                <i class="nav-icon fas fa-sitemap"></i>
                                                 <p>Jenis Barang</p>
                                             </a>
                                         </li>
@@ -382,7 +382,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('group-barang.index') }}"
                                                 class="nav-link{{ request()->is('group-barang*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-boxes"></i>
+                                                <i class="nav-icon fas fa-boxes"></i>
                                                 <p>Group Barang</p>
                                             </a>
                                         </li>
@@ -396,7 +396,7 @@
                             <li class="nav-item{{ request()->is('superadmin/*') ? ' menu-open' : '' }}">
                                 <a href="#"
                                     class="nav-link{{ request()->is('superadmin/*') ? ' active' : '' }}">
-                                    <i class="nav-icon bi bi-person-gear"></i>
+                                    <i class="nav-icon fas fa-user-cog"></i>
                                     <p>
                                         Admin & Log
                                         <i class="right fas fa-angle-left"></i>
@@ -407,7 +407,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('superadmin.users.index') }}"
                                                 class="nav-link{{ request()->is('superadmin/users*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-person-fill-gear"></i>
+                                                <i class="nav-icon fas fa-user-edit"></i>
                                                 <p>Manajemen User</p>
                                             </a>
                                         </li>
@@ -416,7 +416,7 @@
                                         <li class="nav-item">
                                             <a href="{{ route('superadmin.logs.index') }}"
                                                 class="nav-link{{ request()->is('superadmin/logs*') ? ' active' : '' }}">
-                                                <i class="nav-icon bi bi-journal-text"></i>
+                                                <i class="nav-icon fas fa-address-book-text"></i>
                                                 <p>Log Aktivitas</p>
                                             </a>
                                         </li>
@@ -429,7 +429,7 @@
                         <li class="nav-item">
                             <a href="{{ route('profile.index') }}"
                                 class="nav-link{{ request()->is('profile*') ? ' active' : '' }}">
-                                <i class="nav-icon bi bi-person-circle"></i>
+                                <i class="nav-icon fas user-circle"></i>
                                 <p>Profil Pengguna</p>
                             </a>
                         </li>

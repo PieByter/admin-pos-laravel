@@ -80,14 +80,14 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-danger pb-0">
-                        <h5><i class="bi bi-cash-stack"></i> Detail Hutang Belum Lunas</h5>
+                        <h5><i class="fas fa-money-check"></i> Detail Hutang Belum Lunas</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm text-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th>No. PO</th>
+                                        <th>No. Faktur</th>
                                         <th>Supplier</th>
                                         <th>Jatuh Tempo</th>
                                         <th>Jumlah</th>
@@ -119,7 +119,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-warning pb-0">
-                        <h5><i class="bi bi-receipt"></i> Detail Piutang Belum Lunas</h5>
+                        <h5><i class="fas fa-receipt"></i> Detail Piutang Belum Lunas</h5>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

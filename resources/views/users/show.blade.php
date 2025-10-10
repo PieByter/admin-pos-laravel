@@ -7,7 +7,7 @@
             <div class="col-md-10">
                 <div class="card shadow-sm mt-4">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-person"></i> Detail User</h5>
+                        <h5 class="mb-0"><i class="fas fa-user"></i> Detail User</h5>
                     </div>
                     <div class="card-body">
                         <dl class="row mb-3">
@@ -238,10 +238,10 @@
 
                         <div class="mt-4 d-flex justify-content-end gap-2">
                             <a href="{{ route('superadmin.users.edit', $user->id) }}" class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
+                                <i class="fas fa-pen"></i> Edit
                             </a>
                             <a href="{{ route('superadmin.users.index') }}" class="btn btn-secondary">
-                                <i class="bi bi-arrow-left"></i> Kembali
+                                <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                         </div>
                     </div>
